@@ -1,0 +1,35 @@
+.nx-card {
+    border: 1px solid var(--border-subtle);
+    background-color: var(--background-surface-high);
+    padding: 24px;
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+}
+
+.nx-card-warning {
+    background-color: var(--info-warning-background) !important;
+}
+
+.nx-card-help {
+    background-color: var(--info-help-background) !important;
+}
+
+.nx-card-positive {
+    background-color: var(--info-positive-background) !important;
+}
+
+.nx-card-danger {
+    background-color: var(--info-danger-background) !important;
+}
+
+.nx-card-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-normal);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    line-height: 2; /* I hate this */
+    margin-top: -8px;
+}

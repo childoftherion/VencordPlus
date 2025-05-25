@@ -1,0 +1,41 @@
+.nx-tone-list {
+    display: grid;
+    grid-template-columns: calc(50% - 8px) calc(50% - 8px);
+    grid-template-rows: auto;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.nx-tone-list-indicators {
+    display: flex;
+    margin-bottom: 16px;
+    gap: 4px;
+}
+
+.nx-tone-list-card {
+    padding: 16px;
+}
+
+.nx-tone-list-indicators span {
+    background: var(--background-code);
+    border: 1px solid var(--border-normal);
+    border-radius: 4px;
+    font-family: var(--font-code);
+    margin: -.2em 0;
+    padding: 0 .2em;
+    font-size: 85%;
+    color: var(--text-normal);
+}
+
+.nx-tone-list-indicators span::before {
+    content: "/";
+}
+
+.nx-tone-icon path {
+    scale: 0.85;
+}
+
+.nx-tone-noResults {
+    text-align: center;
+    color: var(--text-muted);
+}
