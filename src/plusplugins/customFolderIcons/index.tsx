@@ -7,27 +7,27 @@
 import definePlugin from "@utils/types";
 
 import { makeContextItem } from "./components";
-import settings, { folderIconsData } from "./settings";
+import { folderIconsData, settings } from "./settings";
 import { folderProp, int2rgba } from "./util";
 
 export default definePlugin({
-    settings,
     name: "CustomFolderIcons",
-    description: "Customize folder icons with any png",
+    description: "Customize folder icons with any PNG file",
     authors: [
     {
         name: "sadan",
         id: 521819891141967883n
     }
     ],
+    settings,
     patches: [
         {
-            find: ".expandedFolderIconWrapper",
+            find: ".folderButtonInner",
             replacement: {
-                match: /(return.{0,80}expandedFolderIconWrapper.*,)(\(0,..jsxs\)\(.*]}\))/,
-                replace: "$1$self.shouldReplace(arguments[0])?$self.replace(arguments[0]):$2"
+                match: /(\(0,\i\.jsx\)\(\i,\{folderNode:(\i),hovered:\i,sorting:\i\}\))/,
+                replace: "($self.shouldReplace({folderNode:$2})?$self.replace({folderNode:$2}):$1)"
             }
-        }
+        },
     ],
     contextMenus: {
         "guild-context": (menuItems, props: folderProp) => {
@@ -35,12 +35,12 @@ export default definePlugin({
             menuItems.push(makeContextItem(props));
         }
     },
-    shouldReplace(props: any): boolean{
+    shouldReplace(props: any): boolean {
         return !!((settings.store.folderIcons as folderIconsData)?.[props.folderNode.id]?.url);
     },
-    replace(props: any){
+    replace(props: any) {
         const folderSettings = (settings.store.folderIcons as folderIconsData);
-        if (folderSettings && folderSettings[props.folderNode.id]){
+        if (folderSettings && folderSettings[props.folderNode.id]) {
             const data = folderSettings[props.folderNode.id];
             return (
                 <div
@@ -53,7 +53,7 @@ export default definePlugin({
                         height: "100%"
                     }}
                 >
-                    <img src={data!.url} width={`${data!.size ?? 100}%`} height={`${data!.size ?? 100}%`}
+                    <img alt="" src={data!.url} width={`${data!.size ?? 100}%`} height={`${data!.size ?? 100}%`}
                     />
                 </div>
             );
