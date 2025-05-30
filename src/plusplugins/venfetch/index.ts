@@ -87,9 +87,25 @@ function getEnabledPlugins() {
 function getDonorStatus() {
     return GuildMemberStore.getMember("1015060230222131221", UserStore.getCurrentUser().id).roles.includes("1042507929485586532");
 }
-function getContribStatus() {
+function getVencordContribStatus() {
     const userId = UserStore.getCurrentUser().id;
     return isPluginDev(userId) || GuildMemberStore.getMember("1015060230222131221", userId).roles.includes("1026534353167208489");
+}
+function getSuncordContribStatus() {
+    const userId = UserStore.getCurrentUser().id;
+    return isSuncordPluginDev(userId) || GuildMemberStore.getMember("1015060230222131221", userId).roles.includes("1026534353167208489");
+}
+function getEquicordContribStatus() {
+    const userId = UserStore.getCurrentUser().id;
+    return isEquicordPluginDev(userId) || GuildMemberStore.getMember("1015060230222131221", userId).roles.includes("1026534353167208489");
+}
+function getPlusContribStatus() {
+    const userId = UserStore.getCurrentUser().id;
+    return isPlusPluginDev(userId) || GuildMemberStore.getMember("1015060230222131221", userId).roles.includes("1026534353167208489");
+}
+function getPlusMtStatus() {
+    const userId = UserStore.getCurrentUser().id;
+    return isPlusMt(userId) || GuildMemberStore.getMember("1015060230222131221", userId).roles.includes("1026534353167208489");
 }
 
 
@@ -136,7 +152,11 @@ export default definePlugin({
                     __: null,
 
                     donor: getDonorStatus() ? "yes" : "no",
-                    contributor: getContribStatus() ? "yes" : "no",
+                    'Vencord Contributor': getVencordContribStatus() ? "yes" : "no",
+                    'Suncord Contributor': getSuncordContribStatus() ? "yes" : "no",
+                    'Equicord Contributor': getEquicordContribStatus() ? "yes" : "no",
+                    'Vencord+ Contributor': getPlusContribStatus() ? "yes" : "no",
+                    'Vencord+ Maintainer': getPlusMtStatus() ? "yes" : "no",
 
                     ___: null,
 
