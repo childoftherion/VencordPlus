@@ -13,7 +13,7 @@ import { GuildMemberStore, UserStore } from "@webpack/common";
 
 import { PluginMeta } from "~plugins";
 
-import { isPluginDev, tryOrElse } from "@utils/misc";
+import { isPluginDev, isSuncordPluginDev, isEquicordPluginDev, isPlusPluginDev, isPlusMt, tryOrElse } from "@utils/misc";
 import { findByCodeLazy } from "@webpack";
 import { getUserSettingLazy } from "../../api/UserSettings.js";
 import SettingsPlugin from "../../plugins/_core/settings";
