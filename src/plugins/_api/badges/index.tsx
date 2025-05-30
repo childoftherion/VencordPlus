@@ -27,7 +27,7 @@ import { openContributorModal } from "@components/PluginSettings/ContributorModa
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import { Margins } from "@utils/margins";
-import { isPluginDev, isSuncordPluginDev, isEquicordPluginDev, isPlusPluginDev, isPlusMt } from "@utils/misc";
+import { shouldShowContributorBadge, shouldShowSuncordContributorBadge, shouldShowEquicordContributorBadge, shouldShowPlusContributorBadge, shouldShowPlusMaintainerBadge } from "@utils/misc";
 import { closeModal, ModalContent, ModalFooter, ModalHeader, ModalRoot, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
 import { Forms, Toasts, UserStore } from "@webpack/common";
@@ -43,7 +43,7 @@ const ContributorBadge: ProfileBadge = {
     description: "Vencord Contributor",
     image: CONTRIBUTOR_BADGE,
     position: BadgePosition.START,
-    shouldShow: ({ userId }) => isPluginDev(userId),
+    shouldShow: ({ userId }) => shouldShowContributorBadge(userId),
     onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId))
 };
 
@@ -51,7 +51,7 @@ const SuncordContributorBadge: ProfileBadge = {
     description: "Suncord Contributor",
     image: SUNCORD_CONTRIBUTOR_BADGE,
     position: BadgePosition.START,
-    shouldShow: ({ userId }) => isSuncordPluginDev(userId),
+    shouldShow: ({ userId }) => shouldShowSuncordContributorBadge(userId),
     onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId))
 };
 
@@ -59,7 +59,7 @@ const EquicordContributorBadge: ProfileBadge = {
     description: "Equicord Contributor",
     image: EQUICORD_CONTRIBUTOR_BADGE,
     position: BadgePosition.START,
-    shouldShow: ({ userId }) => isEquicordPluginDev(userId),
+    shouldShow: ({ userId }) => shouldShowEquicordContributorBadge(userId),
     onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId))
 };
 
@@ -67,7 +67,7 @@ const PlusContributorBadge: ProfileBadge = {
     description: "Vencord+ Contributor",
     image: PLUS_CONTRIBUTOR_BADGE,
     position: BadgePosition.START,
-    shouldShow: ({ userId }) => isPlusPluginDev(userId),
+    shouldShow: ({ userId }) => shouldShowPlusContributorBadge(userId),
     onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId))
 };
 
@@ -75,7 +75,7 @@ const PlusMaintainerBadge: ProfileBadge = {
     description: "Vencord+ Maintainer",
     image: PLUS_MAINTAINER_BADGE,
     position: BadgePosition.START,
-    shouldShow: ({ userId }) => isPlusMt(userId),
+    shouldShow: ({ userId }) => shouldShowPlusMaintainerBadge(userId),
     onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId))
 };
 

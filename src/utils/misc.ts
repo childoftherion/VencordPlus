@@ -91,11 +91,11 @@ export function identity<T>(value: T): T {
 // "In summary, we recommend looking for the string Mobi anywhere in the User Agent to detect a mobile device."
 export const isMobile = navigator.userAgent.includes("Mobi");
 
-export const isPluginDev = (id: string) => Object.hasOwn(DevsById, id);
-export const isSuncordPluginDev = (id: string) => Object.hasOwn(SuncordDevsById, id);
-export const isEquicordPluginDev = (id: string) => Object.hasOwn(EquicordDevsById, id);
-export const isPlusPluginDev = (id: string) => Object.hasOwn(PlusDevsById, id);
-export const isPlusMt = (id: string) => Object.hasOwn(PlusMtsById, id);
+export const shouldShowContributorBadge = (id: string) => isPluginDev(id) && DevsById[id].badge !== false;
+export const shouldShowSuncordContributorBadge = (id: string) => isSuncordPluginDev(id) && SuncordDevsById[id].badge !== false;
+export const shouldShowEquicordContributorBadge = (id: string) => isEquicordPluginDev(id) && EquicordDevsById[id].badge !== false;
+export const shouldShowPlusContributorBadge = (id: string) => isPlusPluginDev(id) && PlusDevsById[id].badge !== false;
+export const shouldShowPlusMaintainerBadge = (id: string) => isPlusMt(id) && PlusMtsById[id].badge !== false;
 
 export function pluralise(amount: number, singular: string, plural = singular + "s") {
     return amount === 1 ? `${amount} ${singular}` : `${amount} ${plural}`;
