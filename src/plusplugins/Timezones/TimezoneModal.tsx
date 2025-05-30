@@ -24,19 +24,17 @@ export function SetTimezoneModal({ userId, modalProps, database }: { userId: str
     const [currentValue, setCurrentValue] = useState<string | null>(timezones[userId] ?? null);
 
     useEffect(() => {
-        if (!database) return;
-
         const localTimezone = timezones[userId];
         const shouldUseDatabase =
             settings.store.useDatabase &&
             (settings.store.preferDatabaseOverLocal || !localTimezone);
 
-        if (shouldUseDatabase) {
-            getTimezone(userId).then(e => setCurrentValue(e ?? localTimezone));
-        } else {
-            setCurrentValue(localTimezone);
-        }
-    }, [userId, settings.store.useDatabase, settings.store.preferDatabaseOverLocal, database]);
+        const value = shouldUseDatabase
+            ? getTimezone(userId) ?? localTimezone
+            : localTimezone;
+
+        setCurrentValue(value ?? Intl.DateTimeFormat().resolvedOptions().timeZone);
+    }, [userId, settings.store.useDatabase, settings.store.preferDatabaseOverLocal]);
 
     const options = useMemo(() => {
         return Intl.supportedValuesOf("timeZone").map(timezone => {
@@ -52,7 +50,7 @@ export function SetTimezoneModal({ userId, modalProps, database }: { userId: str
         <ModalRoot {...modalProps}>
             <ModalHeader className={cl("modal-header")}>
                 <Forms.FormTitle tag="h2">
-                    Timezones
+                    Time Zones
                 </Forms.FormTitle>
                 <ModalCloseButton onClick={modalProps.onClose} />
             </ModalHeader>
@@ -60,7 +58,7 @@ export function SetTimezoneModal({ userId, modalProps, database }: { userId: str
             <ModalContent className={cl("modal-content")}>
                 <section className={Margins.bottom16}>
                     <Forms.FormTitle tag="h3">
-                        Select Timezone
+                        Select Time Zone
                     </Forms.FormTitle>
 
                     <SearchableSelect
@@ -83,7 +81,7 @@ export function SetTimezoneModal({ userId, modalProps, database }: { userId: str
                             modalProps.onClose();
                         }}
                     >
-                        Delete Timezone
+                        Delete Time Zone
                     </Button>
                 )}
                 <Button
