@@ -74,7 +74,7 @@ export default definePlugin({
         "gdm-context": ChannelContextPatch,
     },
     Wallpaper({ url }: { url: string; }) {
-        // no we cant place the hook here
+        // No, we can't place the hook here
         if (!url) return null;
 
         return <ErrorBoundary noop>

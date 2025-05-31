@@ -25,7 +25,7 @@ export default definePlugin({
     name: "NoActivityFeedSend",
     description: "Disables sending game activity / Spotify track history to Discord, effectively hiding it from activity history",
     authors: [Devs.nin0dev],
-    enabledByDefault: true,
+    enabledByDefault: false,
     settings,
     patches: [
         {
