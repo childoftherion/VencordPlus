@@ -6,7 +6,7 @@
 
 import { RendererSettings } from "@main/settings";
 // @ts-ignore
-import domains from "csp_domains.txt";
+import domains from "./csp_domains.txt";
 import { IpcMainInvokeEvent } from "electron";
 
 // @ts-ignore
