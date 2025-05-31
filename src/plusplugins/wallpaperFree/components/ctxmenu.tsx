@@ -8,8 +8,7 @@ import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { openModal } from "@utils/modal";
 import { ChannelStore, FluxDispatcher, Menu } from "@webpack/common";
 
-import { SetCustomWallpaperModal, SetDiscordWallpaperModal } from "./modal";
-import { ChatWallpaperStore, fetchWallpapers } from "./util";
+import { SetCustomWallpaperModal } from "./modal";
 
 
 const addWallpaperMenu = (channelId?: string, guildId?: string) => {
@@ -22,20 +21,13 @@ const addWallpaperMenu = (channelId?: string, guildId?: string) => {
             url,
         });
     };
+
     return (
         <Menu.MenuItem label="Wallpaper Free" key="vc-wpfree-menu" id="vc-wpfree-menu">
             <Menu.MenuItem
-                label="Set custom wallpaper"
+                label="Set Custom Wallpaper"
                 id="vc-wpfree-set-custom"
                 action={() => openModal(props => <SetCustomWallpaperModal props={props} onSelect={setWallpaper} />)}
-            />
-            <Menu.MenuItem
-                label="Set a Discord wallpaper"
-                id="vc-wpfree-set-discord"
-                action={async () => {
-                    ChatWallpaperStore.shouldFetchWallpapers && await fetchWallpapers();
-                    openModal(props => <SetDiscordWallpaperModal props={props} onSelect={setWallpaper} />);
-                }}
             />
             <Menu.MenuSeparator />
             <Menu.MenuItem

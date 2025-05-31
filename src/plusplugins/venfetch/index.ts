@@ -58,7 +58,7 @@ const LOGO_NO_ANSI = `\
 \t        CCCCCCC\
 `.split("\n");
 
-const isApiPlugin = (plugin: Plugin) => plugin.name.endsWith("API") || plugin.required;
+const isApiPlugin = (plugin: Plugin) => plugin.name?.endsWith("API") || plugin.required;
 
 function getEnabledPlugins() {
     const counters = {

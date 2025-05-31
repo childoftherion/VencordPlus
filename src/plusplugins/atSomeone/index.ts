@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { addMessagePreSendListener, removeMessagePreSendListener } from "@api/MessageEvents";
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { ChannelStore, GuildMemberStore, SelectedChannelStore, SelectedGuildStore } from "@webpack/common";
@@ -31,17 +30,11 @@ export default definePlugin({
             }
         }
     ],
-    start() {
-        this.preSend = addMessagePreSendListener((_, msg) => {
-            msg.content = msg.content.replace(/@someone/g, ()=>`<@${this.randomUser()}>`);
-            msg.content = msg.content.replace(/<@&(\d+)>\*/g, (_, roleId) => {
-                return `<@${this.randomUser(roleId)}>`;
-            });
+    onBeforeMessageSend(_, msg) {
+        msg.content = msg.content.replace(/@someone/g, () => `<@${this.randomUser()}>`);
+        msg.content = msg.content.replace(/<@&(\d+)>\*/g, (_, roleId) => {
+            return `<@${this.randomUser(roleId)}>`;
         });
-    },
-
-    stop() {
-        removeMessagePreSendListener(this.preSend);
     },
 
     randomUser(roleId: string = ""): string {

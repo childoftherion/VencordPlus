@@ -1,0 +1,16 @@
+# cp csp_domains.txt.example csp_domains.txt
+# allow loading images from these domains
+# comment with a #
+
+.github.io
+raw.githubusercontent.com
+.gitlab.io
+gitlab.com
+.codeberg.page
+codeberg.org
+.githack.com
+i.imgur.com
+i.ibb.co
+cdn.discordapp.com
+media.discordapp.net
+i.pximg.net
