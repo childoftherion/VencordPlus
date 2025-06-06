@@ -156,13 +156,13 @@ export default definePlugin({
         {
             name: "vencord-debug",
             description: "Send Vencord+ debug info",
-            predicate: ctx => isPluginDev(UserStore.getCurrentUser()?.id) || isSuncordPluginDev(UserStore.getCurrentUser()?.id) || isEquicordPluginDev(UserStore.getCurrentUser()?.id) || isPlusPluginDev(UserStore.getCurrentUser()?.id) || isPlusMt(UserStore.getCurrentUser()?.id) || isSupportAllowedChannel(ctx.channel),
+            predicate: ctx => UserStore.getCurrentUser()?.id || isSupportAllowedChannel(ctx.channel),
             execute: async () => ({ content: await generateDebugInfoMessage() })
         },
         {
             name: "vencord-plugins",
             description: "Send Vencord+ plugin list",
-            predicate: ctx => isPluginDev(UserStore.getCurrentUser()?.id) || isSuncordPluginDev(UserStore.getCurrentUser()?.id) || isEquicordPluginDev(UserStore.getCurrentUser()?.id) || isPlusPluginDev(UserStore.getCurrentUser()?.id) || isPlusMt(UserStore.getCurrentUser()?.id) || isSupportAllowedChannel(ctx.channel),
+            predicate: ctx => UserStore.getCurrentUser()?.id || isSupportAllowedChannel(ctx.channel),
             execute: () => ({ content: generatePluginList() })
         }
     ],
@@ -173,7 +173,7 @@ export default definePlugin({
             if (!isSupportChannel) return;
 
             const selfId = UserStore.getCurrentUser()?.id;
-            if (!selfId || isPluginDev(selfId) || isSuncordPluginDev(selfId) || isEquicordPluginDev(selfId) || isPlusPluginDev(selfId) || isPlusMt(selfId)) return;
+            if (!selfId) return;
 
             if (!IS_UPDATER_DISABLED) {
                 await checkForUpdatesOnce().catch(() => { });
