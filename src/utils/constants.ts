@@ -787,10 +787,6 @@ export const EquicordDevs = Object.freeze({
         name: "Prince527",
         id: 364105797162237952n
     },
-    seth: {
-        name: "S€th",
-        id: 1273447359417942128n
-    },
     ThePirateStoner: {
         name: "ThePirateStoner",
         id: 1196220620376121381n
@@ -841,7 +837,7 @@ export const EquicordDevs = Object.freeze({
     },
     Crxa: {
         name: "Crxa",
-        id: 920290194886914069n
+        id: 376637472588824587n
     },
     vmohammad: {
         name: "vMohammad",
@@ -991,6 +987,10 @@ export const EquicordDevs = Object.freeze({
         name: "TheArmagan",
         id: 707309693449535599n
     },
+    seth: {
+        name: "S€th",
+        id: 1273447359417942128n
+    },
     SteelTech: {
         name: "SteelTech",
         id: 1344190786476183643n
@@ -1045,7 +1045,11 @@ export const EquicordDevs = Object.freeze({
     },
     bbgaming25k: {
         name: "bbgaming25k",
-        id: 851222385528274964n,
+        id: 851222385528274964n
+    },
+    davidkra230: {
+        name: "davidkra230",
+        id: 652699312631054356n
     },
     GroupXyz: {
         name: "GroupXyz",
