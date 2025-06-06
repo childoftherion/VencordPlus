@@ -2,9 +2,9 @@
  * Vencord, a Discord client mod
  * Copyright (c) 2024 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 
-import { useRef, useState, useEffect } from "..";
+import { useEffect, useRef, useState } from "..";
 
 export default function ({
     children,
@@ -12,7 +12,7 @@ export default function ({
     position = "top"
 }: {
     children: (props: { onMouseEnter: (e: React.MouseEvent<HTMLDivElement, MouseEvent>, ref?: React.MutableRefObject<null>) => void; onMouseLeave: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void; onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void; }) => JSX.Element,
-    text: JSX.Element,
+    text: React.ReactNode,
     position?: "top" | "bottom" | "left" | "right",
 }) {
     const [visible, setVisible] = useState(false);
@@ -25,7 +25,7 @@ export default function ({
                 case "right":
                     return {
                         x: currentTarget.getBoundingClientRect().x + currentTarget.offsetWidth + 8,
-                        y: currentTarget.getBoundingClientRect().y + (currentTarget.offsetHeight / 2) - ((tooltip.current as unknown as HTMLDivElement).offsetHeight / 2)
+                        y: (currentTarget.getBoundingClientRect().y + (currentTarget.offsetHeight / 2)) - ((tooltip.current as unknown as HTMLDivElement).offsetHeight / 2)
                     };
                 case "left":
                     return {
@@ -45,7 +45,7 @@ export default function ({
                 default:
                     return {
                         x: currentTarget.getBoundingClientRect().x + currentTarget.offsetWidth + 8,
-                        y: currentTarget.getBoundingClientRect().y + (currentTarget.offsetHeight / 2) - ((tooltip.current as unknown as HTMLDivElement).offsetHeight / 2)
+                        y: (currentTarget.getBoundingClientRect().y + (currentTarget.offsetHeight / 2)) - ((tooltip.current as unknown as HTMLDivElement).offsetHeight / 2)
                     };
             }
         })());
@@ -53,9 +53,9 @@ export default function ({
     }
 
     function onWindowUnfocused(e) {
-        e = e ? e : window.event;
+        e = e || window.event;
         var from = e.relatedTarget || e.toElement;
-        if (!from || from.nodeName == "HTML") {
+        if (!from || from.nodeName === "HTML") {
             setVisible(false);
         }
     }
@@ -69,16 +69,16 @@ export default function ({
 
     return <>
         {children({
-            onMouseEnter: (e) => showTooltip(e),
+            onMouseEnter: e => showTooltip(e),
             onMouseLeave: () => setVisible(false),
             onClick: () => setVisible(false)
         })}
-        <div ref={tooltip} className={`colorwaysTooltip colorwaysTooltip-${position} ${!visible ? "colorwaysTooltip-hidden" : ""}`} style={{
+        <div ref={tooltip} className={`dc-tooltip dc-tooltip-${position} ${!visible ? "dc-tooltip-hidden" : ""}`} style={{
             top: `${pos.y}px`,
             left: `${pos.x}px`
         }}>
-            <div className="colorwaysTooltipPointer" />
-            <div className="colorwaysTooltipContent">{text}</div>
+            <div className="dc-tooltip-pointer" />
+            <div className="dc-tooltip-content">{text}</div>
         </div>
     </>;
 }

@@ -5,145 +5,64 @@
  */
 
 // Plugin Imports
-import ColorwaysButton from "./components/ColorwaysButton";
-import CreatorModal from "./components/CreatorModal";
-import Selector from "./components/Selector";
-import SettingsPage from "./components/SettingsTabs/SettingsPage";
-import SourceManager from "./components/SettingsTabs/SourceManager";
-import Store from "./components/SettingsTabs/Store";
-import Spinner from "./components/Spinner";
-import { defaultColorwaySource } from "./constants";
-import style from "./style.css?managed";
-import discordTheme from "./theme.discord.css?managed";
-import { ColorPickerProps, ColorwayObject } from "./types";
-
-// Mod-specific imports
-
-import {
-    ReactNode as $ReactNode,
-    CSSProperties as $CSSProperties
-} from "react";
-import * as $DataStore from "@api/DataStore";
-import { addMessageAccessory, removeMessageAccessory } from "@api/MessageAccessories";
 import { addServerListElement, removeServerListElement, ServerListRenderPosition } from "@api/ServerList";
-import { disableStyle, enableStyle } from "@api/Styles";
 import { Devs } from "@utils/constants";
-import { openModal } from "@utils/modal";
+import { getIntlMessage } from "@utils/discord";
 import definePlugin from "@utils/types";
-import {
-    i18n,
-    SettingsRouter
-} from "@webpack/common";
-import ColorwayID from "./components/ColorwayID";
-import { closeWS, connect } from "./wsClient";
-import { ColorwayCSS } from "./colorwaysAPI";
-import { FluxEvents as $FluxEvents } from "@webpack/types";
-import PCSMigrationModal from "./components/PCSMigrationModal";
-import defaultsLoader from "./defaultsLoader";
-import { generateCss, getPreset, gradientBase, gradientPresetIds } from "./css";
-import { colorToHex } from "./utils";
+export { waitFor as waitForModule } from "@webpack";
 
-export const DataStore = $DataStore;
-export type ReactNode = $ReactNode;
-export type CSSProperties = $CSSProperties;
-export type FluxEvents = $FluxEvents;
+import { Discord } from "./api";
+import ColorwaysButton from "./components/ColorwaysButton";
+// Mod-specific imports
 export {
-    useState,
+    ContextMenuApi,
+    FluxDispatcher,
+    FocusLock,
+    Forms,
+    hljs,
+    Popout,
+    ThemeStore,
+    Toasts,
     useEffect,
     useReducer,
-    useStateFromStores,
-    useCallback,
     useRef,
     UserStore,
-    Clipboard,
-    i18n,
-    SettingsRouter,
-    Toasts,
-    FluxDispatcher,
-    ReactDOM,
-    Slider
+    useState
 } from "@webpack/common";
-export { openModal, closeModal } from "@utils/modal";
 
-export let ColorPicker: React.FunctionComponent<ColorPickerProps> = () => {
-    return <Spinner className="colorways-creator-module-warning" />;
-};
-
-export const PluginProps = {
-    pluginVersion: "6.4.0",
-    clientMod: "Vencord",
-    UIVersion: "2.1.0",
-    CSSVersion: "1.20"
-};
-
-const mainDev = Devs["DaBluLite"] || {
-    name: "DaBluLite",
-    id: 582170007505731594n
-};
+export const { getThemesList, getThemeData } = VencordNative.themes;
 
 export default definePlugin({
     name: "DiscordColorways",
     description:
         "A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways",
-    authors: [mainDev, Devs.ImLvna],
+    authors: [{
+        name: "DaBluLite",
+        id: 582170007505731594n
+    }, Devs.ImLvna],
     dependencies: ["ServerListAPI", "MessageAccessoriesAPI"],
-    pluginVersion: PluginProps.pluginVersion,
-    toolboxActions: {
-        "Open Colorway Creator": () => openModal(props => <CreatorModal modalProps={props} />),
-        "Open Settings": () => SettingsRouter.open("ColorwaysSettings"),
-    },
     patches: [
-        // Credits to Kyuuhachi for the BetterSettings plugin patches
         {
-            find: "this.renderArtisanalHack()",
-            replacement: {
-                match: /createPromise:\(\)=>([^:}]*?),webpackId:"\d+",name:(?!="CollectiblesShop")"[^"]+"/g,
-                replace: "$&,_:$1",
-                predicate: () => true
-            }
-
-        },
-        {
-            find: "#{intl::USER_SETTINGS_WITH_BUILD_OVERRIDE}",
-            replacement: {
-                match: /(?<=(\i)\(this,"handleOpenSettingsContextMenu",.{0,100}?openContextMenuLazy.{0,100}?(await Promise\.all[^};]*?\)\)).*?,)(?=\1\(this)/,
-                replace: "(async ()=>$2)(),"
-            },
-            predicate: () => true
-        },
-        {
-            find: "colorPickerFooter:",
-            replacement: {
-                match: /function (\i).{0,200}colorPickerFooter:/,
-                replace: "$self.ColorPicker=$1;$&",
-            },
-        },
-        {
-            find: "#{intl::ACTIVITY_SETTINGS}",
-            replacement: {
-                match: /\{section:(\i\.\i)\.HEADER,\s*label:(\i)#{intl::APP_SETTINGS}/,
-                replace: "...$self.makeSettingsCategories($1),$&"
-            }
-        },
-        {
-            find: "#{intl::ACTIVITY_SETTINGS}",
-            replacement: {
-                match: /(?<=section:(.{0,50})\.DIVIDER\}\))([,;])(?=.{0,200}(\i)\.push.{0,100}label:(\i)\.header)/,
-                replace: (_, sectionTypes, commaOrSemi, elements, element) => `${commaOrSemi} $self.addSettings(${elements}, ${element}, ${sectionTypes}) ${commaOrSemi}`
-            }
+            find: ".SEARCH_NO_RESULTS&&0===",
+            replacement: [
+                {
+                    match: /(?<=section:(.{0,50})\.DIVIDER\}\))([,;])(?=.{0,200}(\i)\.push.{0,100}label:(\i)\.header)/,
+                    replace: (_, sectionTypes, commaOrSemi, elements, element) => `${commaOrSemi} $self.addSettings(${elements}, ${element}, ${sectionTypes}) ${commaOrSemi}`
+                },
+                {
+                    match: /({(?=.+?function (\i).{0,120}(\i)=\i\.useMemo.{0,60}return \i\.useMemo\(\(\)=>\i\(\3).+?function\(\){return )\2(?=})/,
+                    replace: (_, rest, settingsHook) => `${rest}$self.wrapSettingsHook(${settingsHook})`
+                }
+            ]
         },
         {
             find: "#{intl::USER_SETTINGS_ACTIONS_MENU_LABEL}",
             replacement: {
-                match: /(?<=function\((\i),\i\)\{)(?=let \i=Object.values\(\i.UserSettingsSections\).*?(\i)\.default\.open\()/,
-                replace: "$2.default.open($1);return;"
+                match: /(?<=function\((\i),\i\)\{)(?=let \i=Object.values\(\i.\i\).*?(\i\.\i)\.open\()/,
+                replace: "$2.open($1);return;"
             }
         }
     ],
-
-    set ColorPicker(e) {
-        ColorPicker = e;
-    },
 
     isRightSpot({ header, settings }: { header?: string; settings?: string[]; }) {
         const firstChild = settings?.[0];
@@ -154,124 +73,49 @@ export default definePlugin({
 
         if (!header) return;
 
-        const names = {
-            top: i18n.Messages.USER_SETTINGS,
-            aboveNitro: i18n.Messages.BILLING_SETTINGS,
-            belowNitro: i18n.Messages.APP_SETTINGS,
-            aboveActivity: i18n.Messages.ACTIVITY_SETTINGS
-        };
-        return header === names[settingsLocation];
+        try {
+            const names = {
+                top: getIntlMessage("USER_SETTINGS"),
+                aboveNitro: getIntlMessage("BILLING_SETTINGS"),
+                belowNitro: getIntlMessage("APP_SETTINGS"),
+                aboveActivity: getIntlMessage("ACTIVITY_SETTINGS")
+            };
+
+            return header === names[settingsLocation];
+        } catch {
+            return firstChild === "PREMIUM";
+        }
     },
 
     patchedSettings: new WeakSet(),
 
-    addSettings(elements: any[], element: { header?: string; settings: string[]; }, sectionTypes: Record<string, unknown>) {
+    addSettings(elements: any[], element: { header?: string; settings: string[]; }) {
         if (this.patchedSettings.has(elements) || !this.isRightSpot(element)) return;
 
         this.patchedSettings.add(elements);
 
-        elements.push(...this.makeSettingsCategories(sectionTypes));
+        elements.push(...Discord.Settings.sections);
     },
 
-    makeSettingsCategories(SectionTypes: Record<string, unknown>) {
-        return [
-            {
-                section: SectionTypes.HEADER,
-                label: "Discord Colorways",
-                className: "vc-settings-header"
-            },
-            {
-                section: "ColorwaysSelector",
-                label: "Colorways",
-                element: () => <Selector hasTheme />,
-                className: "dc-colorway-selector"
-            },
-            {
-                section: "ColorwaysSettings",
-                label: "Settings",
-                element: () => <SettingsPage hasTheme />,
-                className: "dc-colorway-settings"
-            },
-            {
-                section: "ColorwaysSourceManager",
-                label: "Sources",
-                element: () => <SourceManager hasTheme />,
-                className: "dc-colorway-sources-manager"
-            },
-            {
-                section: "ColorwaysStore",
-                label: "Store",
-                element: () => <Store hasTheme />,
-                className: "dc-colorway-store"
-            },
-            {
-                section: SectionTypes.DIVIDER
-            }
-        ].filter(Boolean);
+    wrapSettingsHook(originalHook: (...args: any[]) => Record<string, unknown>[]) {
+        return (...args: any[]) => {
+            const elements = originalHook(...args);
+            if (!this.patchedSettings.has(elements))
+                elements.unshift(...Discord.Settings.sections);
+
+            return elements;
+        };
     },
 
-    ColorwaysButton: () => <ColorwaysButton />,
+    start() {
+        // DC-Specific
+        Discord.start();
 
-    async start() {
-        addServerListElement(ServerListRenderPosition.In, this.ColorwaysButton);
-
-        enableStyle(style);
-        enableStyle(discordTheme);
-
-        defaultsLoader();
-
-        const [
-            activeColorwayObject,
-            colorwaysManagerAutoconnectPeriod,
-            colorwaysManagerDoAutoconnect,
-            colorwaySourceFiles,
-            colorwaysPreset
-        ] = await DataStore.getMany([
-            "activeColorwayObject",
-            "colorwaysManagerAutoconnectPeriod",
-            "colorwaysManagerDoAutoconnect",
-            "colorwaySourceFiles",
-            "colorwaysPreset"
-        ]);
-
-        connect(colorwaysManagerDoAutoconnect as boolean, colorwaysManagerAutoconnectPeriod as number);
-
-        const active: ColorwayObject = activeColorwayObject;
-
-        if (active.id) {
-            if (colorwaysPreset == "default") {
-                ColorwayCSS.set(generateCss(
-                    active.colors,
-                    true,
-                    true,
-                    undefined,
-                    active.id
-                ));
-            } else {
-                if (gradientPresetIds.includes(colorwaysPreset)) {
-                    const css = Object.keys(active).includes("linearGradient")
-                        ? gradientBase(colorToHex(active.colors.accent), true) + `:root:root {--custom-theme-background: linear-gradient(${active.linearGradient})}`
-                        : (getPreset(active.colors)[colorwaysPreset].preset as { full: string; }).full;
-                    ColorwayCSS.set(css);
-                } else {
-                    ColorwayCSS.set(getPreset(active.colors)[colorwaysPreset].preset as string);
-                }
-            }
-        }
-
-        addMessageAccessory("colorways-btn", props => <ColorwayID props={props} />);
-
-        if ((colorwaySourceFiles as { name: string, url: string; }[]).map(i => i.url).includes("https://raw.githubusercontent.com/DaBluLite/ProjectColorway/master/index.json") || (!(colorwaySourceFiles as { name: string, url: string; }[]).map(i => i.url).includes("https://raw.githubusercontent.com/DaBluLite/ProjectColorway/master/index.json") && !(colorwaySourceFiles as { name: string, url: string; }[]).map(i => i.url).includes("https://raw.githubusercontent.com/ProjectColorway/ProjectColorway/master/index.json"))) {
-            DataStore.set("colorwaySourceFiles", [{ name: "Project Colorway", url: defaultColorwaySource }, ...(colorwaySourceFiles as { name: string, url: string; }[]).filter(i => i.name !== "Project Colorway")]);
-            openModal(props => <PCSMigrationModal modalProps={props} />);
-        }
+        // Vencord-Specific
+        addServerListElement(ServerListRenderPosition.Above, () => <ColorwaysButton />);
     },
     stop() {
-        removeServerListElement(ServerListRenderPosition.In, this.ColorwaysButton);
-        disableStyle(style);
-        disableStyle(discordTheme);
-        ColorwayCSS.remove();
-        closeWS();
-        removeMessageAccessory("colorways-btn");
+        removeServerListElement(ServerListRenderPosition.Above, () => <ColorwaysButton />);
+        Discord.stop();
     },
 });

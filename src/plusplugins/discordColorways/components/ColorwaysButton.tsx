@@ -1,59 +1,43 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2023 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 
-import { PalleteIcon } from "./Icons";
-
+import { Hooks, LayerManager } from "../api";
 import { getAutoPresets } from "../css";
-import { ColorwayObject } from "../types";
-import Selector from "./MainModal";
-import { DataStore, useEffect, useState, FluxDispatcher, FluxEvents, openModal, PluginProps, useRef } from "..";
-import Tooltip from "./Tooltip";
+import { PalleteIcon } from "./Icons";
+import LauncherContextMenu from "./LauncherContextMenu";
 import ListItem from "./ListItem";
+import MainUI from "./MainUI";
 
-export default function () {
-    const [activeColorway, setActiveColorway] = useState<string>("None");
-    const [visibility, setVisibility] = useState<boolean>(true);
-    const [autoPreset, setAutoPreset] = useState<string>("hueRotation");
-    useEffect(() => {
-        (async function () {
-            setVisibility(await DataStore.get("showColorwaysButton") as boolean);
-            setAutoPreset(await DataStore.get("activeAutoPreset") as string);
-        })();
+export default function ({ hasPill = true }: { hasPill?: boolean; }) {
+    const [showColorwaysButton] = Hooks.useContextualState("showColorwaysButton");
+    const [activeColorwayObject] = Hooks.useContextualState("activeColorwayObject");
+    const [activeAutoPreset] = Hooks.useContextualState("activeAutoPreset");
 
-        FluxDispatcher.subscribe("COLORWAYS_UPDATE_BUTTON_VISIBILITY" as FluxEvents, ({ isVisible }) => setVisibility(isVisible));
-
-        return () => {
-            FluxDispatcher.unsubscribe("COLORWAYS_UPDATE_BUTTON_VISIBILITY" as FluxEvents, ({ isVisible }) => setVisibility(isVisible));
-        };
-    });
-
-    return (visibility || PluginProps.clientMod === "BetterDiscord") ? <ListItem
-        hasPill
+    return (showColorwaysButton || window.BdApi) ? <ListItem
+        hasPill={hasPill}
         tooltip={
             <>
-                <span>Colorways</span>
-                <span style={{ color: "var(--text-muted)", fontWeight: 500, fontSize: 12 }}>{"Active Colorway: " + activeColorway}</span>
-                {activeColorway === "Auto" ? <span style={{ color: "var(--text-muted)", fontWeight: 500, fontSize: 12 }}>{"Auto Preset: " + (getAutoPresets()[autoPreset].name || "None")}</span> : <></>}
+                <span>Discord Colorways</span>
+                <span style={{ color: "var(--text-muted)", fontWeight: 500, fontSize: 12 }}>{"Current Colorway: " + (activeColorwayObject.id || "None")}{(activeColorwayObject.id === "Auto" && activeColorwayObject.sourceType === "auto") ? ` (${getAutoPresets()[activeAutoPreset].name})` : ""}</span>
             </>
-        }>
-        {({ onMouseEnter, onMouseLeave, isActive, onClick }) => {
+        }
+        menu={<LauncherContextMenu />}
+    >
+        {({ onMouseEnter, onMouseLeave, onClick, onContextMenu }) => {
             return <div
-                className="ColorwaySelectorBtn"
-                onMouseEnter={async (e) => {
-                    onMouseEnter(e);
-                    setActiveColorway((await DataStore.get("activeColorwayObject") as ColorwayObject).id || "None");
-                    setAutoPreset(await DataStore.get("activeAutoPreset") as string);
-                }}
-                onMouseLeave={(e) => {
-                    onMouseLeave(e);
-                }}
-                onClick={(e) => {
+                className="dc-app-launcher"
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                onClick={e => {
                     onClick(e);
-                    isActive(false);
-                    openModal((props: any) => <Selector modalProps={props} />);
+                    LayerManager.pushLayer(() => <MainUI />);
+                }}
+                onContextMenu={e => {
+                    onClick(e);
+                    onContextMenu(e);
                 }}
             >
                 <PalleteIcon />

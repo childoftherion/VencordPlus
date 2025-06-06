@@ -2,553 +2,1020 @@
  * Vencord, a Discord client mod
  * Copyright (c) 2024 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 
-import { PlusIcon, PalleteIcon, CodeIcon, IDIcon, DeleteIcon } from "./Icons";
-import { DataStore, FluxDispatcher, FluxEvents, ReactNode, Toasts } from "..";
+import { Toasts } from "..";
+import { useState } from "../";
+import { Dispatcher, Hooks } from "../api";
+import { useTimedState } from "../api/Hooks";
+import { openModal } from "../api/Modals";
+import { getThemeInfo, UserThemeHeader } from "../api/Themes";
+import { Clipboard, compareColorwayObjects, Fs } from "../api/Utils";
+import { colorToHex, stringToHex } from "../api/Utils/Colors";
+import { saveFile } from "../api/Utils/Fs";
 import { nullColorwayObj } from "../constants";
-import { generateCss, getAutoPresets, getPreset, gradientBase, gradientPresetIds } from "../css";
-import { ColorwayObject, Colorway, SortOptions, SourceObject, ModalProps } from "../types";
-import { colorToHex, getHex, stringToHex } from "../utils";
-import AutoColorwaySelector from "./AutoColorwaySelector";
-import CreatorModal from "./CreatorModal";
-import InfoModal from "./InfoModal";
-import { wsOpen, sendColorway, hasManagerRole, requestManagerRole, updateRemoteSources } from "../wsClient";
-import { ColorwayCSS } from "../colorwaysAPI";
-import { useState, useEffect, openModal } from "../";
-import UseRepainterThemeModal from "./UseRepainterThemeModal";
-import FiltersMenu from "./FiltersMenu";
-import SourcesMenu from "./SourcesMenu";
+import { generateCss, getAutoPresets } from "../css";
+import { Colorway, ColorwayObject, Preset, PresetObject, SortOptions, SourceActions, SourceObject } from "../types";
+import ColorwayItem from "./Colorway";
+import ComboTextBox from "./ComboTextBox";
+import { DeleteIcon, DownloadIcon, IDIcon, PalleteIcon, PencilIcon, PlusIcon, WirelessIcon } from "./Icons";
+import Modal from "./Modal";
+import SaveColorwayAsModal from "./Modals/SaveColorwayAsModal";
+import SavePresetAsModal from "./Modals/SavePresetAsModal";
+import Radio from "./Radio";
 import ReloadButton from "./ReloadButton";
+import Spinner from "./Spinner";
+import StaticOptionsMenu from "./StaticOptionsMenu";
+import Switch from "./Switch";
+import TabBar from "./TabBar";
 
-export default function ({
-    settings = { selectorType: "normal" },
-    hasTheme = false
-}: {
-    settings?: { selectorType: "preview" | "multiple-selection" | "normal", previewSource?: string, onSelected?: (colorways: Colorway[]) => void; };
-    hasTheme?: boolean;
-}) {
-    const [colorwayData, setColorwayData] = useState<SourceObject[]>([]);
-    const [searchValue, setSearchValue] = useState<string>("");
-    const [sortBy, setSortBy] = useState<SortOptions>(SortOptions.NAME_AZ);
-    const [activeColorwayObject, setActiveColorwayObject] = useState<ColorwayObject>(nullColorwayObj);
-    const [customColorwayData, setCustomColorwayData] = useState<SourceObject[]>([]);
-    const [loaderHeight, setLoaderHeight] = useState<"2px" | "0px">("2px");
-    const [visibleSources, setVisibleSources] = useState<string>("all");
-    const [selectedColorways, setSelectedColorways] = useState<Colorway[]>([]);
-    const [errorCode, setErrorCode] = useState<number>(0);
-    const [wsConnected, setWsConnected] = useState(wsOpen);
-    const [theme, setTheme] = useState("discord");
-    const [isManager, setManager] = useState<boolean>(hasManagerRole);
-
-    useEffect(() => {
-        async function load() {
-            setTheme(await DataStore.get("colorwaysPluginTheme") as string);
+function get_updateCustomSource(customColorwayData: {
+    name: string;
+    colorways?: Colorway[];
+    presets?: Preset[];
+}[], setCustomColorwayData: React.Dispatch<React.SetStateAction<{
+    name: string;
+    colorways?: Colorway[];
+    presets?: Preset[];
+}[]>>) {
+    return function updateCustomSource(props: { source: string; } & ({ type: SourceActions.AddColorway | SourceActions.RemoveColorway, colorway: Colorway; } | { type: SourceActions.AddPreset | SourceActions.RemovePreset, preset: Preset; })) {
+        if (props.type === SourceActions.AddColorway) {
+            const srcList = customColorwayData.map(s => {
+                if (s.name === props.source) {
+                    return { name: s.name, colorways: [...(s.colorways || []), props.colorway], presets: s.presets || [] };
+                }
+                return s;
+            });
+            setCustomColorwayData(srcList);
         }
-        load();
+        if (props.type === SourceActions.RemoveColorway) {
+            const srcList = customColorwayData.map(s => {
+                if (s.name === props.source) {
+                    return { name: s.name, colorways: (s.colorways || []).filter(c => c.name !== props.colorway.name), presets: s.presets || [] };
+                }
+                return s;
+            });
+            setCustomColorwayData(srcList);
+        }
+        if (props.type === SourceActions.AddPreset) {
+            const srcList = customColorwayData.map(s => {
+                if (s.name === props.source) {
+                    return { name: s.name, colorways: s.colorways || [], presets: [...(s.presets || []), props.preset] };
+                }
+                return s;
+            });
+            setCustomColorwayData(srcList);
+        }
+        if (props.type === SourceActions.RemovePreset) {
+            const srcList = customColorwayData.map(s => {
+                if (s.name === props.source) {
+                    return { name: s.name, colorways: s.colorways || [], presets: (s.presets || []).filter(p => p.name !== props.preset.name) };
+                }
+                return s;
+            });
+            setCustomColorwayData(srcList);
+        }
+    };
+}
 
-        FluxDispatcher.subscribe("COLORWAYS_UPDATE_WS_CONNECTED" as FluxEvents, ({ isConnected }) => setWsConnected(isConnected));
-        FluxDispatcher.subscribe("COLORWAYS_UPDATE_ACTIVE_COLORWAY" as FluxEvents, ({ active }) => setActiveColorwayObject(active));
-        FluxDispatcher.subscribe("COLORWAYS_UPDATE_WS_MANAGER_ROLE" as FluxEvents, ({ isManager }) => setManager(isManager));
+function Colorways() {
+    const [colorwayData] = Hooks.useContextualState("colorwayData", false);
+    const [customColorwayData, setCustomColorwayData] = Hooks.useContextualState("customColorways");
+    const [activeColorwayObject, setActiveColorwayObject] = Hooks.useContextualState("activeColorwayObject");
+    const [wsConnected] = Hooks.useContextualState("isConnected");
+    const [isManager] = Hooks.useContextualState("hasManagerRole");
+    const [usageMetrics, setUsageMetrics] = Hooks.useContextualState("colorwayUsageMetrics");
+    const [activeAutoPreset] = Hooks.useContextualState("activeAutoPreset");
+    const [invalidColorwayClicked, setInvalidColorwayClicked] = useTimedState<string>("", 2000);
+    const [searchValue, setSearchValue] = useState<string>("");
+    const [sortBy, setSortBy] = useState<SortOptions>(SortOptions.MOST_USED);
+    const [showSpinner, setShowSpinner] = useState<boolean>(false);
+    const [visibleSources, setVisibleSources] = useState<string>("all");
+    const [layout, setLayout] = useState<"normal" | "compact">("normal");
 
-        return () => {
-            FluxDispatcher.unsubscribe("COLORWAYS_UPDATE_WS_CONNECTED" as FluxEvents, ({ isConnected }) => setWsConnected(isConnected));
-            FluxDispatcher.unsubscribe("COLORWAYS_UPDATE_ACTIVE_COLORWAY" as FluxEvents, ({ active }) => setActiveColorwayObject(active));
-            FluxDispatcher.unsubscribe("COLORWAYS_UPDATE_WS_MANAGER_ROLE" as FluxEvents, ({ isManager }) => setManager(isManager));
-        };
-    }, [isManager]);
+    const updateCustomSource = get_updateCustomSource(customColorwayData, setCustomColorwayData);
+
+    const layouts = [{ name: "Normal", id: "normal" }, { name: "Compact", id: "compact" }];
 
     const filters = [
         {
             name: "All",
             id: "all",
-            sources: [...colorwayData, ...customColorwayData]
+            sources: [...colorwayData, ...customColorwayData.map(source => ({ source: source.name, colorways: source.colorways, type: "offline" }))]
         },
-        ...colorwayData.map((source) => ({
+        ...colorwayData.map(source => ({
             name: source.source,
             id: source.source.toLowerCase().replaceAll(" ", "-"),
             sources: [source]
         })),
-        ...customColorwayData.map((source) => ({
-            name: source.source,
-            id: source.source.toLowerCase().replaceAll(" ", "-"),
-            sources: [source]
+        ...customColorwayData.map(source => ({
+            name: source.name,
+            id: source.name.toLowerCase().replaceAll(" ", "-"),
+            sources: [{ source: source.name, colorways: source.colorways, type: "offline" }]
         }))
     ];
 
-    async function loadUI(force?: boolean) {
-        setActiveColorwayObject(await DataStore.get("activeColorwayObject") as ColorwayObject);
-        setLoaderHeight("0px");
-
-        if (settings.previewSource) {
-
-            const res: Response = await fetch(settings.previewSource);
-
-            const dataPromise = res.json().then(data => data).catch(() => ({ colorways: [], errorCode: 1, errorMsg: "Colorway Source format is invalid" }));
-
-            const data = await dataPromise;
-
-            if (data.errorCode) {
-                setErrorCode(data.errorCode);
-            }
-
-            const colorwayList: Colorway[] = data.css ? data.css.map(customStore => customStore.colorways).flat() : data.colorways;
-
-            setColorwayData([{ colorways: colorwayList || [], source: res.url, type: "online" }] as { type: "online" | "offline" | "temporary", source: string, colorways: Colorway[]; }[]);
-
-        } else {
-            setCustomColorwayData((await DataStore.get("customColorways") as { name: string, colorways: Colorway[], id?: string; }[]).map((colorSrc: { name: string, colorways: Colorway[], id?: string; }) => ({ type: "offline", source: colorSrc.name, colorways: colorSrc.colorways })));
-
-            const onlineSources: { name: string, url: string; }[] = await DataStore.get("colorwaySourceFiles") as { name: string, url: string; }[];
-
-            const responses: Response[] = await Promise.all(
-                onlineSources.map((source) =>
-                    fetch(source.url, force ? { cache: "no-store" } : {})
-                )
-            );
-
-            setColorwayData(await Promise.all(
-                responses
-                    .map((res, i) => ({ response: res, name: onlineSources[i].name }))
-                    .map((res: { response: Response, name: string; }) =>
-                        res.response.json().then(dt => ({ colorways: dt.colorways as Colorway[], source: res.name, type: "online" })).catch(() => ({ colorways: [] as Colorway[], source: res.name, type: "online" }))
-                    )) as { type: "online" | "offline" | "temporary", source: string, colorways: Colorway[]; }[]);
-        }
-    }
-
-    useEffect(() => { loadUI(); }, [searchValue]);
-
-    function Header({ children }: { children: ReactNode; }) {
-        if (hasTheme) return <div className="colorwayModal-selectorHeader" data-theme={theme}>{children}</div>;
-        else return <div className="colorwayModal-selectorHeader">{children}</div>;
-    }
-
-    function Container({ children }: { children: ReactNode; }) {
-        if (hasTheme) return <div style={{ maxHeight: settings.selectorType === "multiple-selection" ? "50%" : "unset" }} className="ColorwaySelectorWrapper" data-theme={theme}>{children}</div>;
-        else return <div style={{ maxHeight: settings.selectorType === "multiple-selection" ? "50%" : "unset" }} className="ColorwaySelectorWrapper">{children}</div>;
-    }
-
-    return <>{(settings.selectorType !== "preview" && (!wsConnected || (wsConnected && isManager))) ? <Header>
-        <input
-            type="text"
-            className="colorwayTextBox"
+    return <>
+        <ComboTextBox
             placeholder="Search for Colorways..."
             value={searchValue}
-            autoFocus
-            onInput={({ currentTarget: { value } }) => setSearchValue(value)}
-        />
-        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-            <ReloadButton onClick={() => {
-                setLoaderHeight("2px");
-                loadUI().then(() => setLoaderHeight("0px"));
-            }} onForceReload={() => {
-                setLoaderHeight("2px");
-                loadUI(true).then(() => setLoaderHeight("0px"));
-            }} />
+            onInput={setSearchValue}
+        >
+            <Spinner className={`dc-selector-spinner${!showSpinner ? " dc-selector-spinner-hidden" : ""}`} />
+            <ReloadButton setShowSpinner={setShowSpinner} />
             <button
-                className="colorwaysPillButton"
-                onClick={() => {
-                    openModal((props) => <CreatorModal
-                        modalProps={props}
-                        loadUIProps={loadUI}
-                    />);
-                }}
+                className="dc-button dc-button-primary"
+                onClick={() => openModal(props => <SaveColorwayAsModal modalProps={props} />)}
             >
                 <PlusIcon width={14} height={14} style={{ boxSizing: "content-box" }} />
-                Create
+                Add...
             </button>
+            <StaticOptionsMenu
+                xPos="right"
+                menu={<>
+                    <button onClick={() => setSortBy(9)} className="dc-contextmenu-item">
+                        Most Used
+                        <Radio checked={sortBy === 9} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                    <button onClick={() => setSortBy(10)} className="dc-contextmenu-item">
+                        Least Used
+                        <Radio checked={sortBy === 10} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                    <button onClick={() => setSortBy(1)} className="dc-contextmenu-item">
+                        Name (A-Z)
+                        <Radio checked={sortBy === 1} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                    <button onClick={() => setSortBy(2)} className="dc-contextmenu-item">
+                        Name (Z-A)
+                        <Radio checked={sortBy === 2} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                    <button onClick={() => setSortBy(3)} className="dc-contextmenu-item">
+                        Source (A-Z)
+                        <Radio checked={sortBy === 3} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                    <button onClick={() => setSortBy(4)} className="dc-contextmenu-item">
+                        Source (Z-A)
+                        <Radio checked={sortBy === 4} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                    <button onClick={() => setSortBy(5)} className="dc-contextmenu-item">
+                        Source Type (Online First)
+                        <Radio checked={sortBy === 5} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                    <button onClick={() => setSortBy(6)} className="dc-contextmenu-item">
+                        Source Type (Offline First)
+                        <Radio checked={sortBy === 6} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                    <button onClick={() => setSortBy(7)} className="dc-contextmenu-item">
+                        Color Count (Ascending)
+                        <Radio checked={sortBy === 7} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                    <button onClick={() => setSortBy(8)} className="dc-contextmenu-item">
+                        Color Count (Descending)
+                        <Radio checked={sortBy === 8} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                </>}>
+                {({ onClick }) => <button
+                    onClick={onClick}
+                    className="dc-button dc-button-primary"
+                >
+                    Sort By: {(() => {
+                        switch (sortBy) {
+                            case 1:
+                                return "Name (A-Z)";
+                            case 2:
+                                return "Name (Z-A)";
+                            case 3:
+                                return "Source (A-Z)";
+                            case 4:
+                                return "Source (Z-A)";
+                            case 5:
+                                return "Source Type (Online First)";
+                            case 6:
+                                return "Source Type (Offline First)";
+                            case 7:
+                                return "Color Count (Ascending)";
+                            case 8:
+                                return "Color Count (Descending)";
+                            case 9:
+                                return "Most Used";
+                            case 10:
+                                return "Least Used";
+                            default:
+                                return "Name (A-Z)";
+                        }
+                    })()}
+                </button>}
+            </StaticOptionsMenu>
+            <StaticOptionsMenu
+                xPos="right"
+                menu={<>
+                    {filters.map(({ name, id }) => {
+                        return <button onClick={() => setVisibleSources(id)} className="dc-contextmenu-item">
+                            {name}
+                            <Radio checked={visibleSources === id} style={{
+                                marginLeft: "8px"
+                            }} />
+                        </button>;
+                    })}
+                </>}>
+                {({ onClick }) => <button
+                    onClick={onClick}
+                    className="dc-button dc-button-primary"
+                >
+                    Source: {(filters.find(filter => filter.id === visibleSources) as { name: string, id: string, sources: SourceObject[]; }).name}
+                </button>}
+            </StaticOptionsMenu>
             <button
-                className="colorwaysPillButton"
-                id="colorway-userepaintertheme"
+                className="dc-button dc-button-primary"
                 onClick={() => {
-                    openModal((props) => <UseRepainterThemeModal modalProps={props} onFinish={async ({ id, colors }) => {
-                        const demandedColorway = generateCss({
-                            primary: colors[7].replace("#", ""),
-                            secondary: colors[11].replace("#", ""),
-                            tertiary: colors[14].replace("#", ""),
-                            accent: colors[16].replace("#", "")
-                        });
-                        ColorwayCSS.set(demandedColorway);
-                        const newObj: ColorwayObject = {
-                            id: id!,
-                            css: demandedColorway,
-                            sourceType: "temporary",
-                            source: "Repainter",
-                            colors: {
-                                accent: colors![16],
-                                primary: colors![2],
-                                secondary: colors![5],
-                                tertiary: colors![8]
-                            }
-                        };
-                        DataStore.set("activeColorwayObject", newObj);
-                        setActiveColorwayObject(newObj);
-                    }} />);
+                    if (layout === "normal") return setLayout("compact");
+                    else return setLayout("normal");
                 }}
             >
-                <PalleteIcon width={14} height={14} style={{ boxSizing: "content-box" }} />
-                Use Repainter theme
+                Layout: {layouts.find(l => l.id === layout)?.name}
             </button>
-            <FiltersMenu sort={sortBy} onSortChange={(newSort) => {
-                setSortBy(newSort);
-            }} />
-            <SourcesMenu source={filters.filter(filter => filter.id == visibleSources)[0]} sources={filters} onSourceChange={(sourceId) => {
-                setVisibleSources(sourceId);
-            }} />
-        </div>
-    </Header> : <></>}
-        {(wsConnected && settings.selectorType == "normal" && !isManager) ? <span style={{
-            color: "#fff",
-            margin: "auto",
-            fontWeight: "bold",
-            display: "flex",
-            gap: "8px",
-            alignItems: "center"
-        }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" style={{
-                transform: "scaleX(1.2)"
-            }}>
-                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
-            </svg>
-            Manager is controlling the colorways
-            <button
-                className="colorwaysPillButton"
-                onClick={requestManagerRole}
-            >
-                Request Manager
-            </button>
-        </span> : <>
-            <div className="colorwaysLoader-barContainer"><div className="colorwaysLoader-bar" style={{ height: loaderHeight }} /></div>
-            <Container>
-                {(activeColorwayObject.sourceType === "temporary" && settings.selectorType === "normal" && settings.selectorType === "normal") && <div
-                    className="discordColorway"
-                    id="colorway-Temporary"
-                    aria-checked={activeColorwayObject.id === "Auto" && activeColorwayObject.source === null}
-                    onClick={async () => {
-                        DataStore.set("activeColorwayObject", nullColorwayObj);
+        </ComboTextBox>
+        <div style={{ maxHeight: "unset" }} className="dc-selector" data-layout={layout}>
+            {(activeColorwayObject.sourceType === "temporary") && <div
+                className="dc-colorway"
+                id="colorway-Temporary"
+                role="button"
+                aria-checked={activeColorwayObject.sourceType === "temporary"}
+                aria-invalid={invalidColorwayClicked === "colorway-Temporary"}
+                onClick={async () => {
+                    if (wsConnected) {
+                        if (!isManager) {
+                            setInvalidColorwayClicked("colorway-Temporary");
+                        } else {
+                            setActiveColorwayObject(nullColorwayObj);
+                        }
+                    } else {
                         setActiveColorwayObject(nullColorwayObj);
-                        ColorwayCSS.remove();
+                    }
+                }}
+            >
+                <div className="dc-color-swatch">
+                    <div
+                        className="dc-color-swatch-part"
+                        style={{ backgroundColor: "#" + activeColorwayObject.colors.accent }} />
+                    <div
+                        className="dc-color-swatch-part"
+                        style={{ backgroundColor: "#" + activeColorwayObject.colors.primary }} />
+                    <div
+                        className="dc-color-swatch-part"
+                        style={{ backgroundColor: "#" + activeColorwayObject.colors.secondary }} />
+                    <div
+                        className="dc-color-swatch-part"
+                        style={{ backgroundColor: "#" + activeColorwayObject.colors.tertiary }} />
+                </div>
+                <div className="dc-label-wrapper">
+                    <span className="dc-label">{activeColorwayObject.id}</span>
+                    <span className="dc-label dc-subnote dc-note">Temporary Colorway</span>
+                </div>
+                <button
+                    className="dc-button dc-button-secondary"
+                    onClick={async e => {
+                        e.stopPropagation();
+                        openModal(props => <SaveColorwayAsModal
+                            modalProps={props}
+                            colorwayObject={activeColorwayObject}
+                        />);
                     }}
                 >
-                    <div className="discordColorwayPreviewColorContainer">
-                        <div
-                            className="discordColorwayPreviewColor"
-                            style={{ backgroundColor: "var(--brand-500)" }} />
-                        <div
-                            className="discordColorwayPreviewColor"
-                            style={{ backgroundColor: "var(--background-primary)" }} />
-                        <div
-                            className="discordColorwayPreviewColor"
-                            style={{ backgroundColor: "var(--background-secondary)" }} />
-                        <div
-                            className="discordColorwayPreviewColor"
-                            style={{ backgroundColor: "var(--background-tertiary)" }} />
-                    </div>
-                    <span className="colorwayLabel">Temporary Colorway</span>
-                    <button
-                        className="colorwaysPillButton colorwaysPillButton-onSurface"
-                        onClick={async e => {
-                            e.stopPropagation();
-                            openModal(props => <CreatorModal modalProps={props} colorwayID={`#${colorToHex(getHex(getComputedStyle(document.body).getPropertyValue("--brand-500")))},#${colorToHex(getHex(getComputedStyle(document.body).getPropertyValue("--primary-600")))},#${colorToHex(getHex(getComputedStyle(document.body).getPropertyValue("--primary-630")))},#${colorToHex(getHex(getComputedStyle(document.body).getPropertyValue("--primary-700")))}`} loadUIProps={loadUI} />);
-                        }}
-                    >
-                        <PlusIcon width={20} height={20} />
-                    </button>
-                </div>}
-                {getComputedStyle(document.body).getPropertyValue("--os-accent-color") && ["all", "official"].includes(visibleSources) && settings.selectorType === "normal" && "auto".includes(searchValue.toLowerCase()) ? <div
-                    className="discordColorway"
-                    id="colorway-Auto"
-                    aria-checked={activeColorwayObject.id === "Auto" && activeColorwayObject.source === null}
-                    onClick={async () => {
-                        const activeAutoPreset = await DataStore.get("activeAutoPreset");
-                        if (activeColorwayObject.id === "Auto") {
-                            if (isManager) {
-                                sendColorway(nullColorwayObj);
-                            } else {
-                                DataStore.set("activeColorwayObject", nullColorwayObj);
-                                setActiveColorwayObject(nullColorwayObj);
-                                ColorwayCSS.remove();
-                            }
+                    <PlusIcon width={20} height={20} />
+                </button>
+            </div>}
+            {getComputedStyle(document.body).getPropertyValue("--os-accent-color") && "auto".includes(searchValue.toLowerCase()) ? <ColorwayItem
+                id="colorway-Auto"
+                text="Auto Colorway"
+                descriptions={[`Active preset: ${Object.values(getAutoPresets()).find(pr => pr.id === activeAutoPreset)?.name}`]}
+                colors={[
+                    getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[activeAutoPreset].colors.accent,
+                    getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[activeAutoPreset].colors.primary,
+                    getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[activeAutoPreset].colors.secondary,
+                    getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[activeAutoPreset].colors.tertiary
+                ]}
+                aria-checked={activeColorwayObject.id === "Auto" && activeColorwayObject.sourceType === "auto"}
+                aria-invalid={invalidColorwayClicked === "colorway-Auto"}
+                onClick={async () => {
+                    if (activeColorwayObject.id === "Auto" && activeColorwayObject.sourceType === "auto") {
+                        setActiveColorwayObject(nullColorwayObj);
+                    } else {
+                        const { colors } = getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[activeAutoPreset];
+                        const newObj: ColorwayObject = {
+                            id: "Auto",
+                            sourceType: "auto",
+                            source: null,
+                            colors: colors
+                        };
+                        if (!wsConnected) {
+                            setActiveColorwayObject(newObj);
                         } else {
-                            if (!activeAutoPreset) {
-                                openModal((props: ModalProps) => <AutoColorwaySelector autoColorwayId="" modalProps={props} onChange={autoPresetId => {
-                                    const { colors } = getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[autoPresetId];
-                                    const newObj: ColorwayObject = {
-                                        id: "Auto",
-                                        sourceType: "online",
-                                        source: null,
-                                        colors: colors
-                                    };
-                                    if (isManager) {
-                                        sendColorway(newObj);
-                                    } else {
-                                        ColorwayCSS.set(generateCss(
-                                            colors,
-                                            true,
-                                            true,
-                                            undefined,
-                                            "Auto Colorway"
-                                        ));
-                                        DataStore.set("activeColorwayObject", newObj);
-                                        setActiveColorwayObject(newObj);
-                                    }
-                                }} />);
+                            if (!isManager) {
+                                setInvalidColorwayClicked("colorway-Auto");
                             } else {
-                                const { colors } = getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[activeAutoPreset];
-                                const newObj: ColorwayObject = {
-                                    id: "Auto",
-                                    sourceType: "online",
-                                    source: null,
-                                    colors: colors
-                                };
-                                if (isManager) {
-                                    sendColorway(newObj);
+                                Dispatcher.dispatch("COLORWAYS_SEND_COLORWAY", {
+                                    active: newObj
+                                });
+                            }
+                        }
+                    }
+                }}
+            /> : <></>}
+            {(filters
+                .find(filter => filter.id === visibleSources) as { name: string, id: string, sources: SourceObject[]; } || { name: "null", id: "null", sources: [] }).sources
+                .map(({ colorways, source, type }) => (colorways || []).map((colorway: Colorway) => ({ ...colorway, sourceType: type, source: source, preset: colorway.preset || (colorway.isGradient ? "Gradient" : "Default") })))
+                .flat()
+                .sort((a, b) => {
+                    const objA = {
+                        id: a.name,
+                        source: a.source,
+                        sourceType: a.sourceType,
+                        colors: {}
+                    } as ColorwayObject;
+                    a.accent ? (objA.colors.accent = "#" + colorToHex(a.accent)) : void 0;
+                    a.primary ? (objA.colors.primary = "#" + colorToHex(a.primary)) : void 0;
+                    a.secondary ? (objA.colors.secondary = "#" + colorToHex(a.secondary)) : void 0;
+                    a.tertiary ? (objA.colors.tertiary = "#" + colorToHex(a.tertiary)) : void 0;
+                    const objB = {
+                        id: b.name,
+                        source: b.source,
+                        sourceType: b.sourceType,
+                        colors: {}
+                    } as ColorwayObject;
+                    b.accent ? (objB.colors.accent = "#" + colorToHex(b.accent)) : void 0;
+                    b.primary ? (objB.colors.primary = "#" + colorToHex(b.primary)) : void 0;
+                    b.secondary ? (objB.colors.secondary = "#" + colorToHex(b.secondary)) : void 0;
+                    b.tertiary ? (objB.colors.tertiary = "#" + colorToHex(b.tertiary)) : void 0;
+                    const aMetric = usageMetrics.filter(metric => compareColorwayObjects(metric, objA))[0] || { ...objA, uses: 0 };
+                    const bMetric = usageMetrics.filter(metric => compareColorwayObjects(metric, objB))[0] || { ...objB, uses: 0 };
+                    switch (sortBy) {
+                        case SortOptions.NAME_AZ:
+                            return a.name.localeCompare(b.name);
+                        case SortOptions.NAME_ZA:
+                            return b.name.localeCompare(a.name);
+                        case SortOptions.SOURCE_AZ:
+                            return a.source.localeCompare(b.source);
+                        case SortOptions.SOURCE_ZA:
+                            return b.source.localeCompare(a.source);
+                        case SortOptions.SOURCETYPE_ONLINE:
+                            return a.sourceType === "online" ? -1 : 1;
+                        case SortOptions.SOURCETYPE_OFFLINE:
+                            return a.sourceType === "offline" ? -1 : 1;
+                        case SortOptions.COLORCOUNT_ASCENDING:
+                            return (a.colors || [
+                                "accent",
+                                "primary",
+                                "secondary",
+                                "tertiary",
+                            ]).length - (b.colors || [
+                                "accent",
+                                "primary",
+                                "secondary",
+                                "tertiary",
+                            ]).length;
+                        case SortOptions.COLORCOUNT_DESCENDING:
+                            return (b.colors || [
+                                "accent",
+                                "primary",
+                                "secondary",
+                                "tertiary",
+                            ]).length - (a.colors || [
+                                "accent",
+                                "primary",
+                                "secondary",
+                                "tertiary",
+                            ]).length;
+                        case SortOptions.MOST_USED:
+                            if (aMetric.uses === bMetric.uses) {
+                                return a.name.localeCompare(b.name);
+                            } else {
+                                return bMetric.uses - aMetric.uses;
+                            }
+                        case SortOptions.LEAST_USED:
+                            if (aMetric.uses === bMetric.uses) {
+                                return b.name.localeCompare(a.name);
+                            } else {
+                                return aMetric.uses - bMetric.uses;
+                            }
+                        default:
+                            return a.name.localeCompare(b.name);
+                    }
+                })
+                .filter(({ name }) => name.toLowerCase().includes(searchValue.toLowerCase()))
+                .map((color: Colorway) => <ColorwayItem
+                    id={"colorway-" + color.name}
+                    aria-invalid={invalidColorwayClicked === "colorway-" + color.name}
+                    aria-checked={activeColorwayObject.id === color.name && activeColorwayObject.source === color.source}
+                    onClick={async () => {
+                        if (activeColorwayObject.id === color.name && activeColorwayObject.source === color.source) {
+                            setActiveColorwayObject(nullColorwayObj);
+                        } else {
+                            const newObj: ColorwayObject = {
+                                id: color.name,
+                                sourceType: color.sourceType,
+                                source: color.source,
+                                colors: {} as ColorwayObject["colors"]
+                            };
+                            color.accent ? (newObj.colors.accent = "#" + colorToHex(color.accent)) : void 0;
+                            color.primary ? (newObj.colors.primary = "#" + colorToHex(color.primary)) : void 0;
+                            color.secondary ? (newObj.colors.secondary = "#" + colorToHex(color.secondary)) : void 0;
+                            color.tertiary ? (newObj.colors.tertiary = "#" + colorToHex(color.tertiary)) : void 0;
+                            color.linearGradient ? (newObj.linearGradient = color.linearGradient) : void 0;
+
+                            if (!wsConnected) {
+                                setActiveColorwayObject(newObj);
+
+                                if (usageMetrics.filter(metric => compareColorwayObjects(metric, newObj)).length) {
+                                    setUsageMetrics(m => m.map(metric => {
+                                        if (compareColorwayObjects(metric, newObj)) {
+                                            return { ...metric, uses: metric.uses + 1 };
+                                        }
+                                        return metric;
+                                    }));
                                 } else {
-                                    ColorwayCSS.set(generateCss(
-                                        colors,
-                                        true,
-                                        true,
-                                        undefined,
-                                        "Auto Colorway"
-                                    ));
-                                    DataStore.set("activeColorwayObject", newObj);
-                                    setActiveColorwayObject(newObj);
+                                    setUsageMetrics(m => [...m, { ...newObj, uses: 1 }]);
+                                }
+                            } else {
+                                if (!isManager) {
+                                    setInvalidColorwayClicked(`colorway-${color.name}`);
+                                } else {
+                                    Dispatcher.dispatch("COLORWAYS_SEND_COLORWAY", {
+                                        active: newObj
+                                    });
                                 }
                             }
                         }
                     }}
-                >
-                    <div className="discordColorwayPreviewColorContainer" style={{ backgroundColor: "var(--os-accent-color)" }} />
-                    <span className="colorwayLabel">Auto Colorway</span>
-                    <button
-                        className="colorwaysPillButton colorwaysPillButton-onSurface"
-                        onClick={async (e) => {
-                            e.stopPropagation();
-                            const activeAutoPreset = await DataStore.get("activeAutoPreset");
-                            openModal((props: ModalProps) => <AutoColorwaySelector autoColorwayId={activeAutoPreset} modalProps={props} onChange={autoPresetId => {
-                                if (activeColorwayObject.id === "Auto") {
-                                    const { colors } = getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[activeAutoPreset];
-                                    const newObj: ColorwayObject = {
-                                        id: "Auto",
-                                        sourceType: "online",
-                                        source: null,
-                                        colors: colors
-                                    };
-                                    if (isManager) {
-                                        sendColorway(newObj);
-                                    } else {
-                                        DataStore.set("activeColorwayObject", newObj);
-                                        setActiveColorwayObject(newObj);
-
-                                        DataStore.get("colorwaysPreset").then((colorwaysPreset: string) => {
-                                            if (colorwaysPreset == "default") {
-                                                ColorwayCSS.set(generateCss(
-                                                    colors,
-                                                    true,
-                                                    true,
-                                                    undefined,
-                                                    newObj.id as string
-                                                ));
-                                            } else {
-                                                if (gradientPresetIds.includes(colorwaysPreset)) {
-                                                    ColorwayCSS.set((getPreset(colors)[colorwaysPreset].preset as { full: string; }).full);
-                                                } else {
-                                                    ColorwayCSS.set(getPreset(colors)[colorwaysPreset].preset as string);
-                                                }
-                                            }
-                                        });
-                                    }
-                                }
-                            }} />);
-                        }}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" style={{ margin: "4px" }} viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M 21.2856,9.6 H 24 v 4.8 H 21.2868 C 20.9976,15.5172 20.52,16.5576 19.878,17.4768 L 21.6,19.2 19.2,21.6 17.478,19.8768 c -0.9216,0.642 -1.9596,1.1208 -3.078,1.4088 V 24 H 9.6 V 21.2856 C 8.4828,20.9976 7.4436,20.5188 6.5232,19.8768 L 4.8,21.6 2.4,19.2 4.1232,17.4768 C 3.4812,16.5588 3.0024,15.5184 2.7144,14.4 H 0 V 9.6 H 2.7144 C 3.0024,8.4816 3.48,7.4424 4.1232,6.5232 L 2.4,4.8 4.8,2.4 6.5232,4.1232 C 7.4424,3.48 8.4816,3.0024 9.6,2.7144 V 0 h 4.8 v 2.7132 c 1.1184,0.2892 2.1564,0.7668 3.078,1.4088 l 1.722,-1.7232 2.4,2.4 -1.7232,1.7244 c 0.642,0.9192 1.1208,1.9596 1.4088,3.0768 z M 12,16.8 c 2.65092,0 4.8,-2.14908 4.8,-4.8 0,-2.650968 -2.14908,-4.8 -4.8,-4.8 -2.650968,0 -4.8,2.149032 -4.8,4.8 0,2.65092 2.149032,4.8 4.8,4.8 z" />
-                        </svg>
-                    </button>
-                </div> : <></>}
-                {(!getComputedStyle(document.body).getPropertyValue("--os-accent-color") || !["all", "official"].includes(visibleSources)) && !filters.filter(filter => filter.id === visibleSources)[0].sources.map(source => source.colorways).flat().length ? <span style={{
-                    color: "#fff",
-                    margin: "auto",
-                    fontWeight: "bold",
-                    display: "flex",
-                    gap: "8px",
-                    alignItems: "center"
-                }}>
-                    No colorways...
-                </span> : <></>}
-                {errorCode !== 0 && <span style={{
-                    color: "#fff",
-                    margin: "auto",
-                    fontWeight: "bold",
-                    display: "flex",
-                    gap: "8px",
-                    alignItems: "center"
-                }}>
-                    {errorCode === 1 && "Error: Invalid Colorway Source Format. If this error persists, contact the source author to resolve the issue."}
-                </span>}
-                {filters.map(filter => filter.id).includes(visibleSources) && (
-                    filters
-                        .filter(filter => filter.id === visibleSources)[0].sources
-                        .map(({ colorways, source, type }) => colorways.map((colorway: Colorway) => ({ ...colorway, sourceType: type, source: source, preset: colorway.preset || (colorway.isGradient ? "Gradient" : "Default") })))
-                        .flat()
-                        .sort((a, b) => {
-                            switch (sortBy) {
-                                case SortOptions.NAME_AZ:
-                                    return a.name.localeCompare(b.name);
-                                case SortOptions.NAME_ZA:
-                                    return b.name.localeCompare(a.name);
-                                case SortOptions.SOURCE_AZ:
-                                    return a.source.localeCompare(b.source);
-                                case SortOptions.SOURCE_ZA:
-                                    return b.source.localeCompare(a.source);
-                                default:
-                                    return a.name.localeCompare(b.name);
-                            }
-                        })
-                        .filter(({ name }) => name.toLowerCase().includes(searchValue.toLowerCase()))
-                        .map((color: Colorway) => <div
-                            className="discordColorway"
-                            id={"colorway-" + color.name}
-                            aria-checked={activeColorwayObject.id === color.name && activeColorwayObject.source === color.source}
-                            onClick={async () => {
-                                if (settings.selectorType === "normal") {
-                                    if (activeColorwayObject.id === color.name && activeColorwayObject.source === color.source) {
-                                        if (isManager) {
-                                            sendColorway(nullColorwayObj);
-                                        } else {
-                                            DataStore.set("activeColorwayObject", nullColorwayObj);
-                                            setActiveColorwayObject(nullColorwayObj);
-                                            ColorwayCSS.remove();
+                    menu={<>
+                        <div className="dc-contextmenu-colors">
+                            {(color.colors || [
+                                "accent",
+                                "primary",
+                                "secondary",
+                                "tertiary",
+                            ]).map(c => <div className="dc-contextmenu-color" style={{ backgroundColor: "#" + colorToHex(color[c]) }} onClick={() => {
+                                Clipboard.copy("#" + colorToHex(color[c]));
+                                Toasts.show({
+                                    message: "Copied Color Successfully",
+                                    type: 1,
+                                    id: "copy-color-notify",
+                                });
+                            }} />)}
+                        </div>
+                        <button onClick={() => {
+                            const colorwayIDArray = `${color.accent},${color.primary},${color.secondary},${color.tertiary}|n:${color.name}${color.preset ? `|p:${color.preset}` : ""}`;
+                            const colorwayID = stringToHex(colorwayIDArray);
+                            Clipboard.copy(colorwayID);
+                            Toasts.show({
+                                message: "Copied Colorway ID Successfully",
+                                type: 1,
+                                id: "copy-colorway-id-notify",
+                            });
+                        }} className="dc-contextmenu-item">
+                            Copy Colorway ID
+                            <IDIcon width={16} height={16} style={{
+                                marginLeft: "8px"
+                            }} />
+                        </button>
+                        <button onClick={() => {
+                            const newObj: ColorwayObject = {
+                                id: color.name,
+                                sourceType: color.sourceType,
+                                source: color.source,
+                                colors: {}
+                            } as ColorwayObject;
+                            color.accent ? (newObj.colors.accent = "#" + colorToHex(color.accent)) : void 0;
+                            color.primary ? (newObj.colors.primary = "#" + colorToHex(color.primary)) : void 0;
+                            color.secondary ? (newObj.colors.secondary = "#" + colorToHex(color.secondary)) : void 0;
+                            color.tertiary ? (newObj.colors.tertiary = "#" + colorToHex(color.tertiary)) : void 0;
+                            saveFile(new File([generateCss(
+                                newObj.colors,
+                                true,
+                                true,
+                                undefined,
+                                newObj.id as string
+                            )], `${color.name.replaceAll(" ", "-").toLowerCase()}.theme.css`, { type: "text/plain" }));
+                        }} className="dc-contextmenu-item">
+                            Download CSS as Theme
+                            <DownloadIcon width={16} height={16} style={{
+                                marginLeft: "8px"
+                            }} />
+                        </button>
+                        {color.sourceType === "offline" ? <>
+                            <button onClick={async () => {
+                                openModal(props => <SaveColorwayAsModal
+                                    store={color.source}
+                                    colorwayObject={{
+                                        id: color.name,
+                                        source: color.source,
+                                        sourceType: color.sourceType,
+                                        colors: {
+                                            accent: colorToHex(color.accent) || "5865f2",
+                                            primary: colorToHex(color.primary) || "313338",
+                                            secondary: colorToHex(color.secondary) || "2b2d31",
+                                            tertiary: colorToHex(color.tertiary) || "1e1f22"
                                         }
-                                    } else {
-                                        const newObj: ColorwayObject = {
-                                            id: color.name,
-                                            sourceType: color.type,
-                                            source: color.source,
-                                            colors: {}
-                                        } as ColorwayObject;
-                                        color.accent ? (newObj.colors.accent = "#" + colorToHex(color.accent)) : void 0;
-                                        color.primary ? (newObj.colors.primary = "#" + colorToHex(color.primary)) : void 0;
-                                        color.secondary ? (newObj.colors.secondary = "#" + colorToHex(color.secondary)) : void 0;
-                                        color.tertiary ? (newObj.colors.tertiary = "#" + colorToHex(color.tertiary)) : void 0;
-
-                                        if (color.linearGradient) newObj.linearGradient = color.linearGradient;
-                                        if (isManager) sendColorway(newObj);
-                                        else {
-                                            setActiveColorwayObject(newObj);
-                                            DataStore.set("activeColorwayObject", newObj);
-
-                                            DataStore.get("colorwaysPreset").then((colorwaysPreset: string) => {
-                                                if (colorwaysPreset == "default") {
-                                                    ColorwayCSS.set(generateCss(
-                                                        newObj.colors,
-                                                        true,
-                                                        true,
-                                                        undefined,
-                                                        newObj.id as string
-                                                    ));
-                                                } else {
-                                                    if (gradientPresetIds.includes(colorwaysPreset)) {
-                                                        const css = Object.keys(newObj).includes("linearGradient")
-                                                            ? gradientBase(colorToHex(newObj.colors.accent), true) + `:root:root {--custom-theme-background: linear-gradient(${newObj.linearGradient})}`
-                                                            : (getPreset(newObj.colors)[colorwaysPreset].preset as { full: string; }).full;
-                                                        ColorwayCSS.set(css);
-                                                    } else {
-                                                        ColorwayCSS.set(getPreset(newObj.colors)[colorwaysPreset].preset as string);
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-                                if (settings.selectorType === "multiple-selection") {
-                                    if (selectedColorways.includes(color)) {
-                                        setSelectedColorways(selectedColorways.filter(c => c !== color));
-                                    } else {
-                                        setSelectedColorways([...selectedColorways, color]);
-                                    }
-                                }
-                            }}
-                        >
-                            <div className="discordColorwayPreviewColorContainer">
-                                {!color.isGradient ? Object.values({
-                                    accent: color.accent,
-                                    primary: color.primary,
-                                    secondary: color.secondary,
-                                    tertiary: color.tertiary
-                                }).map((colorStr) => <div
-                                    className="discordColorwayPreviewColor"
-                                    style={{
-                                        backgroundColor: `#${colorToHex(colorStr)}`,
                                     }}
-                                />) : <div
-                                    className="discordColorwayPreviewColor"
-                                    style={{
-                                        background: `linear-gradient(${color.linearGradient})`,
-                                    }}
-                                />}
-                            </div>
-                            <span className="colorwayLabel">{color.name}</span>
-                            {settings.selectorType === "normal" && <button
-                                className="colorwaysPillButton colorwaysPillButton-onSurface"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    openModal((props) => <InfoModal
-                                        modalProps={props}
-                                        colorway={color}
-                                        loadUIProps={loadUI}
-                                    />);
-                                }}
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="20"
-                                    height="20"
-                                    fill="currentColor"
-                                    viewBox="0 0 16 16"
-                                >
-                                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                                </svg>
-                            </button>}
-                            <button
-                                className="colorwaysPillButton colorwaysPillButton-onSurface"
-                                onClick={async e => {
-                                    e.stopPropagation();
-                                    const colorwayIDArray = `${color.accent},${color.primary},${color.secondary},${color.tertiary}|n:${color.name}${color.preset ? `|p:${color.preset}` : ""}`;
-                                    const colorwayID = stringToHex(colorwayIDArray);
-                                    navigator.clipboard.writeText(colorwayID);
-                                    Toasts.show({
-                                        message: "Copied Colorway ID Successfully",
-                                        type: 1,
-                                        id: "copy-colorway-id-notify",
-                                    });
-                                }}
-                            >
-                                <IDIcon width={20} height={20} />
+                                    modalProps={props}
+                                />);
+                            }} className="dc-contextmenu-item">
+                                Edit Colorway
+                                <PencilIcon width={16} height={16} style={{
+                                    marginLeft: "8px"
+                                }} />
                             </button>
-                            {(color.sourceType === "offline" && settings.selectorType !== "preview") && <button
-                                className="colorwaysPillButton colorwaysPillButton-onSurface"
-                                onClick={async e => {
-                                    e.stopPropagation();
-                                    const oldStores = (await DataStore.get("customColorways") as { name: string, colorways: Colorway[], id?: string; }[]).filter(sourcee => sourcee.name !== color.source);
-                                    const storeToModify = (await DataStore.get("customColorways") as { name: string, colorways: Colorway[], id?: string; }[]).filter(sourcee => sourcee.name === color.source)[0];
-                                    const newStore = { name: storeToModify.name, colorways: storeToModify.colorways.filter(colorway => colorway.name !== color.name) };
-                                    DataStore.set("customColorways", [...oldStores, newStore]);
-                                    setCustomColorwayData([...oldStores, newStore].map((colorSrc: { name: string, colorways: Colorway[], id?: string; }) =>
-                                        ({ type: "offline", source: colorSrc.name, colorways: colorSrc.colorways })));
-                                    if ((await DataStore.get("activeColorwayObject")).id === color.name) {
-                                        DataStore.set("activeColorwayObject", nullColorwayObj);
-                                        setActiveColorwayObject(nullColorwayObj);
-                                        ColorwayCSS.remove();
-                                    }
-                                    updateRemoteSources();
+                            <button onClick={() => {
+                                openModal(props => <Modal
+                                    modalProps={props}
+                                    title="Delete Colorway"
+                                    onFinish={async ({ closeModal }) => {
+                                        if (activeColorwayObject.id === color.name) {
+                                            setActiveColorwayObject(nullColorwayObj);
+                                        }
+                                        updateCustomSource({ type: SourceActions.RemoveColorway, colorway: color, source: color.source as string });
+                                        closeModal();
+                                    }}
+                                    confirmMsg="Delete"
+                                    type="danger"
+                                >
+                                    Are you sure you want to delete this colorway? This cannot be undone!
+                                </Modal>);
+                            }} className="dc-contextmenu-item dc-contextmenu-item-danger">
+                                Delete Colorway...
+                                <DeleteIcon width={16} height={16} style={{
+                                    marginLeft: "8px"
+                                }} />
+                            </button>
+                        </> : null}
+                        {color.sourceType === "online" ? <>
+                            <button onClick={async () => {
+                                openModal(props => <SaveColorwayAsModal
+                                    colorwayObject={{
+                                        id: color.name,
+                                        source: color.source,
+                                        sourceType: color.sourceType,
+                                        colors: {
+                                            accent: colorToHex(color.accent) || "5865f2",
+                                            primary: colorToHex(color.primary) || "313338",
+                                            secondary: colorToHex(color.secondary) || "2b2d31",
+                                            tertiary: colorToHex(color.tertiary) || "1e1f22"
+                                        }
+                                    }}
+                                    modalProps={props}
+                                />);
+                            }} className="dc-contextmenu-item">
+                                Edit Colorway Locally
+                                <PencilIcon width={16} height={16} style={{
+                                    marginLeft: "8px"
+                                }} />
+                            </button>
+                        </> : null}
+                    </>}
+                    colors={Object.values({
+                        accent: color.accent,
+                        primary: color.primary,
+                        secondary: color.secondary,
+                        tertiary: color.tertiary
+                    })}
+                    text={color.name}
+                    descriptions={[`by ${color.author}`, `from ${color.source}`]}
+                />)
+            }
+            {(!filters.flatMap(f => f.sources.map(s => s.colorways)).flat().length) ? <ColorwayItem text="It's quite emty in here." descriptions={["Try searching for something else, or add another source"]} id="colorway-nocolorways" /> : null}
+        </div>
+    </>;
+}
+
+function Presets() {
+    const [colorwayData] = Hooks.useContextualState("colorwayData", false);
+    const [customColorwayData, setCustomColorwayData] = Hooks.useContextualState("customColorways");
+    const [activePresetObject, setActivePresetObject] = Hooks.useContextualState("activePresetObject");
+    const [colorwaysDiscordPreset] = Hooks.useContextualState("colorwaysDiscordPreset");
+    const [themePresets] = Hooks.useContextualState("themePresets");
+    const [searchValue, setSearchValue] = useState<string>("");
+    const [sortBy, setSortBy] = useState<SortOptions>(SortOptions.NAME_AZ);
+    const [showSpinner, setShowSpinner] = useState<boolean>(false);
+    const [visibleSources, setVisibleSources] = useState<string>("all");
+    const [layout, setLayout] = useState<"normal" | "compact">("normal");
+
+    const layouts = [{ name: "Normal", id: "normal" }, { name: "Compact", id: "compact" }];
+
+    const updateCustomSource = get_updateCustomSource(customColorwayData, setCustomColorwayData);
+
+    const filters = [
+        {
+            name: "All",
+            id: "all",
+            sources: [
+                ...colorwayData.filter(s => (s.presets || []).length).map(s => ({ source: s.source, presets: s.presets, type: "online" })),
+                ...customColorwayData.filter(s => (s.presets || []).length).map(source => ({ source: source.name, presets: source.presets, type: "offline" })),
+                ...themePresets.map(theme => ({ source: theme.source, type: "theme", presets: [theme] })),
+                { source: "Built-In", type: "builtin", presets: [colorwaysDiscordPreset] }
+            ]
+        },
+        {
+            name: colorwaysDiscordPreset.source,
+            id: colorwaysDiscordPreset.sourceType,
+            sources: [{ source: colorwaysDiscordPreset.source, type: colorwaysDiscordPreset.sourceType, presets: [colorwaysDiscordPreset] }]
+        },
+        ...colorwayData.map(source => ({
+            name: source.source,
+            id: source.source.toLowerCase().replaceAll(" ", "-"),
+            sources: [{ source: source.source, presets: (source.presets || []) as Preset[], type: "online" }]
+        })),
+        ...customColorwayData.map(source => ({
+            name: source.name,
+            id: source.name.toLowerCase().replaceAll(" ", "-"),
+            sources: [{ source: source.name, presets: (source.presets || []) as Preset[], type: "offline" }]
+        })),
+        {
+            name: "Themes",
+            id: "themes",
+            sources: themePresets.map(preset => ({ source: preset.name, presets: [preset], type: "theme" }))
+        }
+    ];
+
+    return <>
+        <ComboTextBox
+            placeholder="Search for Presets..."
+            value={searchValue}
+            onInput={setSearchValue}
+        >
+            <Spinner className={`dc-selector-spinner${!showSpinner ? " dc-selector-spinner-hidden" : ""}`} />
+            <ReloadButton setShowSpinner={setShowSpinner} />
+            <button
+                className="dc-button dc-button-primary"
+                onClick={() => openModal(props => <SavePresetAsModal modalProps={props} />)}
+            >
+                <PlusIcon width={14} height={14} style={{ boxSizing: "content-box" }} />
+                Add...
+            </button>
+            <StaticOptionsMenu
+                xPos="right"
+                menu={<>
+                    <button onClick={() => setSortBy(1)} className="dc-contextmenu-item">
+                        Name (A-Z)
+                        <Radio checked={sortBy === 1} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                    <button onClick={() => setSortBy(2)} className="dc-contextmenu-item">
+                        Name (Z-A)
+                        <Radio checked={sortBy === 2} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                    <button onClick={() => setSortBy(3)} className="dc-contextmenu-item">
+                        Source (A-Z)
+                        <Radio checked={sortBy === 3} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                    <button onClick={() => setSortBy(4)} className="dc-contextmenu-item">
+                        Source (Z-A)
+                        <Radio checked={sortBy === 4} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                </>}>
+                {({ onClick }) => <button
+                    onClick={onClick}
+                    className="dc-button dc-button-primary"
+                >
+                    Sort By: {(() => {
+                        switch (sortBy) {
+                            case 1:
+                                return "Name (A-Z)";
+                            case 2:
+                                return "Name (Z-A)";
+                            case 3:
+                                return "Source (A-Z)";
+                            case 4:
+                                return "Source (Z-A)";
+                            default:
+                                return "Name (A-Z)";
+                        }
+                    })()}
+                </button>}
+            </StaticOptionsMenu>
+            <StaticOptionsMenu
+                xPos="right"
+                menu={<>
+                    {filters.filter(f => f.sources.filter(s => (s.presets || []).length).length).map(({ name, id }) => {
+                        return <button onClick={() => setVisibleSources(id)} className="dc-contextmenu-item">
+                            {name}
+                            <Radio checked={visibleSources === id} style={{
+                                marginLeft: "8px"
+                            }} />
+                        </button>;
+                    })}
+                </>}>
+                {({ onClick }) => <button
+                    onClick={onClick}
+                    className="dc-button dc-button-primary"
+                >
+                    Source: {(filters.find(filter => filter.id === visibleSources) as { name: string, id: string, sources: SourceObject[]; }).name}
+                </button>}
+            </StaticOptionsMenu>
+            <button
+                className="dc-button dc-button-primary"
+                onClick={() => {
+                    if (layout === "normal") return setLayout("compact");
+                    else return setLayout("normal");
+                }}
+            >
+                Layout: {layouts.find(l => l.id === layout)?.name}
+            </button>
+        </ComboTextBox>
+        <div style={{ maxHeight: "unset" }} className="dc-selector" data-layout={layout}>
+            {(filters
+                .find(filter => filter.id === visibleSources) as { name: string, id: string, sources: SourceObject[]; } || { name: "null", id: "null", sources: [] }).sources
+                .map(({ presets, source, type }) => (presets || []).map((preset: Preset) => ({ ...preset, sourceType: type, source: source })))
+                .flat()
+                .sort((a, b) => {
+                    switch (sortBy) {
+                        case SortOptions.NAME_AZ:
+                            return a.name.localeCompare(b.name);
+                        case SortOptions.NAME_ZA:
+                            return b.name.localeCompare(a.name);
+                        case SortOptions.SOURCE_AZ:
+                            return a.source.localeCompare(b.source);
+                        case SortOptions.SOURCE_ZA:
+                            return b.source.localeCompare(a.source);
+                        case SortOptions.SOURCETYPE_ONLINE:
+                            return a.sourceType === "online" ? -1 : 1;
+                        case SortOptions.SOURCETYPE_OFFLINE:
+                            return a.sourceType === "offline" ? -1 : 1;
+                        default:
+                            return a.name.localeCompare(b.name);
+                    }
+                })
+                .filter(({ name }) => name.toLowerCase().includes(searchValue.toLowerCase()))
+                .map((preset: Preset) => <ColorwayItem
+                    id={"preset-" + preset.name}
+                    menu={<>
+                        {preset.sourceType === "offline" ? <>
+                            <button onClick={async () => {
+                                openModal(props => <SavePresetAsModal
+                                    store={preset.source as string}
+                                    presetObject={{
+                                        id: preset.name,
+                                        source: preset.source,
+                                        sourceType: preset.sourceType,
+                                        css: preset.css,
+                                        conditions: preset.conditions || []
+                                    }}
+                                    modalProps={props}
+                                />);
+                            }} className="dc-contextmenu-item">
+                                Edit Preset
+                                <PencilIcon width={16} height={16} style={{
+                                    marginLeft: "8px"
+                                }} />
+                            </button>
+                            <button onClick={() => {
+                                openModal(props => <Modal
+                                    modalProps={props}
+                                    title="Delete Preset"
+                                    onFinish={async ({ closeModal }) => {
+                                        if (activePresetObject.id === preset.name) {
+                                            setActivePresetObject({ id: colorwaysDiscordPreset.name, source: colorwaysDiscordPreset.source, sourceType: colorwaysDiscordPreset.sourceType, css: colorwaysDiscordPreset.css, conditions: colorwaysDiscordPreset.conditions || [] });
+                                        }
+                                        updateCustomSource({ type: SourceActions.RemovePreset, preset, source: preset.source as string });
+                                        closeModal();
+                                    }}
+                                    confirmMsg="Delete"
+                                    type="danger"
+                                >
+                                    Are you sure you want to delete this colorway? This cannot be undone!
+                                </Modal>);
+                            }} className="dc-contextmenu-item dc-contextmenu-item-danger">
+                                Delete Preset...
+                                <DeleteIcon width={16} height={16} style={{
+                                    marginLeft: "8px"
+                                }} />
+                            </button>
+                        </> : null}
+                        {preset.sourceType === "online" ? <>
+                            <button onClick={async () => {
+                                openModal(props => <SavePresetAsModal
+                                    presetObject={{
+                                        id: preset.name,
+                                        source: preset.source,
+                                        sourceType: preset.sourceType,
+                                        css: preset.css,
+                                        conditions: preset.conditions || []
+                                    }}
+                                    modalProps={props}
+                                />);
+                            }} className="dc-contextmenu-item">
+                                Edit Preset Locally
+                                <PencilIcon width={16} height={16} style={{
+                                    marginLeft: "8px"
+                                }} />
+                            </button>
+                        </> : null}
+                    </>}
+                    aria-checked={activePresetObject.id === preset.name && activePresetObject.source === preset.source}
+                    descriptions={[`by ${preset.author}`, `from ${preset.source}`]}
+                    text={preset.name}
+                    onClick={async () => {
+                        const newObj: PresetObject = {
+                            id: preset.name,
+                            sourceType: preset.sourceType,
+                            source: preset.source,
+                            conditions: preset.conditions || [],
+                            css: preset.css
+                        };
+                        setActivePresetObject(newObj);
+                    }}
+                />)}
+            {(!filters.flatMap(f => f.sources.map(s => s.presets)).flat().length) ? <div
+                className="dc-colorway"
+                role="button"
+                id="preset-nopresets"
+            >
+                <WirelessIcon width={30} height={30} style={{ color: "var(--interactive-active)" }} />
+                <div className="dc-label-wrapper">
+                    <span className="dc-label">It's quite emty in here.</span>
+                    <span className="dc-label dc-subnote dc-note">Try searching for something else, or add another source</span>
+                </div>
+            </div> : null}
+        </div>
+    </>;
+}
+
+function Themes() {
+    const [enabledColorwayThemes, setEnabledColorwayThemes] = Hooks.useContextualState("enabledColorwayThemes");
+    const [colorwayThemes, setColorwayThemes] = Hooks.useContextualState("colorwayThemes");
+    const [searchValue, setSearchValue] = useState<string>("");
+    const [sortBy, setSortBy] = useState<SortOptions>(SortOptions.NAME_AZ);
+    const [showSpinner, setShowSpinner] = useState<boolean>(false);
+
+    return <>
+        <ComboTextBox
+            placeholder="Search for Themes..."
+            value={searchValue}
+            onInput={setSearchValue}
+        >
+            <Spinner className={`dc-selector-spinner${!showSpinner ? " dc-selector-spinner-hidden" : ""}`} />
+            <ReloadButton setShowSpinner={setShowSpinner} />
+            <button
+                className="dc-button dc-button-primary"
+                onClick={async () => {
+                    const file = await Fs.chooseFile("text/css");
+                    if (file) {
+                        const text = await file.text();
+                        if (getThemeInfo(text, file.name)) {
+                            setColorwayThemes(cThemes => {
+                                return [...cThemes.filter(t => t[0] !== file.name), [file.name, text]];
+                            });
+                        }
+                    }
+                }}
+            >
+                <PlusIcon width={14} height={14} style={{ boxSizing: "content-box" }} />
+                Add...
+            </button>
+            <StaticOptionsMenu
+                xPos="right"
+                menu={<>
+                    <button onClick={() => setSortBy(1)} className="dc-contextmenu-item">
+                        Name (A-Z)
+                        <Radio checked={sortBy === 1} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                    <button onClick={() => setSortBy(2)} className="dc-contextmenu-item">
+                        Name (Z-A)
+                        <Radio checked={sortBy === 2} style={{
+                            marginLeft: "8px"
+                        }} />
+                    </button>
+                </>}>
+                {({ onClick }) => <button
+                    onClick={onClick}
+                    className="dc-button dc-button-primary"
+                >
+                    Sort By: {(() => {
+                        switch (sortBy) {
+                            case 1:
+                                return "Name (A-Z)";
+                            case 2:
+                                return "Name (Z-A)";
+                            default:
+                                return "Name (A-Z)";
+                        }
+                    })()}
+                </button>}
+            </StaticOptionsMenu>
+        </ComboTextBox>
+        <div style={{ maxHeight: "unset" }} className="dc-selector" data-layout="normal">
+            {colorwayThemes
+                .map(theme => ({ css: theme[1], header: getThemeInfo(theme[1], theme[0]) }))
+                .filter(({ header: { name } }) => name.toLowerCase().includes(searchValue.toLowerCase()))
+                .flat()
+                .sort((a, b) => {
+                    switch (sortBy) {
+                        case SortOptions.NAME_AZ:
+                            return a.header.name.localeCompare(b.header.name);
+                        case SortOptions.NAME_ZA:
+                            return b.header.name.localeCompare(a.header.name);
+                        default:
+                            return a.header.name.localeCompare(b.header.name);
+                    }
+                })
+                .map(({ css, header: theme }: { css: string, header: UserThemeHeader; }) => <ColorwayItem
+                    id={"theme-" + theme.name}
+                    prefix={() => <PalleteIcon width={24} height={24} />}
+                    menu={<>
+                        <button onClick={() => {
+                            openModal(props => <Modal
+                                modalProps={props}
+                                title="Delete Theme"
+                                onFinish={async ({ closeModal }) => {
+                                    setEnabledColorwayThemes(dcd => {
+                                        if (dcd[theme.name]) delete dcd[theme.name];
+                                        return dcd;
+                                    });
+                                    setColorwayThemes(ct => {
+                                        return ct.filter(them => them[0] !== theme.fileName);
+                                    });
+                                    closeModal();
                                 }}
+                                confirmMsg="Delete"
+                                type="danger"
                             >
-                                <DeleteIcon width={20} height={20} />
-                            </button>}
-                        </div>)
-                )}
-            </Container>
-        </>}</>;
+                                Are you sure you want to delete this theme? This cannot be undone!
+                            </Modal>);
+                        }} className="dc-contextmenu-item dc-contextmenu-item-danger">
+                            Delete Theme...
+                            <DeleteIcon width={16} height={16} style={{
+                                marginLeft: "8px"
+                            }} />
+                        </button>
+                    </>}
+                    suffix={() => <Switch
+                        value={enabledColorwayThemes[theme.name] || false}
+                        onChange={e => {
+                            setEnabledColorwayThemes(dcd => {
+                                dcd[theme.name] = e;
+                                return dcd;
+                            });
+                        }} />}
+                    descriptions={[`by ${theme.author}`, theme.description]}
+                    text={theme.name}
+                />)}
+            {(!colorwayThemes.length) ? <ColorwayItem
+                id="theme-nothemes"
+                text="It's quite emty in here."
+                descriptions={["Try searching for something else"]}
+                prefix={() => <WirelessIcon width={30} height={30} style={{ color: "var(--interactive-active)" }} />}
+            /> : null}
+        </div>
+    </>;
+}
+
+export default function ({ tab = "Colorways" }: { tab: string; }) {
+    const [active, setActive] = useState(tab);
+    return <TabBar
+        active={active}
+        onChange={setActive}
+        container={({ children }) => <div className="dc-page-header">{children}</div>}
+        items={[
+            {
+                name: "Colorways",
+                component: () => <Colorways />
+            },
+            {
+                name: "Presets",
+                component: () => <Presets />
+            },
+            {
+                name: "Themes",
+                component: () => <Themes />
+            }
+        ]}
+    />;
 }

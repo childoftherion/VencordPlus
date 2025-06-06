@@ -1,207 +1,185 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2023 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 
-import { DataStore, PluginProps, ReactNode, useState, useEffect, FluxDispatcher, FluxEvents } from "../../";
-
-import { defaultColorwaySource, fallbackColorways, nullColorwayObj } from "../../constants";
-import { Colorway, ColorwayObject } from "../../types";
+import { useState } from "../../";
+import { Dispatcher } from "../../api";
+import { initContexts, setContext, setContexts, unsavedContexts } from "../../api/Contexts";
+import { useContexts, useContextualState } from "../../api/Hooks";
+import { openModal } from "../../api/Modals";
+import { colorToHex } from "../../api/Utils/Colors";
+import { chooseFile, saveFile } from "../../api/Utils/Fs";
+import { connect } from "../../api/WebSocket";
+import { nullColorwayObj, themes } from "../../constants";
+import { getAutoPresets } from "../../css";
+import { ColorwayObject, Context, ContextKey } from "../../types";
+import ComboTextBox from "../ComboTextBox";
+import FeaturePresenter from "../FeaturePresenter";
+import { CogIcon, DownloadIcon, OpenExternalIcon, PalleteIcon, WirelessIcon } from "../Icons";
+import Modal from "../Modal";
+import SelectionCircle from "../SelectionCircle";
 import Setting from "../Setting";
 import Switch from "../Switch";
-import { connect, hasManagerRole, isWSOpen, sendColorway, wsOpen } from "../../wsClient";
-import { generateCss, getPreset, gradientBase, gradientPresetIds } from "../../css";
-import { ColorwayCSS } from "plusplugins/discordColorways/colorwaysAPI";
-import { colorToHex } from "plusplugins/discordColorways/utils";
+import TabBar from "../TabBar";
+import Tooltip from "../Tooltip";
 
-export default function ({
-    hasTheme = false
-}: {
-    hasTheme?: boolean;
-}) {
-    const [colorways, setColorways] = useState<Colorway[]>([]);
-    const [customColorways, setCustomColorways] = useState<Colorway[]>([]);
-    const [colorsButtonVisibility, setColorsButtonVisibility] = useState<boolean>(false);
-    const [theme, setTheme] = useState("discord");
-    const [shouldAutoconnect, setShouldAutoconnect] = useState<"1" | "2">("1");
-    const [preset, setPreset] = useState<string>("default");
+export default function ({ tab = "Settings" }: { tab: string; }) {
+    const [active, setActive] = useState(tab);
 
-    useEffect(() => {
-        (async function () {
-            const [
-                customColorways,
-                colorwaySourceFiles,
-                showColorwaysButton,
-                colorwaysPreset,
-                colorwaysPluginTheme,
-                colorwaysManagerDoAutoconnect
-            ] = await DataStore.getMany([
-                "customColorways",
-                "colorwaySourceFiles",
-                "showColorwaysButton",
-                "colorwaysPreset",
-                "colorwaysPluginTheme",
-                "colorwaysManagerDoAutoconnect"
-            ]);
+    return <TabBar
+        active={active}
+        container={({ children }) => <div className="dc-page-header">{children}</div>}
+        items={[
+            {
+                name: "Settings",
+                component: () => <Settings />
+            },
+            {
+                name: "History",
+                component: () => <History />
+            }
+        ]}
+        onChange={setActive}
+    />;
+}
 
-            setTheme(colorwaysPluginTheme);
-            setShouldAutoconnect(colorwaysManagerDoAutoconnect ? "1" : "2");
+function History() {
+    const [searchValue, setSearchValue] = useState("");
+    const [colorwayUsageMetrics] = useContextualState("colorwayUsageMetrics");
+    return <>
+        <ComboTextBox
+            value={searchValue}
+            onInput={setSearchValue}
+            placeholder="Search for a Colorway..."
 
-            setPreset(colorwaysPreset);
+        >
+            <button
+                className="dc-button dc-button-primary"
+                style={{ flexShrink: "0", width: "fit-content" }}
+                onClick={async () => {
+                    saveFile(new File([JSON.stringify(colorwayUsageMetrics)], "colorways_usage_metrics.json", { type: "application/json" }));
+                }}
+            >
+                <DownloadIcon width={14} height={14} />
+                Export usage data
+            </button>
+        </ComboTextBox>
+        <div className="dc-selector" style={{ gridTemplateColumns: "unset", flexGrow: "1" }}>
+            {colorwayUsageMetrics.filter(({ id }) => id?.toLowerCase().includes(searchValue.toLowerCase())).map(color => <div className="dc-colorway">
+                <div className="dc-label-wrapper">
+                    <span className="dc-label">{color.id}</span>
+                    <span className="dc-label dc-subnote dc-note">in {color.source} • {color.uses} uses</span>
+                </div>
+            </div>)}
+        </div>
+    </>;
+}
 
-            const responses: Response[] = await Promise.all(
-                colorwaySourceFiles.map(({ url }: { url: string; }) =>
-                    fetch(url)
-                )
-            );
-            const data = await Promise.all(
-                responses.map((res: Response) =>
-                    res.json().catch(() => { return { colorways: [] }; })
-                ));
-            const colorways = data.flatMap(json => json.colorways);
-            setColorways(colorways || fallbackColorways);
-            setCustomColorways(customColorways.map(source => source.colorways).flat(2));
-            setColorsButtonVisibility(showColorwaysButton);
-        })();
-    }, []);
+function Settings() {
+    const contexts = useContexts();
 
-    function Container({ children }: { children: ReactNode; }) {
-        if (hasTheme) return <div className="colorwaysModalTab" data-theme={theme}>{children}</div>;
-        else return <div className="colorwaysModalTab">{children}</div>;
-    }
-
-    return <Container>
-        <span className="colorwaysModalSectionHeader">Quick Switch</span>
+    return <>
+        <span className="dc-field-header">General</span>
         <Setting divider>
             <Switch
-                value={colorsButtonVisibility}
-                label="Enable Quick Switch"
+                value={contexts.showColorwaysButton}
+                label="Enable Quick Step"
                 id="showColorwaysButton"
                 onChange={(v: boolean) => {
-                    setColorsButtonVisibility(v);
-                    DataStore.set("showColorwaysButton", v);
-                    FluxDispatcher.dispatch({
-                        type: "COLORWAYS_UPDATE_BUTTON_VISIBILITY" as FluxEvents,
-                        isVisible: v
-                    });
+                    setContext("showColorwaysButton", v);
                 }} />
-            <span className="colorwaysNote">Shows a button on the top of the servers list that opens a colorway selector modal.</span>
+            <span className="dc-note">Shows a button on the top of the servers list that launches the DiscordColorways App.</span>
         </Setting>
-        <span className="colorwaysModalSectionHeader">Appearance</span>
+        <span className="dc-field-header">App theme</span>
         <Setting divider>
             <div style={{
                 display: "flex",
-                flexDirection: "row",
-                width: "100%",
-                alignItems: "center",
-                cursor: "pointer"
+                gap: "24px"
             }}>
-                <label className="colorwaySwitch-label">Plugin Theme</label>
-                <select
-                    className="colorwaysPillButton"
-                    style={{ border: "none" }}
-                    onChange={({ currentTarget: { value } }) => {
-                        setTheme(value);
-                        DataStore.set("colorwaysPluginTheme", value);
-                        FluxDispatcher.dispatch({
-                            type: "COLORWAYS_UPDATE_THEME" as FluxEvents,
-                            theme: value
-                        });
-                    }}
-                    value={theme}
+                {themes.map(({ name, id, preview }) => <Tooltip
+                    text={name}
+                    position="top"
                 >
-                    <option value="discord">Discord (Default)</option>
-                    <option value="colorish">Colorish</option>
-                </select>
+                    {({ onClick, onMouseEnter, onMouseLeave }) => <div className="dc-color-swatch-selectable">
+                        <div
+                            className="dc-color-swatch"
+                            onMouseEnter={onMouseEnter}
+                            onMouseLeave={onMouseLeave}
+                            onClick={e => {
+                                onClick(e);
+                                setContext("colorwaysPluginTheme", id);
+                            }}
+                            style={{ backgroundColor: preview }}
+                        />
+                        {contexts.colorwaysPluginTheme === id ? <SelectionCircle /> : null}
+                    </div>}
+                </Tooltip>)}
             </div>
         </Setting>
-        <span className="colorwaysModalSectionHeader">Manager</span>
+        <span className="dc-field-header">Auto Colors</span>
         <Setting divider>
             <div style={{
                 display: "flex",
-                flexDirection: "row",
-                width: "100%",
-                alignItems: "center",
-                cursor: "pointer"
+                gap: "24px"
             }}>
-                <label className="colorwaySwitch-label">Automatically retry to connect to Manager</label>
-                <select
-                    className="colorwaysPillButton"
-                    style={{ border: "none" }}
-                    onChange={({ currentTarget: { value } }) => {
-                        setShouldAutoconnect(value as "1" | "2");
-                        if (value == "1") {
-                            DataStore.set("colorwaysManagerDoAutoconnect", true);
-                            if (!isWSOpen()) connect();
-                        } else {
-                            DataStore.set("colorwaysManagerDoAutoconnect", false);
-                        }
-                    }}
-                    value={shouldAutoconnect}
+                {Object.values(getAutoPresets("5865f2")).map(({ name, id, colors }) => <Tooltip
+                    text={name}
+                    position="top"
                 >
-                    <option value="1">On (Default)</option>
-                    <option value="2">Off</option>
-                </select>
-            </div>
-        </Setting>
-        <span className="colorwaysModalSectionHeader">Colorways</span>
-        <Setting divider>
-            <div style={{
-                display: "flex",
-                flexDirection: "row",
-                width: "100%",
-                alignItems: "center",
-                cursor: "pointer"
-            }}>
-                <label className="colorwaySwitch-label">Colorway preset</label>
-                <select
-                    className="colorwaysPillButton"
-                    style={{ border: "none" }}
-                    onChange={({ currentTarget: { value } }) => {
-                        setPreset(value);
-                        DataStore.set("colorwaysPreset", value);
+                    {({ onClick, onMouseEnter, onMouseLeave }) => <div className="dc-color-swatch-selectable">
+                        <div
+                            className="dc-color-swatch"
+                            onMouseEnter={onMouseEnter}
+                            onMouseLeave={onMouseLeave}
+                            onClick={e => {
+                                onClick(e);
+                                setContext("activeAutoPreset", id);
 
-                        DataStore.get("activeColorwayObject").then((active: ColorwayObject) => {
-                            if (active.id) {
-                                if (wsOpen) {
-                                    if (hasManagerRole) {
-                                        sendColorway(active);
-                                    }
-                                } else {
-                                    if (value == "default") {
-                                        ColorwayCSS.set(generateCss(
-                                            active.colors,
-                                            true,
-                                            true,
-                                            undefined,
-                                            active.id
-                                        ));
+                                if (contexts.activeColorwayObject.id === "Auto" && contexts.activeColorwayObject.sourceType === "auto") {
+                                    const { colors } = getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[id];
+                                    const newObj: ColorwayObject = {
+                                        id: "Auto",
+                                        sourceType: "auto",
+                                        source: null,
+                                        colors: colors
+                                    };
+                                    if (!contexts.isConnected) {
+                                        setContext("activeColorwayObject", newObj);
                                     } else {
-                                        if (gradientPresetIds.includes(value)) {
-                                            const css = Object.keys(active).includes("linearGradient")
-                                                ? gradientBase(colorToHex(active.colors.accent), true) + `:root:root {--custom-theme-background: linear-gradient(${active.linearGradient})}`
-                                                : (getPreset(active.colors)[value].preset as { full: string; }).full;
-                                            ColorwayCSS.set(css);
+                                        if (!contexts.hasManagerRole) {
                                         } else {
-                                            ColorwayCSS.set(getPreset(active.colors)[value].preset as string);
+                                            Dispatcher.dispatch("COLORWAYS_SEND_COLORWAY", {
+                                                active: newObj
+                                            });
                                         }
                                     }
                                 }
-                            }
-                        });
-                    }}
-                    value={preset}
-                >
-                    {Object.values(getPreset({})).map(pre => <option
-                        value={pre.id}>
-                        {pre.name}
-                    </option>)}
-                </select>
+                            }}
+                        >
+                            <div className="dc-color-swatch-part" style={{ backgroundColor: colors.accent }} />
+                            <div className="dc-color-swatch-part" style={{ backgroundColor: colors.primary }} />
+                            <div className="dc-color-swatch-part" style={{ backgroundColor: colors.secondary }} />
+                            <div className="dc-color-swatch-part" style={{ backgroundColor: colors.tertiary }} />
+                        </div>
+                        {contexts.activeAutoPreset === id ? <SelectionCircle /> : null}
+                    </div>}
+                </Tooltip>)}
             </div>
-            <span className="colorwaysNote">Presets allow colorways to adapt to various Discord themes.</span>
+            <span className="dc-note">The auto colorway allows you to turn your system's accent color into a fully fledged colorway through various Auto Presets.</span>
         </Setting>
-        <span className="colorwaysModalSectionHeader">Other...</span>
+        <span className="dc-field-header">Manager</span>
+        <Setting>
+            <Switch
+                value={contexts.colorwaysManagerDoAutoconnect}
+                label="Automatically retry to connect to Manager"
+                id="autoReconnect"
+                onChange={(v: boolean) => {
+                    setContext("colorwaysManagerDoAutoconnect", v);
+                    if (!contexts.isConnected && v) connect();
+                }} />
+        </Setting>
         <Setting divider>
             <div style={{
                 display: "flex",
@@ -210,100 +188,170 @@ export default function ({
                 alignItems: "center",
                 cursor: "pointer"
             }}>
-                <label className="colorwaySwitch-label">Reset plugin to default settings (CANNOT BE UNDONE)</label>
+                <label className="dc-switch-label">Reconnection Delay (in ms)</label>
+                <input
+                    type="number"
+                    className="dc-textbox"
+                    style={{
+                        width: "100px",
+                        textAlign: "end"
+                    }}
+                    value={contexts.colorwaysManagerAutoconnectPeriod}
+                    autoFocus
+                    onInput={({ currentTarget: { value } }) => {
+                        setContext("colorwaysManagerAutoconnectPeriod", Number(value || "0"));
+                    }}
+                />
+            </div>
+        </Setting>
+        <span className="dc-field-header">Manage Settings...</span>
+        <Setting divider>
+            <div style={{
+                display: "flex",
+                flexDirection: "row",
+                width: "100%",
+                alignItems: "center",
+                cursor: "pointer"
+            }}>
                 <button
-                    className="colorwaysPillButton"
+                    className="dc-button dc-button-primary"
                     onClick={() => {
-                        DataStore.setMany([
-                            ["customColorways", []],
-                            ["colorwaySourceFiles", [{
-                                name: "Project Colorway",
-                                url: defaultColorwaySource
-                            }]],
-                            ["showColorwaysButton", false],
-                            ["activeColorwayObject", nullColorwayObj],
-                            ["colorwaysPluginTheme", "discord"],
-                            ["colorwaysBoundManagers", []],
-                            ["colorwaysManagerAutoconnectPeriod", 3000],
-                            ["colorwaysManagerDoAutoconnect", true],
-                            ["colorwaysPreset", "default"]
-                        ]);
+                        const data = { ...contexts };
+
+                        unsavedContexts.forEach(key => {
+                            delete data[key];
+                        });
+
+                        saveFile(new File([JSON.stringify(data)], "DiscordColorways.settings.json", { type: "application/json" }));
                     }}
                 >
-                    Reset...
+                    Export Settings...
+                </button>
+                <button
+                    className="dc-button dc-button-danger"
+                    style={{
+                        marginLeft: "8px"
+                    }}
+                    onClick={() => {
+                        openModal(props => <Modal
+                            modalProps={props}
+                            title="Import Settings for DiscordColorways"
+                            onFinish={async ({ closeModal }) => {
+                                const file = await chooseFile("application/json");
+                                if (!file) return;
+
+                                const reader = new FileReader();
+                                reader.onload = async () => {
+                                    const settings: { [key in ContextKey]: Context<key>; } = JSON.parse(reader.result as string) as { [key in ContextKey]: Context<key>; };
+                                    Object.keys(settings).forEach(key => {
+                                        setContext(key as ContextKey, settings[key], !unsavedContexts.includes(key));
+                                    });
+
+                                    closeModal();
+
+                                    initContexts();
+                                };
+                            }}
+                            confirmMsg="Import File..."
+                            type="danger"
+                        >
+                            Are you sure you want to import a settings file? Current settings will be overwritten!
+                        </Modal>);
+                    }}
+                >
+                    Import from JSON file...
+                </button>
+                <button
+                    className="dc-button dc-button-danger"
+                    style={{
+                        marginLeft: "8px"
+                    }}
+                    onClick={() => {
+                        openModal(props => <Modal
+                            modalProps={props}
+                            title="Reset DiscordColorways"
+                            onFinish={async ({ closeModal }) => {
+                                const resetValues: ([ContextKey, Context<ContextKey>] | [ContextKey, Context<ContextKey>, boolean])[] = [
+                                    ["colorwaysPluginTheme", "discord"],
+                                    ["colorwaySourceFiles", []],
+                                    ["customColorways", []],
+                                    ["activeColorwayObject", nullColorwayObj],
+                                    ["activeAutoPreset", "hueRotation"],
+                                    ["colorwayData", [], false],
+                                    ["showColorwaysButton", false],
+                                    ["colorwayUsageMetrics", []],
+                                    ["colorwaysManagerDoAutoconnect", true],
+                                    ["colorwaysManagerAutoconnectPeriod", 3000],
+                                    ["hasManagerRole", false, false],
+                                    ["isConnected", false, false],
+                                    ["boundKey", { "00000000": `discord.${Math.random().toString(16).slice(2)}.${new Date().getUTCMilliseconds()}` }, false],
+                                    ["colorwaysBoundManagers", []],
+                                ];
+
+                                setContexts(...resetValues);
+                                initContexts();
+                                closeModal();
+                            }}
+                            confirmMsg="Reset Plugin"
+                            type="danger"
+                        >
+                            Are you sure you want to reset DiscordColorways to its default settings? This will delete:
+                            <FeaturePresenter style={{
+                                marginTop: "16px"
+                            }}
+                                items={[
+                                    {
+                                        Icon: WirelessIcon,
+                                        title: "Your Online and Offline Sources"
+                                    },
+                                    {
+                                        Icon: PalleteIcon,
+                                        title: "Your Colorways and presets"
+                                    },
+                                    {
+                                        Icon: CogIcon,
+                                        title: "Your Settings"
+                                    }
+                                ]}
+                            />
+                        </Modal>);
+                    }}
+                >
+                    Reset DiscordColorways
                 </button>
             </div>
-            <span className="colorwaysNote">Reset the plugin to its default settings. All bound managers, sources, and colorways will be deleted. Please reload Discord after use.</span>
         </Setting>
-        <div style={{ flexDirection: "column", display: "flex" }}>
-            <h1 className="colorwaysWordmarkFirstPart">
-                Discord <span className="colorwaysWordmarkSecondPart">Colorways</span>
-            </h1>
-            <span
-                style={{
-                    color: "var(--text-normal)",
-                    fontWeight: 500,
-                    fontSize: "14px",
-                    marginBottom: "12px"
-                }}
-            >by Project Colorway</span>
-            <span className="colorwaysModalSectionHeader">
-                Plugin Version:
-            </span>
-            <span
-                style={{
-                    color: "var(--text-muted)",
-                    fontWeight: 500,
-                    fontSize: "14px",
-                    marginBottom: "8px"
-                }}
-            >
-                {PluginProps.pluginVersion} ({PluginProps.clientMod})
-            </span>
-            <span className="colorwaysModalSectionHeader">
-                UI Version:
-            </span>
-            <span
-                style={{
-                    color: "var(--text-muted)",
-                    fontWeight: 500,
-                    fontSize: "14px",
-                    marginBottom: "8px"
-                }}
-            >
-                {PluginProps.UIVersion}
-            </span>
-            <span className="colorwaysModalSectionHeader">
-                CSS Version:
-            </span>
-            <span
-                style={{
-                    color: "var(--text-muted)",
-                    fontWeight: 500,
-                    fontSize: "14px",
-                    marginBottom: "8px"
-                }}
-            >
-                {PluginProps.CSSVersion}
-            </span>
-            <span className="colorwaysModalSectionHeader">
-                Loaded Colorways:
-            </span>
-            <span
-                style={{
-                    color: "var(--text-muted)",
-                    fontWeight: 500,
-                    fontSize: "14px",
-                    marginBottom: "8px"
-                }}
-            >
-                {[...colorways, ...customColorways].length}
-            </span>
-            <span className="colorwaysModalSectionHeader">
-                Project Repositories:
-            </span>
-            <a role="link" target="_blank" href="https://github.com/DaBluLite/DiscordColorways">DiscordColorways</a>
-            <a role="link" target="_blank" href="https://github.com/DaBluLite/ProjectColorway">Project Colorway</a>
+        <span className="dc-field-header">About</span>
+        <h1 className="dc-wordmark">
+            Discord <span className="dc-wordmark-colorways">Colorways</span>
+        </h1>
+        <span
+            style={{
+                color: "var(--text-normal)",
+                fontWeight: 500,
+                fontSize: "14px"
+            }}
+        >by Project Colorway</span>
+        <span
+            className="dc-note"
+            style={{
+                color: "var(--text-normal)",
+                fontWeight: 500,
+                fontSize: "14px",
+                marginBottom: "12px"
+            }}
+        >
+            Version {contexts.discordColorwaysData.version.split(".")[0]}{contexts.discordColorwaysData.version.split(".")[1] !== "0" ? `.${contexts.discordColorwaysData.version.split(".")[1]}` : ""}{contexts.discordColorwaysData.version.split(".")[2] !== "0" ? ` (Patch ${contexts.discordColorwaysData.version.split(".")[2]})` : ""}
+        </span>
+        <div style={{
+            display: "flex",
+            flexDirection: "row",
+            width: "100%",
+            alignItems: "center",
+            cursor: "pointer"
+        }}>
+            <a role="link" target="_blank" className="dc-button dc-button-primary" style={{ width: "fit-content" }} href="https://github.com/DaBluLite/DiscordColorways">DiscordColorways <OpenExternalIcon width={16} height={16} /></a>
+            <a role="link" target="_blank" className="dc-button dc-button-primary" style={{ width: "fit-content", marginLeft: "8px" }} href="https://github.com/DaBluLite/ProjectColorway">Project Colorway <OpenExternalIcon width={16} height={16} /></a>
         </div>
-    </Container>;
+    </>;
 }
