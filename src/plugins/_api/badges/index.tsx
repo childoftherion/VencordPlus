@@ -33,7 +33,7 @@ import definePlugin from "@utils/types";
 import { Forms, Toasts, UserStore } from "@webpack/common";
 import { User } from "discord-types/general";
 
-const CONTRIBUTOR_BADGE = "https://vencord.dev/assets/favicon.png";
+const CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";
 const SUNCORD_CONTRIBUTOR_BADGE = "https://raw.githubusercontent.com/verticalsync/Suncord/main/src/assets/icon.png";
 const EQUICORD_CONTRIBUTOR_BADGE = "https://i.imgur.com/UpcDwX0.png";
 const PLUS_CONTRIBUTOR_BADGE = "https://vencord.dev/assets/favicon.png";  // Help, I need a custom thingy
