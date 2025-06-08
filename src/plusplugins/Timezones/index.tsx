@@ -17,7 +17,7 @@ import { findByPropsLazy } from "@webpack";
 import { Button, Menu, showToast, Toasts, Tooltip, useEffect, UserStore, useState } from "@webpack/common";
 import { Message, User } from "discord-types/general";
 
-import { authModal, deleteTimezone, getTimezone, loadDatabaseTimezones, setUserDatabaseTimezone } from "./database";
+import { deleteTimezone, getTimezone, loadDatabaseTimezones, setUserDatabaseTimezone } from "./database";
 import { SetTimezoneModal } from "./TimezoneModal";
 
 export let timezones: Record<string, string | null> = {};
@@ -64,13 +64,11 @@ export const settings = definePluginSettings({
     },
 
     setDatabaseTimezone: {
-        description: "Set your time zone in the database",
+        description: "Set your time zone on the database",
         type: OptionType.COMPONENT,
         component: () => (
             <Button onClick={() => {
-                authModal(async () => {
-                    openModal(modalProps => <SetTimezoneModal userId={UserStore.getCurrentUser().id} modalProps={modalProps} database={true} />);
-                });
+                openModal(modalProps => <SetTimezoneModal userId={UserStore.getCurrentUser().id} modalProps={modalProps} database={true} />);
             }}>
                 Set Timezone on Database
             </Button>
@@ -78,16 +76,24 @@ export const settings = definePluginSettings({
     },
 
     resetDatabaseTimezone: {
-        description: "Reset your time zone in the database",
+        description: "Reset your time zone on the database",
         type: OptionType.COMPONENT,
         component: () => (
             <Button
                 color={Button.Colors.RED}
-                onClick={() => {
-                    authModal(async () => {
+                onClick={async () => {
+                    try {
                         await setUserDatabaseTimezone(UserStore.getCurrentUser().id, null);
-                        await deleteTimezone();
-                    });
+                        const success = await deleteTimezone();
+                        if (success) {
+                            showToast("Database time zone reset successfully!", Toasts.Type.SUCCESS);
+                        } else {
+                            showToast("Failed to reset database time zone", Toasts.Type.FAILURE);
+                        }
+                    } catch (error) {
+                        console.error("Error resetting database time zone:", error);
+                        showToast("Failed to reset database time zone", Toasts.Type.FAILURE);
+                    }
                 }}
             >
                 Reset Database Timezones
@@ -228,9 +234,7 @@ export default definePlugin({
 
     toolboxActions: {
         "Set Database Time Zone": () => {
-            authModal(async () => {
-                openModal(modalProps => <SetTimezoneModal userId={UserStore.getCurrentUser().id} modalProps={modalProps} database={true} />);
-            });
+            openModal(modalProps => <SetTimezoneModal userId={UserStore.getCurrentUser().id} modalProps={modalProps} database={true} />);
         },
         "Refresh Database Time Zones": async () => {
             try {
@@ -239,7 +243,7 @@ export default definePlugin({
                 if (good) {
                     showToast("Time zones refreshed successfully!", Toasts.Type.SUCCESS);
                 } else {
-                    showToast("Time zones failed to refresh!", Toasts.Type.FAILURE);
+                    showToast("Time zones Failed to refresh!", Toasts.Type.FAILURE);
                 }
             }
             catch (error) {
@@ -265,9 +269,7 @@ export default definePlugin({
                             <Button
                                 color={Button.Colors.GREEN}
                                 onClick={() => {
-                                    authModal(async () => {
-                                        openModal(modalProps => <SetTimezoneModal userId={UserStore.getCurrentUser().id} modalProps={modalProps} database={true} />);
-                                    });
+                                    openModal(modalProps => <SetTimezoneModal userId={UserStore.getCurrentUser().id} modalProps={modalProps} database={true} />);
                                 }}
                             >
                                 Click here to set your time zone in the database.

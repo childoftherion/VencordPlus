@@ -61,12 +61,12 @@ async function openCompleteQuestUI() {
                         break;
                     }
                     await new Promise(resolve => setTimeout(resolve, interval * 1000));
-                    showNotification({
-                        title: `${applicationName} - Quest Completer`,
-                        body: "Quest completed!",
-                        icon: icon,
-                    });
                 }
+                showNotification({
+                    title: `${applicationName} - Quest Completer`,
+                    body: "Quest completed!",
+                    icon: icon,
+                });
             };
             fn();
             showNotification({
