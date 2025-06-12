@@ -1054,6 +1054,10 @@ export const EquicordDevs = Object.freeze({
     GroupXyz: {
         name: "GroupXyz",
         id: 950033410229944331n
+    },
+    Suffocate: {
+        name: "Suffocate",
+        id: 772601756776923187n
     }
 } satisfies Record<string, Dev>);
 
