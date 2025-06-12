@@ -48,6 +48,7 @@ export const CspPolicies: PolicyMap = {
     // FIXME: we really should not be using CDNs anymore
     "cdnjs.cloudflare.com": ImageScriptsAndCssSrc,
     "cdn.jsdelivr.net": ImageScriptsAndCssSrc,
+    "cdn.nest.rip": ImageSrc, // Badges (Suncord & Equicord)
 
     // Function Specific
     "api.github.com": ConnectSrc, // used for updating Vencord itself
