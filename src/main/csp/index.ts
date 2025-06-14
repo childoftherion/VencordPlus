@@ -41,7 +41,7 @@ export const CspPolicies: PolicyMap = {
     "*.tenor.com": ImageSrc, // Tenor, used by some themes
     "files.catbox.moe": ImageAndCssSrc, // Catbox, used by some themes
     "www.dropbox.com": ImageScriptsAndCssSrc, // Dropbox, used by some themes
-    "*.dl.dropboxusercontent.com": ImageScriptsAndCssSrc, // Dropbox, used by some themes
+    "*.dl.dropboxusercontent.com": ConnectSrc, // Dropbox, used by some themes
 
     "cdn.discordapp.com": ImageAndCssSrc, // Discord CDN, used by Vencord and some themes to load media
     "media.discordapp.net": ImageSrc, // Discord media CDN, possible alternative to Discord CDN
@@ -52,7 +52,7 @@ export const CspPolicies: PolicyMap = {
     "cdn.jsdelivr.net": ImageScriptsAndCssSrc,
 
     "cdn.nest.rip": ImageSrc, // Badges (Suncord & Equicord)
-    "*.scdn.co": ImageSrc, // Spotify CDN
+    "*.scdn.co": ImageAndCssSrc, // Spotify CDN
 
     // Function Specific
     "api.github.com": ConnectSrc, // used for updating Vencord itself
