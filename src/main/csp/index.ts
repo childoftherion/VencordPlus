@@ -68,7 +68,7 @@ export const CspPolicies: PolicyMap = {
     "icons.duckduckgo.com": ImageSrc, // DuckDuckGo Favicon API (Reverse Image Search)
     "jestinkt.nl": ImageSrc, // Badges (Vencord+)
     "pronoundb.org": ImageSrc, // PronounDB API
-    "fakeprofile.is-always.online": ImageSrc, // FakeProfile API
+    "fakeprofile.is-always.online": ImageAndCssSrc, // FakeProfile API
     "timezone.creations.works": ImageSrc, // Timezones API
 };
 
