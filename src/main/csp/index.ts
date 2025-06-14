@@ -40,6 +40,7 @@ export const CspPolicies: PolicyMap = {
     "i.pinimg.com": ImageSrc, // Pinterest, used by some themes
     "*.tenor.com": ImageSrc, // Tenor, used by some themes
     "files.catbox.moe": ImageAndCssSrc, // Catbox, used by some themes
+    "www.dropbox.com": ImageScriptsAndCssSrc, // Dropbox, used by some themes
 
     "cdn.discordapp.com": ImageAndCssSrc, // Discord CDN, used by Vencord and some themes to load media
     "media.discordapp.net": ImageSrc, // Discord media CDN, possible alternative to Discord CDN
@@ -48,7 +49,9 @@ export const CspPolicies: PolicyMap = {
     // FIXME: we really should not be using CDNs anymore
     "cdnjs.cloudflare.com": ImageScriptsAndCssSrc,
     "cdn.jsdelivr.net": ImageScriptsAndCssSrc,
+
     "cdn.nest.rip": ImageSrc, // Badges (Suncord & Equicord)
+    "*.scdn.co": ImageSrc, // Spotify CDN
 
     // Function Specific
     "api.github.com": ConnectSrc, // used for updating Vencord itself
@@ -63,6 +66,9 @@ export const CspPolicies: PolicyMap = {
     "usrbg.is-hardly.online": ImageSrc, // USRBG API
     "icons.duckduckgo.com": ImageSrc, // DuckDuckGo Favicon API (Reverse Image Search)
     "jestinkt.nl": ImageSrc, // Badges (Vencord+)
+    "pronoundb.org": ImageSrc, // PronounDB API
+    "fakeprofile.is-always.online": ImageSrc, // FakeProfile API
+    "timezone.creations.works": ImageSrc, // Timezones API
 };
 
 const findHeader = (headers: PolicyMap, headerName: Lowercase<string>) => {
