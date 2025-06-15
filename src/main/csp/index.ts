@@ -71,6 +71,7 @@ export const CspPolicies: PolicyMap = {
     "fakeprofile.is-always.online": ImageAndCssSrc, // FakeProfile API
     "timezone.creations.works": ImageSrc, // Timezones API
     "globalbadges.equicord.org": ConnectSrc, // GlobalBadges API
+    "discord-themes.com": ConnectSrc, // ThemeLibrary API
 };
 
 const findHeader = (headers: PolicyMap, headerName: Lowercase<string>) => {
