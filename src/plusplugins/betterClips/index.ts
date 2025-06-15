@@ -6,6 +6,7 @@
 
 import { definePluginSettings } from "@api/Settings";
 import definePlugin, { OptionType } from "@utils/types";
+import { SelectOption } from "@webpack/types";
 
 
 const settings = definePluginSettings({
@@ -21,8 +22,8 @@ const settings = definePluginSettings({
         default: true,
         restartNeeded: true
     },
-    moreClipDurations: {
-        description: "Adds more clip durations",
+    moreClipSettings: {
+        description: "Adds more FPS and duration options in settings",
         type: OptionType.BOOLEAN,
         default: true,
         restartNeeded: true
@@ -32,8 +33,10 @@ const settings = definePluginSettings({
 export default definePlugin({
     name: "BetterClips",
     authors: [
-        { id: 211461918127292416n, name: "Loukious" }
+        { id: 211461918127292416n, name: "Loukious" },
+        Devs.niko
     ],
+    description: "Allows you to configure extra clipping options for streams",
     settings,
     patches: [
         {
@@ -53,21 +56,36 @@ export default definePlugin({
             }
         },
         {
-            predicate: () => settings.store.moreClipDurations,
-            find: "MINUTES_2=",
-            replacement: {
-                match: /((\i)\[(\i)\.MINUTES_2=2\*(\i)\.(\i)\.(\i)\.MINUTE\]="MINUTES_2",)/,
-                replace: "$&$2[$3.MINUTES_3=3*$4.$5.$6.MINUTE]=\"MINUTES_3\",$2[$3.MINUTES_5=5*$4.$5.$6.MINUTE]=\"MINUTES_5\","
-            }
-        },
-        {
-            predicate: () => settings.store.moreClipDurations,
-            find: "count:2})",
-            replacement: {
-                match: /\{value:(\i)\.(\i)\.MINUTES_2,label:(\i)\.(\i)\.formatToPlainString\((\i)\.(\i)\.(\w+),\{count:2\}\)\}/,
-                replace: "$&,{value:$1.$2.MINUTES_3,label:$3.$4.formatToPlainString($5.$6.$7,{count:3})},{value:$1.$2.MINUTES_5,label:$3.$4.formatToPlainString($5.$6.$7,{count:5})}"
-            }
+            predicate: () => settings.store.moreClipSettings,
+            find: "clips_recording_settings",
+            replacement: [
+                {
+                    match: /\[\{.{0,10}\i.\i.FPS_15.{0,250}\}\]/,
+                    replace: "$self.patchFramerates($&)"
+                },
+                {
+                    match: /\[\{.{0,10}\i.\i.SECONDS_30.{0,250}\}\]/,
+                    replace: "$self.patchTimeslots($&)"
+                },
+            ]
         }
     ],
-    description: "Enables extra clipping options for streams"
+    patchTimeslots(timeslots: SelectOption[]) {
+        const newTimeslots = [...timeslots];
+        const extraTimeslots = [3, 5, 7, 10];
+
+        extraTimeslots.forEach(timeslot => newTimeslots.push({ value: timeslot * 60000, label: `${timeslot} Minutes` }));
+
+        return newTimeslots;
+    },
+
+    patchFramerates(framerates: SelectOption[]) {
+        const newFramerates = [...framerates];
+        const extraFramerates = [45, 90, 120, 144, 165, 240];
+
+        // Lower framerates than 15FPS have adverse affects on compression, 3 minute clips at 10FPS skyrocket the filesize to 200mb!!
+        extraFramerates.forEach(framerate => newFramerates.push({ value: framerate, label: `${framerate}FPS` }));
+
+        return newFramerates.toSorted();
+    }
 });
