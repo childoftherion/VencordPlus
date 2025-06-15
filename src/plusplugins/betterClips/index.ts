@@ -34,7 +34,7 @@ export default definePlugin({
     name: "BetterClips",
     authors: [
         { id: 211461918127292416n, name: "Loukious" },
-        Devs.niko
+        { id: 341377368075796483n, name: "niko" }
     ],
     description: "Allows you to configure extra clipping options for streams",
     settings,
