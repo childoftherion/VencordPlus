@@ -56,7 +56,7 @@ function CheckBadge({ badge, author }: { badge: string; author: User; }): JSX.El
                         className={roleIconClassName}
                         name="Vencord Contributor"
                         size={20}
-                        src={"https://vencord.dev/assets/favicon.png"}
+                        src={"https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64"}
                     />
                 </span>
             ) : null;
@@ -128,7 +128,7 @@ function CheckBadge({ badge, author }: { badge: string; author: User; }): JSX.El
                         className={roleIconClassName}
                         name={"Vencord+ Contributor"}
                         size={20}
-                        src={"https://vencord.dev/assets/favicon.png"}
+                        src={"https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64"}
                     />
                 </span>
             ) : null;
@@ -139,7 +139,7 @@ function CheckBadge({ badge, author }: { badge: string; author: User; }): JSX.El
                         className={roleIconClassName}
                         name={"Vencord+ Maintainer"}
                         size={20}
-                        src={"https://vencord.dev/assets/favicon.png"}
+                        src={"https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64"}
                     />
                 </span>
             ) : null;

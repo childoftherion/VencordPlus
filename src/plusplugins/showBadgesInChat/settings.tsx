@@ -153,14 +153,14 @@ export default settings;
 const BadgeSettings = () => {
     const [images, setImages] = useState([
         { src: "https://cdn.discordapp.com/emojis/1026533070955872337.png", shown: settings.store.showVencordDonor, title: "Vencord donor badges", key: "VencordDonor", position: settings.store.VencordDonorPosition },
-        { src: "https://vencord.dev/assets/favicon.png", shown: settings.store.showVencordContributor, title: "Vencord contributor badge", key: "VencordContributer", position: settings.store.VencordContributorPosition },
+        { src: "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64", shown: settings.store.showVencordContributor, title: "Vencord contributor badge", key: "VencordContributer", position: settings.store.VencordContributorPosition },
         { src: "https://i.imgur.com/H3GPhpd.png", shown: settings.store.showSuncordDonor, title: "Suncord donor badges", key: "SuncordDonor", position: settings.store.SuncordDonorPosition },
         { src: "https://raw.githubusercontent.com/verticalsync/Suncord/main/src/assets/icon.png", shown: settings.store.showSuncordContributor, title: "Suncord contributor badge", key: "SuncordContributer", position: settings.store.SuncordContributorPosition },
         { src: "https://i.imgur.com/KsxHlbD.png", shown: settings.store.showEquicordDonor, title: "Equicord donor badges", key: "EquicordDonor", position: settings.store.EquicordDonorPosition },
         { src: "https://i.imgur.com/rJDRtUB.png", shown: settings.store.showEquicordContributor, title: "Equicord contributor badge", key: "EquicordContributer", position: settings.store.EquicordContributorPosition },
-        { src: "https://vencord.dev/assets/favicon.png", shown: settings.store.showPlusCustom, title: "Vencord+ custom badges", key: "PlusCustom", position: settings.store.PlusCustomPosition },
-        { src: "https://vencord.dev/assets/favicon.png", shown: settings.store.showPlusContributor, title: "Vencord+ contributor badge", key: "PlusContributer", position: settings.store.PlusContributorPosition },
-        { src: "https://vencord.dev/assets/favicon.png", shown: settings.store.showPlusMaintainer, title: "Vencord+ maintainer badge", key: "PlusMaintainer", position: settings.store.PlusMaintainerPosition },
+        { src: "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64", shown: settings.store.showPlusCustom, title: "Vencord+ custom badges", key: "PlusCustom", position: settings.store.PlusCustomPosition },
+        { src: "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64", shown: settings.store.showPlusContributor, title: "Vencord+ contributor badge", key: "PlusContributer", position: settings.store.PlusContributorPosition },
+        { src: "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64", shown: settings.store.showPlusMaintainer, title: "Vencord+ maintainer badge", key: "PlusMaintainer", position: settings.store.PlusMaintainerPosition },
         { src: "https://cdn.discordapp.com/badge-icons/bf01d1073931f921909045f3a39fd264.png", shown: settings.store.showDiscordProfile, title: "Discord profile badges (HypeSquad, Discord Staff, Active Developer, etc.)", key: "DiscordProfile", position: settings.store.DiscordProfilePosition },
         { src: "https://cdn.discordapp.com/badge-icons/2ba85e8026a8614b640c2837bcdfe21b.png", shown: settings.store.showDiscordNitro, title: "Nitro badge", key: "DiscordNitro", position: settings.store.DiscordNitroPosition }
     ]);
