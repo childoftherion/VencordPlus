@@ -79,7 +79,7 @@ export default definePlugin({
                     : (
                         <div className={ProfileListClasses.empty}>
                             <div className={ProfileListClasses.emptyIconFriends}></div>
-                            <div className={ProfileListClasses.emptyText}>No group dms in common</div>
+                            <div className={ProfileListClasses.emptyText}>No group DMs in common</div>
                         </div>
                     )
                 }
