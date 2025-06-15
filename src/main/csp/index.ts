@@ -70,7 +70,7 @@ export const CspPolicies: PolicyMap = {
     "pronoundb.org": ImageSrc, // PronounDB API
     "fakeprofile.is-always.online": ImageAndCssSrc, // FakeProfile API
     "timezone.creations.works": ImageSrc, // Timezones API
-    "globalbadges.equicord.org": ImageSrc, // GlobalBadges API
+    "globalbadges.equicord.org": ConnectSrc, // GlobalBadges API
 };
 
 const findHeader = (headers: PolicyMap, headerName: Lowercase<string>) => {
