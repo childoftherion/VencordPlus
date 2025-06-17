@@ -1,13 +1,13 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { findByCode } from "@webpack";
 import { ChannelStore, lodash, Toasts, UserStore } from "@webpack/common";
 import { Channel, Message } from "discord-types/general";
 
+import { User } from ".";
 import { Discord, HolyNotes } from "./types";
 import { deleteCacheFromDataStore, DeleteEntireStore, saveCacheToDataStore } from "./utils";
 
@@ -28,7 +28,7 @@ export default new (class NoteHandler {
             },
             flags: message.flags,
             // Moment has a toString() function, this doesn't convert to '[object Object]'.
-            // eslint-disable-next-line @typescript-eslint/no-base-to-string
+
             timestamp: message.timestamp.toString(),
             attachments: message.attachments as Discord.Attachment[],
             embeds: message.embeds,
@@ -141,8 +141,6 @@ export default new (class NoteHandler {
 
     public refreshAvatars = async () => {
         const notebooks = this.getAllNotes();
-
-        const User = findByCode("tag", "isClyde");
 
         for (const notebook in notebooks)
             for (const noteId in notebooks[notebook]) {

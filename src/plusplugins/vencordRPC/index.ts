@@ -191,19 +191,19 @@ function isTimestampDisabled() {
     return settings.store.timestampMode !== TimestampMode.CUSTOM;
 }
 
-// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 function onlineFriendCount(): number {
     let onlineFriends = 0;
-    const relationships = RelationshipStore.getRelationships();
-    for (const id in relationships) {
-        if (relationships[id] === 1 && PresenceStore.getStatus(id) !== "offline") onlineFriends++;
+    const relationships = RelationshipStore.getFriendIDs();
+    for (const id of relationships) {
+        if (PresenceStore.getStatus(id) !== "offline") {
+            onlineFriends++;
+        }
     }
     return onlineFriends;
 }
 
 function totalFriendCount(): number {
-    return Object.values(RelationshipStore.getRelationships()).filter(r => r === 1).length;
+    return RelationshipStore.getFriendCount();
 }
 
 function memberCount(): string {
@@ -242,7 +242,7 @@ async function createActivity(): Promise<Activity | undefined> {
 
     let { type } = settings.store;
 
-    let appName = "Vencord";
+    let appName = "Vencord+";
     let details = "";
     let state = "";
     let imageBig = "";
@@ -333,8 +333,6 @@ async function createActivity(): Promise<Activity | undefined> {
         details = "7:27 👈";
         state = "";
     }
-
-    // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const activity: Activity = {
         application_id: appID || "0",

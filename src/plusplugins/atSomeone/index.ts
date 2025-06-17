@@ -25,7 +25,7 @@ export default definePlugin({
         {
             find: "inQuote:",
             replacement: {
-                match: /\|Clyde/,
+                match: /\|here/,
                 replace: "$&|someone"
             }
         }
