@@ -1,6 +1,6 @@
 .nx-tone-list {
     display: grid;
-    grid-template-columns: calc(50% - 8px) calc(50% - 8px);
+    grid-template-columns: repeat(3, 1fr);
     grid-template-rows: auto;
     gap: 16px;
     margin-bottom: 24px;
@@ -21,8 +21,8 @@
     border: 1px solid var(--border-normal);
     border-radius: 4px;
     font-family: var(--font-code);
-    margin: -.2em 0;
-    padding: 0 .2em;
+    margin: -0.2em 0;
+    padding: 0 0.2em;
     font-size: 85%;
     color: var(--text-normal);
 }

@@ -9,7 +9,7 @@ import "./NxCard.css";
 
 import { Margins } from "@utils/margins";
 import { classes } from "@utils/misc";
-import { ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot } from "@utils/modal";
+import { ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, ModalSize } from "@utils/modal";
 import { Forms, React, TextInput } from "@webpack/common";
 import { JSX } from "react";
 
@@ -51,7 +51,7 @@ export function ToneListModal({ rootProps }: { rootProps: ModalProps; }) {
     }
 
     return (
-        <ModalRoot {...rootProps}>
+        <ModalRoot {...rootProps} size={ModalSize.MEDIUM}>
             <ModalHeader className={cl("modal-header")}>
                 <Forms.FormTitle tag="h2" className={cl("modal-title")}>
                     Tone List
