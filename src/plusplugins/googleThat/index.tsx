@@ -1,17 +1,22 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 import { ApplicationCommandOptionType, findOption } from "@api/Commands";
 import { definePluginSettings } from "@api/Settings";
-import { Devs } from "@utils/constants";
+import { Devs, EquicordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
+
 function getMessage(opts) {
     const inputOption = findOption(opts, "input", "");
 
-    const queryURL = "" + searchEngines[settings.store.defaultEngine] + encodeURIComponent(inputOption);
+    let queryURL = "" + searchEngines[settings.store.defaultEngine] + encodeURIComponent(inputOption);
+
+    if (settings.store.customEngineURL) {
+        queryURL = "" + [settings.store.customEngineURL] + encodeURIComponent(inputOption);
+    }
 
     if (settings.store.hyperlink) {
         return `[${inputOption}](${queryURL})`;
@@ -30,6 +35,7 @@ const searchEngines = {
     "Yandex": "https://yandex.com/search/?text=",
     "Ecosia": "https://www.ecosia.org/search?q=",
     "Ask": "https://www.ask.com/web?q=",
+    "AOL": "https://search.aol.com/aol/search?q=",
     "LetMeGoogleThatForYou": "https://letmegooglethat.com/?q="
 };
 
@@ -39,8 +45,7 @@ const settings = definePluginSettings({
         description: "If the sent link should hyperlink with the query as the label",
         default: true
     },
-    defaultEngine:
-    {
+    defaultEngine: {
         type: OptionType.SELECT,
         description: "The search engine to use",
         options: Object.keys(searchEngines).map((key, index) => ({
@@ -48,19 +53,24 @@ const settings = definePluginSettings({
             value: key,
             default: index === 0
         }))
+    },
+    customEngineURL: {
+        description: "The URL of the search engine you want to use",
+        type: OptionType.STRING,
+        placeholder: "https://search.vmohammad.dev/?q="
     }
 });
 
 export default definePlugin({
     name: "GoogleThat",
-    description: "Adds a command to send a Google search link to a query",
-    authors: [Devs.Samwich],
+    description: "Adds a command to send an internet search engine link",
+    authors: [Devs.Samwich, EquicordDevs.KrystalSkull],
     tags: ["search", "google", "query", "duckduckgo", "command"],
     settings,
     commands: [
         {
             name: "googlethat",
-            description: "send a search engine link to a query",
+            description: "Send a search engine link.",
             options: [
                 {
                     name: "input",
