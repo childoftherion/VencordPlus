@@ -8,8 +8,7 @@ import { definePluginSettings, Settings } from "@api/Settings";
 import { copyToClipboard } from "@utils/clipboard";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType, StartAt } from "@utils/types";
-import { findComponentByCodeLazy } from "@webpack";
-import { Button, Forms, TextInput, Toasts, useState } from "@webpack/common";
+import { Button, ColorPicker, Forms, TextInput, Toasts, useState } from "@webpack/common";
 
 import { darkenColorHex, generateRandomColorHex, saturateColorHex } from "./generateTheme";
 import { themes } from "./themeDefinitions";
@@ -85,8 +84,6 @@ function CopyPresetComponent() {
         </>
     );
 }
-
-const ColorPicker = findComponentByCodeLazy(".BACKGROUND_ACCENT.css");
 
 export function generateAndApplyProceduralTheme() {
 
@@ -214,7 +211,7 @@ export function ColorPick({ propertyname }: { propertyname: string; }) {
             <ColorPicker
                 color={parseInt(settings.store[propertyname], 16)}
                 onChange={color => {
-                    const hexColor = color.toString(16).padStart(6, "0");
+                    const hexColor = (color ?? 0).toString(16).padStart(6, "0");
                     settings.store[propertyname] = hexColor;
                     injectCSS();
                 }
@@ -244,7 +241,7 @@ function injectCSS() {
         const fontName = parseFontContent();
         const theCSS = getCSS(fontName);
 
-        let elementToRemove = document.getElementById("GlideStyleInjection");
+        const elementToRemove = document.getElementById("GlideStyleInjection");
         if (elementToRemove) {
             elementToRemove.remove();
         }
@@ -793,5 +790,5 @@ export default definePlugin({
     },
     startAt: StartAt.DOMContentLoaded,
     // preview thing (kinda low effort, but eh)
-    settingsAboutComponent: () => <img src="https://files.catbox.moe/j8y2gt.webp" width="568px" border-radius="30px" alt=""></img>
+    settingsAboutComponent: () => <img src="https://files.catbox.moe/j8y2gt.webp" style={{ width: "568px", borderRadius: "30px" }} alt=""></img>
 });

@@ -19,11 +19,8 @@
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { copyWithToast } from "@utils/misc";
 import definePlugin from "@utils/types";
-import { findStoreLazy } from "@webpack";
-import { Menu, React } from "@webpack/common";
+import { Menu, React, StickerStore } from "@webpack/common";
 import { Promisable } from "type-fest";
-
-const StickersStore = findStoreLazy("StickersStore");
 
 interface Sticker {
     t: "Sticker";
@@ -128,7 +125,7 @@ const expressionPickerPatch: NavContextMenuPatchCallback = (children, props: { t
     if (!id) return;
 
     if (!props.target.className?.includes("lottieCanvas")) {
-        const stickerCache = StickersStore.getStickerById(id);
+        const stickerCache = StickerStore.getStickerById(id);
         if (stickerCache) {
             children.push(buildMenuExpression("Sticker", () => stickerCache));
         }
