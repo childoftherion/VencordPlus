@@ -9,11 +9,14 @@ import "./styles.css";
 import { EquicordDevs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin from "@utils/types";
-import { StickerStore } from "@webpack/common";
+import { findStoreLazy } from "@webpack";
 
 import { getMimeType, isLinkAnImage, settings, stripDiscordParams } from "./settings";
 
 const logger = new Logger("ImagePreview", "#FFFFFF");
+const StickerStore = findStoreLazy("StickersStore") as {
+    getStickerById(id: string): any;Add commentMore actions
+};
 
 let currentPreview: HTMLDivElement | null = null;
 let currentPreviewFile: HTMLImageElement | HTMLVideoElement | null = null;
