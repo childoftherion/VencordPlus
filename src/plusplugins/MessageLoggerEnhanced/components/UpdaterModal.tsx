@@ -117,7 +117,7 @@ export function UpdaterModal({ modalProps }: { modalProps: ModalProps; }) {
                                 <code><HashLink repo={repoInfo?.repo!} longHash={longHash} disabled={repoPending} /></code>
                                 <span style={{
                                     marginLeft: "0.5em",
-                                    color: "var(--text-normal)"
+                                    color: "var(--text-default)"
                                 }}>{message} - {author}</span>
                             </div>
                         ))

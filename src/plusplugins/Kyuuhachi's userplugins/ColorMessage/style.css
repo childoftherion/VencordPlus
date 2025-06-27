@@ -5,7 +5,7 @@
 div[class*="messageContent_"] {
     color: color-mix(
         in lab,
-        var(--98-message-color, var(--text-normal)) calc(var(--98-message-color-saturation) * 1%),
-        var(--text-normal)
+        var(--98-message-color, var(--text-default)) calc(var(--98-message-color-saturation) * 1%),
+        var(--text-default)
     )
 }

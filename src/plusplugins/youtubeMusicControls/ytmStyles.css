@@ -149,7 +149,7 @@
 
 #vc-ytm-progress-bar {
     position: relative;
-    color: var(--text-normal);
+    color: var(--text-default);
     width: 100%;
     margin: 0.5em 0;
     margin-bottom: 5px;
@@ -201,5 +201,5 @@
 
 .vc-ytm-fallback {
     padding: 0.5em;
-    color: var(--text-normal);
+    color: var(--text-default);
 }

@@ -101,7 +101,7 @@ const defaultPreset: Preset = {
 .theme-dark .body_cd82a7 .icon_fc4f04 {
     --white-500: black !important;
     --interactive-normal: black !important;
-    --text-normal: black !important;
+    --text-default: black !important;
     --text-muted: black !important;
     --header-primary: black !important;
     --header-secondary: black !important;
@@ -116,7 +116,7 @@ const defaultPreset: Preset = {
 }
 
 .theme-dark .channelTextArea_a7d72e {
-    --text-normal: black;
+    --text-default: black;
 }
 
 .theme-dark .placeholder_a552a6 {
@@ -172,7 +172,7 @@ const defaultPreset: Preset = {
 }
 
 .theme-dark .embedFull_b0068a {
-    --text-normal: black;
+    --text-default: black;
 }
 /*End Secondary*/`
         },
@@ -222,7 +222,7 @@ const defaultPreset: Preset = {
 }
 
 .theme-dark .tooltip_b6c360 {
-    --text-normal: black !important;
+    --text-default: black !important;
 }
 .theme-dark .children_fc4f04 .icon_fc4f04 {
     color: var(--interactive-active) !important;

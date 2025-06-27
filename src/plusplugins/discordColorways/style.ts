@@ -28,7 +28,7 @@ export default `/* stylelint-disable unknownAtRules */
     transition: 0.15s ease-out;
     background-color: var(--background-primary);
     cursor: pointer;
-    color: var(--text-normal);
+    color: var(--text-default);
 }
 
 .dc-app-launcher:hover {
@@ -723,8 +723,8 @@ export default `/* stylelint-disable unknownAtRules */
 .dc-warning-card {
     padding: 1em;
     margin-bottom: 1em;
-    background-color: var(--info-warning-background);
-    border-color: var(--info-warning-foreground);
+    background-color: var(--background-feedback-warning);
+    border-color: var(--text-feedback-warning);
     color: var(--info-warning-text);
 }
 
@@ -876,7 +876,7 @@ export default `/* stylelint-disable unknownAtRules */
     font-weight: normal;
     font-size: 1.25em;
     padding: 16px;
-    color: var(--text-normal);
+    color: var(--text-default);
 }
 
 .dc-field-header {
@@ -964,7 +964,7 @@ export default `/* stylelint-disable unknownAtRules */
 .dc-tooltip {
     background-color: var(--background-floating);
     box-shadow: var(--shadow-high);
-    color: var(--text-normal);
+    color: var(--text-default);
     pointer-events: none;
     border-radius: 5px;
     font-weight: 500;
@@ -1478,7 +1478,7 @@ export default `/* stylelint-disable unknownAtRules */
     font-size: 12px;
     line-height: 1.3333;
     font-weight: 400;
-    color: var(--text-normal);
+    color: var(--text-default);
 }
 
 .dc-modal-header-subtitle {
@@ -1486,7 +1486,7 @@ export default `/* stylelint-disable unknownAtRules */
     font-size: 12px;
     line-height: 1.3333;
     font-weight: 400;
-    color: var(--text-normal);
+    color: var(--text-default);
 }
 
 .theme-dark .dc-changelog-desc,
@@ -1565,7 +1565,7 @@ export default `/* stylelint-disable unknownAtRules */
 
 .dc-select {
     background-color: var(--input-background);
-    color: var(--text-normal);
+    color: var(--text-default);
     font-weight: 500;
     border: 1px solid var(--input-background);
     padding: 8px 8px 8px 12px;

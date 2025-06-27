@@ -6,5 +6,5 @@
     padding-right: 16px !important;
     background-color: var(--modal-background);
     border-radius: 4px;
-    color: var(--text-normal);
+    color: var(--text-default);
 }

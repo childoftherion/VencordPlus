@@ -527,7 +527,7 @@ export function generateCss(colors: { accent?: string, primary?: string, seconda
 .theme-dark .body_cd82a7 .icon_fc4f04 {
     --white-500: black !important;
     --interactive-normal: black !important;
-    --text-normal: black !important;
+    --text-default: black !important;
     --text-muted: black !important;
     --header-primary: black !important;
     --header-secondary: black !important;
@@ -546,7 +546,7 @@ export function generateCss(colors: { accent?: string, primary?: string, seconda
 }
 
 .theme-dark .channelTextArea_a7d72e {
-    --text-normal: ${(HexToHSL("#" + primaryColor)[2] + 3.6 > 80) ? "black" : "white"};
+    --text-default: ${(HexToHSL("#" + primaryColor)[2] + 3.6 > 80) ? "black" : "white"};
 }
 
 .theme-dark .placeholder_a552a6 {
@@ -598,7 +598,7 @@ export function generateCss(colors: { accent?: string, primary?: string, seconda
 }
 
 .theme-dark .embedFull_b0068a {
-    --text-normal: black;
+    --text-default: black;
 }
 /*End Secondary*/`: ""}${HexToHSL("#" + tertiaryColor)[2] > 80 ? `\n\n/*Tertiary*/
 .theme-dark .winButton_a934d8,
@@ -619,7 +619,7 @@ export function generateCss(colors: { accent?: string, primary?: string, seconda
 }
 
 .theme-dark .tooltip_b6c360 {
-    --text-normal: black !important;
+    --text-default: black !important;
 }
 .theme-dark .children_fc4f04 .icon_fc4f04 {
     color: var(--interactive-active) !important;

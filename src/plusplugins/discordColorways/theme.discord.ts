@@ -62,7 +62,7 @@ export default `/* stylelint-disable color-function-notation */
 
 [data-theme="discord"] .dc-textbox {
     border-radius: 3px;
-    color: var(--text-normal);
+    color: var(--text-default);
     background-color: var(--input-background);
     height: 40px;
     padding: 10px;

@@ -327,7 +327,7 @@ function Settings() {
         </h1>
         <span
             style={{
-                color: "var(--text-normal)",
+                color: "var(--text-default)",
                 fontWeight: 500,
                 fontSize: "14px"
             }}
@@ -335,7 +335,7 @@ function Settings() {
         <span
             className="dc-note"
             style={{
-                color: "var(--text-normal)",
+                color: "var(--text-default)",
                 fontWeight: 500,
                 fontSize: "14px",
                 marginBottom: "12px"

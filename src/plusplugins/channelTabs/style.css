@@ -185,7 +185,7 @@
 
 .vc-channeltabs-button {
     background-color: transparent;
-    color: var(--text-normal);
+    color: var(--text-default);
 }
 
 .vc-channeltabs-new-button {

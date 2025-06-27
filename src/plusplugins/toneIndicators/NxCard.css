@@ -7,7 +7,7 @@
 }
 
 .nx-card-warning {
-    background-color: var(--info-warning-background) !important;
+    background-color: var(--background-feedback-warning) !important;
 }
 
 .nx-card-help {
@@ -26,7 +26,7 @@
     font-family: var(--font-display);
     font-size: 16px;
     font-weight: 700;
-    color: var(--text-normal);
+    color: var(--text-default);
     display: flex;
     flex-direction: row;
     justify-content: space-between;

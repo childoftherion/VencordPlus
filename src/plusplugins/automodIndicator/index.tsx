@@ -74,7 +74,7 @@ export default definePlugin({
                     <SafetyIcon
                         width={16}
                         height={16}
-                        color="var(--text-normal)"
+                        color="var(--text-default)"
                     />
                 </div>}
             </Tooltip>

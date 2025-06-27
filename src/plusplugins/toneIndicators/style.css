@@ -24,7 +24,7 @@
     margin: -0.2em 0;
     padding: 0 0.2em;
     font-size: 85%;
-    color: var(--text-normal);
+    color: var(--text-default);
 }
 
 .nx-tone-list-indicators span::before {

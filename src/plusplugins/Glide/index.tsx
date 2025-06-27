@@ -411,7 +411,7 @@ function getCSS(fontName) {
         /*other*/
 
             /*mention side line color color*/
-            --info-warning-foreground: var(--mentionhighlightcol);
+            --text-feedback-warning: var(--mentionhighlightcol);
 
             /*text color of mention text*/
             --mention-foreground: white;
@@ -421,7 +421,7 @@ function getCSS(fontName) {
             --header-primary: var(--text);
             --header-secondary: var(--text);
             --font-display: var(--text);
-            --text-normal: var(--text);
+            --text-default: var(--text);
             --text-muted: var(--mutedtext);
             --channels-default: var(--mutedtext);
             --interactive-normal: var(--text) !important;

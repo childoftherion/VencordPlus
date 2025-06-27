@@ -321,7 +321,7 @@ div:has(.vc-user-notes-data-modal-user-text-area) {
 .vc-user-notes-data-modal-cache-status {
     display: grid;
     align-items: center;
-    color: var(--text-normal);
+    color: var(--text-default);
     font-size: 20px;
     line-height: 24px;
     text-align: center;
