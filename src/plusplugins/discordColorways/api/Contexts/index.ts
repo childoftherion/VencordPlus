@@ -152,7 +152,7 @@ const defaultPreset: Preset = {
 }
 
 .theme-dark .channelRow_f04d06 {
-    background-color: var(--background-secondary);
+    background-color: var(--base-lower);
 }
 
 .theme-dark .channelRow_f04d06 * {

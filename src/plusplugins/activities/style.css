@@ -16,7 +16,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 5px;
-    background: var(--background-secondary-alt);
+    background: var(--base-lower-alt);
     border-radius: 3px;
     flex: 1 0;
     margin-top: 10px;
@@ -66,5 +66,5 @@
 }
 
 .vc-activities-controls-tooltip {
-    --background-floating: var(--background-secondary);
+    --background-floating: var(--base-lower);
 }

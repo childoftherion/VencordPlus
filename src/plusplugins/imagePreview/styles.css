@@ -2,7 +2,7 @@
     position: fixed;
     z-index: 1000;
     pointer-events: none;
-    border: 2px solid var(--background-secondary);
+    border: 2px solid var(--base-lower);
     background-color: var(--background-primary);
     padding: 1px;
     display: flex;
@@ -44,8 +44,8 @@
     padding: 2px 5px;
     border-radius: 4px;
     font-size: 12px;
-    box-shadow: 0 0 0 1px var(--background-secondary);
-    border: 1px solid var(--background-secondary);
+    box-shadow: 0 0 0 1px var(--base-lower);
+    border: 1px solid var(--base-lower);
 }
 
 
@@ -55,8 +55,8 @@
     padding: 2px 5px;
     border-radius: 4px;
     font-size: 12px;
-    box-shadow: 0 0 0 1px var(--background-secondary);
-    border: 1px solid var(--background-secondary);
+    box-shadow: 0 0 0 1px var(--base-lower);
+    border: 1px solid var(--base-lower);
 }
 
 .image-preview .file-info span:not(:last-child) {

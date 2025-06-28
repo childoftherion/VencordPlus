@@ -6,11 +6,11 @@
 }
 
 .theme-light #vc-ytm-player {
-    background: var(--bg-overlay-3, var(--background-secondary-alt));
+    background: var(--bg-overlay-3, var(--base-lower-alt));
 }
 
 .theme-dark #vc-ytm-player {
-    background: var(--bg-overlay-1, var(--background-secondary-alt));
+    background: var(--bg-overlay-1, var(--base-lower-alt));
 }
 
 .vc-ytm-button {

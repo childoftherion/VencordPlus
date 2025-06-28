@@ -364,7 +364,7 @@ function getCSS(fontName) {
             --primary-630: var(--accent);
 
             /*plugin grid square and nitro shop*/
-            --background-secondary-alt: var(--accent);
+            --base-lower-alt: var(--accent);
 
             /*modal background, self explanatory*/
             --modal-background: var(--accent);
@@ -386,7 +386,7 @@ function getCSS(fontName) {
             --background-primary: var(--bgcol);
 
             /*dm list*/
-            --background-secondary: var(--bgcol);
+            --base-lower: var(--bgcol);
 
             /*outer frame and search background*/
             --background-tertiary: var(--bgcol);

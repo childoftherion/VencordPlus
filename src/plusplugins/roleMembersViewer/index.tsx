@@ -10,6 +10,7 @@ import {
     FluxDispatcher,
     GuildMemberStore,
     GuildStore,
+    GuildRoleStore,
     Menu,
     SelectedChannelStore,
     SelectedGuildStore,
@@ -61,7 +62,7 @@ export default definePlugin({
             const guild = GuildStore.getGuild(SelectedGuildStore.getGuildId());
             if (!guild) return;
 
-            const role = GuildStore.getRole(guild.id, id);
+            const role = GuildRoleStore.getRole(guild.id, id);
             if (!role) return;
 
             const guildId = guild.id;

@@ -60,7 +60,7 @@
 }
 
 .vc-st-more-button {
-    background-color: var(--background-secondary);
+    background-color: var(--base-lower);
     color: var(--header-secondary);
 }
 

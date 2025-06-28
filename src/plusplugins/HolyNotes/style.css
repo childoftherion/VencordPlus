@@ -10,7 +10,7 @@ $modifier: var(--background-modifier-accent);
     margin-right: 15px;
     margin-bottom: 6px;
     background-color: var(--background-tertiary);
-    border: solid 2px var(--background-secondary);
+    border: solid 2px var(--base-lower);
 }
 
 .vc-notebook-header {

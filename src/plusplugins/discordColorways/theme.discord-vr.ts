@@ -225,7 +225,7 @@ export default `[data-theme="discord-vr"] .dc-switch {
 }
 
 [data-theme="discord-vr"] .dc-colorway {
-    background: var(--bg-mod-faint);
+    background: var(--background-mod-faint);
     border-radius: 8px;
     border: 1px solid rgba(255 255 255 / 10%) !important;
     transition:
@@ -239,7 +239,7 @@ export default `[data-theme="discord-vr"] .dc-switch {
 }
 
 [data-theme="discord-vr"] .dc-colorway[aria-checked="true"] {
-    border-color: var(--border-faint);
+    border-color: var(--user-profile-border);
     background: var(--bg-mod-strong);
 }
 
@@ -325,7 +325,7 @@ export default `[data-theme="discord-vr"] .dc-switch {
     flex: 1 1 auto;
     box-sizing: border-box;
     border: 1px solid var(--background-tertiary);
-    background: var(--background-secondary);
+    background: var(--base-lower);
     border-radius: 0 0 4px 4px;
 }
 

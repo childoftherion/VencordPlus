@@ -33,7 +33,7 @@
 }
 
 .vce-theme-info-tag {
-  background: var(--background-secondary);
+  background: var(--base-lower);
   color: var(--text-primary);
   border: 2px solid var(--background-tertiary);
   padding: 0.25rem 0.5rem;
@@ -93,7 +93,7 @@
 .vce-image-paste {
   border-radius: 8px;
   border: 3px dashed var(--background-modifier-accent);
-  background-color: var(--background-secondary);
+  background-color: var(--base-lower);
   padding: 20px;
   text-align: center;
   position: relative;

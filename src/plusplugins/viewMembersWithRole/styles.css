@@ -68,9 +68,9 @@
 
 .vc-vmwr-role-button {
     border-radius: var(--radius-xs);
-    background: var(--bg-mod-faint);
+    background: var(--background-mod-faint);
     color: var(--interactive-normal);
-    border: 1px solid var(--border-faint);
+    border: 1px solid var(--user-profile-border);
     /* stylelint-disable-next-line value-no-vendor-prefix */
     width: -moz-fit-content;
     width: fit-content;
@@ -83,7 +83,7 @@
     border-color: var(--profile-body-border-color)
 }
 
-.vc-vmwr-user-div{
+.vc-vmwr-user-div {
     display: flex;
     align-items: center;
     gap: 0.2em;
@@ -104,7 +104,7 @@
 }
 
 .vc-vmwr-member-list-header {
-    background-color: var(--background-secondary);
+    background-color: var(--base-lower);
     padding: 5px;
     border-radius: 5px;
 }

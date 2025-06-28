@@ -145,7 +145,7 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    background-color: var(--background-secondary);
+    background-color: var(--base-lower);
     border-radius: 12px;
     box-sizing: border-box;
 }
@@ -156,7 +156,7 @@
     .vc-user-notes-data-modal-user-actions:hover
 )
 ) {
-    background-color: var(--background-secondary-alt);
+    background-color: var(--base-lower-alt);
 }
 
 .vc-user-notes-data-modal-user-avatar {

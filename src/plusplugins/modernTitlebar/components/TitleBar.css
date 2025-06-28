@@ -12,7 +12,7 @@
 }
 
 [data-popout-root="true"] .vc-modernTitlebar-container {
-    background: var(--bg-overlay-4, var(--background-secondary));
+    background: var(--bg-overlay-4, var(--base-lower));
 }
 
 .vc-modernTitlebar-titlebar {

@@ -1,7 +1,7 @@
 .emoji-container {
     display: grid;
     gap: 10px;
-    background-color: var(--background-secondary);
+    background-color: var(--base-lower);
     max-height: 300px;
     overflow-y: auto;
 }
@@ -51,7 +51,7 @@
     flex-direction: column;
     align-items: center;
     padding: 8px;
-    background-color: var(--background-secondary-alt);
+    background-color: var(--base-lower-alt);
     border-radius: 4px;
 }
 

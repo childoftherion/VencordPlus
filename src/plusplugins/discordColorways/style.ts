@@ -725,7 +725,7 @@ export default `/* stylelint-disable unknownAtRules */
     margin-bottom: 1em;
     background-color: var(--background-feedback-warning);
     border-color: var(--text-feedback-warning);
-    color: var(--info-warning-text);
+    color: var(--info-warning-foreground);
 }
 
 .dc-colorway-selector::before {
@@ -1389,11 +1389,11 @@ export default `/* stylelint-disable unknownAtRules */
 }
 
 .dc-changelog-title-added {
-    color: var(--text-positive);
+    color: var(--status-positiveve);
 }
 
 .dc-changelog-title-added::after {
-    background-color: var(--text-positive);
+    background-color: var(--status-positiveve);
 }
 
 .dc-changelog-title-fixed {
@@ -1523,7 +1523,7 @@ export default `/* stylelint-disable unknownAtRules */
     flex: 1 1 auto;
     box-sizing: border-box;
     border: 1px solid var(--background-tertiary);
-    background: var(--background-secondary);
+    background: var(--base-lower);
     border-radius: 0 0 4px 4px;
     overflow: hidden scroll;
     scrollbar-width: none;

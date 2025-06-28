@@ -78,7 +78,7 @@ function CloneModal({ role, icon }: { role: Role; icon?: string | null; }) {
                                 aria-disabled={isCloning}
                                 style={{
                                     borderRadius: "50%",
-                                    backgroundColor: "var(--background-secondary)",
+                                    backgroundColor: "var(--base-lower)",
                                     display: "inline-flex",
                                     justifyContent: "center",
                                     alignItems: "center",

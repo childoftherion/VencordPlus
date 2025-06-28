@@ -9,7 +9,7 @@ import "./style.css";
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { getUserSettingLazy } from "@api/UserSettings";
 import definePlugin from "@utils/types";
-import { GuildStore, Menu, SelectedGuildStore } from "@webpack/common";
+import { GuildRoleStore, Menu, SelectedGuildStore } from "@webpack/common";
 import { Guild, Role } from "discord-types/general";
 
 import { createRole } from "./api";
@@ -29,7 +29,7 @@ function MakeContextCallback(type: "settings" | "other"): NavContextMenuPatchCal
         );
     } : (children, contextMenuApiArguments) => {
         const guildid = SelectedGuildStore.getGuildId();
-        const role = GuildStore.getRole(guildid, contextMenuApiArguments.id);
+        const role = GuildRoleStore.getRole(guildid, contextMenuApiArguments.id);
         if (!role) return;
         children.splice(-1, 0,
             <Menu.MenuItem

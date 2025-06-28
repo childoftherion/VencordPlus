@@ -275,7 +275,7 @@ export const knownThemeVars = {
         variable: "--cyan-accent-color",
         accent: "--cyan-accent-color",
         primary: "--cyan-background-primary",
-        secondary: "--cyan-background-secondary"
+        secondary: "--cyan-base-lower"
     },
     "Virtual Boy": {
         variable: "--VBaccent",
@@ -310,7 +310,7 @@ export const knownThemeVars = {
 export const mainColors = [
     { name: "accent", title: "Accent", var: "--brand-500" },
     { name: "primary", title: "Primary", var: "--background-primary" },
-    { name: "secondary", title: "Secondary", var: "--background-secondary" },
+    { name: "secondary", title: "Secondary", var: "--base-lower" },
     { name: "tertiary", title: "Tertiary", var: "--background-tertiary" }
 ];
 

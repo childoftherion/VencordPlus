@@ -65,7 +65,7 @@
     width: 98vw;
     height: 0.075rem;
     background: var(--bg-overlay-5);
-    background-color: var(--background-secondary);
+    background-color: var(--base-lower);
     margin: 0.25rem 1vw;
 }
 

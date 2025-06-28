@@ -2,7 +2,7 @@
 .vc-soundlog-sound {
     box-sizing: border-box;
     position: relative;
-    background: var(--background-secondary);
+    background: var(--base-lower);
     border-radius: var(--radius-sm);
     height: 40px;
     width: 100%;

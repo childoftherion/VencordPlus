@@ -7,7 +7,7 @@
 import { InfoIcon } from "@components/Icons";
 import { ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import { findByCodeLazy, findExportedComponentLazy } from "@webpack";
-import { Constants, GuildChannelStore, GuildMemberStore, GuildStore, Parser, RestAPI, ScrollerThin, Text, Tooltip, useEffect, UserStore, useState } from "@webpack/common";
+import { Constants, GuildChannelStore, GuildMemberStore, GuildRoleStore, Parser, RestAPI, ScrollerThin, Text, Tooltip, useEffect, UserStore, useState } from "@webpack/common";
 import { UnicodeEmoji } from "@webpack/types";
 import type { Role } from "discord-types/general";
 
@@ -138,7 +138,7 @@ function MembersContainer({ guildId, roleId }: { guildId: string; roleId: string
 }
 
 function VMWRModal({ guildId, props }: { guildId: string; props: ModalProps; }) {
-    const roleObj = GuildStore.getRoles(guildId);
+    const roleObj = GuildRoleStore.getRoles(guildId);
     const roles = Object.keys(roleObj).map(key => roleObj[key]).sort((a, b) => b.position - a.position);
 
     const [selectedRole, selectRole] = useState(roles[0]);

@@ -57,6 +57,7 @@
     width: 100%;
     justify-content: space-around;
 }
+
 .vc-log-toolbox-btn svg {
     color: var(--interactive-normal);
 }
@@ -69,7 +70,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--background-secondary);
+    background-color: var(--base-lower);
 }
 
 .folder-upload-input {

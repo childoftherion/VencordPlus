@@ -73,7 +73,7 @@ export default `/* stylelint-disable color-function-notation */
 
 [data-theme="discord"] .dc-colorway {
     border-radius: 4px;
-    background-color: var(--background-secondary);
+    background-color: var(--base-lower);
     border: none;
     color: var(--header-primary);
     transition:
@@ -366,7 +366,7 @@ export default `/* stylelint-disable color-function-notation */
     flex: 1 1 auto;
     box-sizing: border-box;
     border: 1px solid var(--background-tertiary);
-    background: var(--background-secondary);
+    background: var(--base-lower);
     border-radius: 0 0 4px 4px;
 }
 

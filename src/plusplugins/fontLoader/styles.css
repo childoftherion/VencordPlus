@@ -6,7 +6,7 @@
 .eq-googlefonts-card {
     padding: 16px;
     cursor: pointer !important;
-    background: var(--background-secondary);
+    background: var(--base-lower);
     border: 1px solid var(--background-tertiary);
 }
 
