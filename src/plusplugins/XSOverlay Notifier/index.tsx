@@ -267,7 +267,7 @@ export default definePlugin({
             // color role mentions (unity styling btw lol)
             if (message.mention_roles.length > 0) {
                 for (const roleId of message.mention_roles) {
-                    const role = GuildStore.getRole(channel.guild_id, roleId);
+                    const role = GuildRoleStore.getRole(channel.guild_id, roleId);
                     if (!role) continue;
                     const roleColor = role.colorString ?? `#${pingColor}`;
                     finalMsg = finalMsg.replace(`<@&${roleId}>`, `<b><color=${roleColor}>@${role.name}</color></b>`);
