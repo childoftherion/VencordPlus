@@ -28,12 +28,13 @@ export const CspPolicies: PolicyMap = {
     "localhost:*": MediaAndCssSrc,
     "127.0.0.1:*": MediaAndCssSrc,
 
-    "*.github.io": MediaAndCssSrc, // GitHub pages, used by most themes
+    "*.github.io": MediaAndCssSrc, // GitHub Pages, used by most themes
     "github.com": MediaAndCssSrc, // GitHub content (stuff uploaded to markdown forms), used by most themes
     "raw.githubusercontent.com": MediaAndCssSrc, // GitHub raw, used by some themes
-    "*.gitlab.io": MediaAndCssSrc, // GitLab pages, used by some themes
+    "gist.githubusercontent.com": MediaAndCssSrc, // GitHub gist raw, used by some themes
+    "*.gitlab.io": MediaAndCssSrc, // GitLab Pages, used by some themes
     "gitlab.com": MediaAndCssSrc, // GitLab raw, used by some themes
-    "*.codeberg.page": MediaAndCssSrc, // Codeberg pages, used by some themes
+    "*.codeberg.page": MediaAndCssSrc, // Codeberg Pages, used by some themes
     "codeberg.org": MediaAndCssSrc, // Codeberg raw, used by some themes
 
     "*.githack.com": MediaAndCssSrc, // githack (namely raw.githack.com), used by some themes
