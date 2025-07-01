@@ -349,7 +349,7 @@ ${generateCss({ ...colors, primary: hslToHex(HexToHSL(colors.primary)[0], HexToH
     background: rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-6));
 }
 .folder_bc7085:has(.expandedFolderIconWrapper_bc7085) {
-    background: var(--bg-overlay-6,var(--background-secondary));
+    background: var(--bg-overlay-6,var(--base-lower));
 }
 .circleIconButton_db6521:not(.selected_db6521) {
     background: rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-6));
@@ -577,7 +577,7 @@ export function generateCss(colors: { accent?: string, primary?: string, seconda
 }
 
 .theme-dark .channelRow_f04d06 {
-    background-color: var(--background-secondary);
+    background-color: var(--base-lower);
 }
 
 .theme-dark .channelRow_f04d06 * {
@@ -609,7 +609,7 @@ export function generateCss(colors: { accent?: string, primary?: string, seconda
     --white-500: black !important;
 }
 
-.theme-dark [style="background-color: var(--background-secondary);"] {
+.theme-dark [style="background-color: var(--base-lower);"] {
     color: ${HexToHSL("#" + secondaryColor)[2] > 80 ? "black" : "white"};
 }
 

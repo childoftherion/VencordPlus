@@ -108,7 +108,7 @@ export default definePlugin({
             const roleMenuItems: JSX.Element[] = [];
 
             for (const roleId of uniqueRoleIds as string[]) {
-                const role = GuildStore.getRole(guildId, roleId);
+                const role = GuildRoleStore.getRole(guildId, roleId);
                 if (!role) continue;
 
                 const membersWithRole = fetchMembersWithRole(guildId, roleId);
