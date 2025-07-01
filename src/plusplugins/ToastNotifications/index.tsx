@@ -184,7 +184,7 @@ const addMention = (id: string, type: string, guildId?: string): ReactNode => {
     else if (type === "channel")
         name = `#${ChannelStore.getChannel(id)?.name || "unknown-channel"}`;
     else if (type === "role" && guildId)
-        name = `@${GuildStore.getGuild(guildId).GuildRoleStore.getRole(id)?.name || "unknown-role"}`;
+        name = `@${GuildRoleStore.getRole(guildId, id)?.name || "unknown-role"}`;
 
     // Return the mention as a styled span.
     return (
