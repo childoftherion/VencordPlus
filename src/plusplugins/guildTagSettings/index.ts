@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import "@plusplugins/_misc/styles.css";
+import "../_misc/styles.css";
 
 import { definePluginSettings } from "@api/Settings";
 import { disableStyle, enableStyle } from "@api/Styles";
