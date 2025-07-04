@@ -1,6 +1,6 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -170,6 +170,12 @@ const settings = definePluginSettings({
             if (value && value < 0) return "End timestamp must be greater than 0.";
             return true;
         }
+    },
+    secretStuff: {
+        type: OptionType.STRING,
+        description: "A comma-separated list of server/channel IDs which will be hidden from the rich presence",
+        onChange: onChange,
+        default: ""
     }
 });
 
@@ -228,6 +234,10 @@ function getChannelIconURL(channel: Channel): string {
     return chino;
 }
 
+function getSecretStuff(): string[] {
+    return settings.store.secretStuff.split(",").map(id => id.trim()).filter(Boolean);
+}
+
 async function createActivity(): Promise<Activity | undefined> {
 
     const {
@@ -261,7 +271,15 @@ async function createActivity(): Promise<Activity | undefined> {
     const currentUser = UserStore.getCurrentUser();
     if (userAvatarAsSmallImage) imageSmall = currentUser.getAvatarURL(undefined, undefined, true) || chino;
 
-    if (!channelId) {
+    const secretStuff = getSecretStuff();
+    const isSecret = secretStuff.includes(channelId) || secretStuff.includes(guildId);
+
+    if (isSecret) {
+        appName = "Channel/Guild Hidden";
+        details = "Information hidden";
+        state = "Information hidden";
+        imageBig = chino;
+    } else if (!channelId) {
         appName = "Friends List";
         details = `${onlineFriendCount()} online / ${totalFriendCount()} total`;
         state = `${GuildStore.getGuildCount()} servers`;
