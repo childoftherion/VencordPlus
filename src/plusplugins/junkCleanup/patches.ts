@@ -161,9 +161,9 @@ const Patches: Record<string, ConfigurablePatchDefinition> = {
     contentInventory: {
         description: "Hide the Activity Feed in the members list",
         patches: {
-            find: /hasFeature\(\i\.\i\.ACTIVITY_FEED_ENABLED_BY_USER\)/,
+            find: /features\.has\(\i\.\i\.ACTIVITY_FEED_ENABLED_BY_USER\)/,
             replacement: {
-                match: /(?=let.{0,50}?hasFeature\(\i\.\i\.ACTIVITY_FEED_ENABLED_BY_USER\))/,
+                match: /(?=let.{0,50}?features\.has\(\i\.\i\.ACTIVITY_FEED_ENABLED_BY_USER\))/,
                 replace: "return false;"
             }
         },

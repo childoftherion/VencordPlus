@@ -1,12 +1,12 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 import { SafetyIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
-import { getIntlMessage } from "@utils/discord";
+import { getIntlMessage, hasGuildFeature } from "@utils/discord";
 import definePlugin from "@utils/types";
 import { findByPropsLazy } from "@webpack";
 import { Text, Tooltip } from "@webpack/common";
@@ -33,7 +33,8 @@ export default definePlugin({
     ],
 
     AutoModGuildIcon({ guild }: { guild: Guild; }) {
-        const hasAutoMod = guild.hasFeature("AUTO_MODERATION" as keyof Constants["GuildFeatures"]);
+        // @ts-expect-error
+        const hasAutoMod = hasGuildFeature(guild, "AUTO_MODERATION" as keyof Constants["GuildFeatures"]);
         const imageFilterDescriptions = ["", "EXPLICIT_CONTENT_FILTER_MEDIUM_DESCRIPTION_V2", "EXPLICIT_CONTENT_FILTER_HIGH_DESCRIPTION_V2"];
         const labels = [
             hasAutoMod && {

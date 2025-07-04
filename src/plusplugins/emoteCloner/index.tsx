@@ -1,30 +1,19 @@
 /*
- * Vencord, a modification for Discord's desktop app
- * Copyright (c) 2022 Vendicated and contributors
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { CheckedTextInput } from "@components/CheckedTextInput";
 import { Devs } from "@utils/constants";
+import { getGuildAcronym } from "@utils/discord";
 import { Logger } from "@utils/Logger";
 import { Margins } from "@utils/margins";
 import { ModalContent, ModalHeader, ModalRoot, openModalLazy } from "@utils/modal";
 import definePlugin from "@utils/types";
 import { findByCodeLazy, findStoreLazy } from "@webpack";
-import { Constants, ContextMenuApi, EmojiStore, FluxDispatcher, Forms, GuildStore, Menu, PermissionsBits, PermissionStore, React, RestAPI, Toasts, Tooltip, UserStore } from "@webpack/common";
+import { Constants, ContextMenuApi, EmojiStore, FluxDispatcher, Forms, GuildStore, IconUtils, Menu, PermissionsBits, PermissionStore, React, RestAPI, Toasts, Tooltip, UserStore } from "@webpack/common";
 import { Promisable } from "type-fest";
 
 const StickersStore = findStoreLazy("StickersStore");
@@ -257,13 +246,18 @@ function CloneModal({ data }: { data: Sticker | Emoji; }) {
                                             width: "100%",
                                             height: "100%",
                                         }}
-                                        src={g.getIconURL(512, true)}
+                                        src={IconUtils.getGuildIconURL({
+                                            id: g.id,
+                                            icon: g.icon,
+                                            canAnimate: true,
+                                            size: 512
+                                        })}
                                         alt={g.name}
                                     />
                                 ) : (
                                     <Forms.FormText
                                         style={{
-                                            fontSize: getFontSize(g.acronym),
+                                            fontSize: getFontSize(getGuildAcronym(g)),
                                             width: "100%",
                                             overflow: "hidden",
                                             whiteSpace: "nowrap",
@@ -271,7 +265,7 @@ function CloneModal({ data }: { data: Sticker | Emoji; }) {
                                             cursor: isCloning ? "not-allowed" : "pointer",
                                         }}
                                     >
-                                        {g.acronym}
+                                        {getGuildAcronym(g)}
                                     </Forms.FormText>
                                 )}
                             </div>
