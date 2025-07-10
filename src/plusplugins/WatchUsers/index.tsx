@@ -327,7 +327,7 @@ export default definePlugin({
 
     addIconToToolBar(e: { toolbar: React.ReactNode[] | React.ReactNode; }) {
         if (Array.isArray(e.toolbar)) {
-            return e.toolbar.push(
+            return e.toolbar.unshift(
                 <ErrorBoundary noop={true} key="watch-indicator">
                     <this.WatchIndicator />
                 </ErrorBoundary>

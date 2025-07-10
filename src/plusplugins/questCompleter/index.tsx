@@ -300,7 +300,7 @@ export default definePlugin({
     },
     toolbarAction(e) {
         if (Array.isArray(e.toolbar))
-            return e.toolbar.push(
+            return e.toolbar.unshift(
                 <ErrorBoundary noop={true}>
                     <ToolBarHeader />
                 </ErrorBoundary>

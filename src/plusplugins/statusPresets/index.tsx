@@ -146,7 +146,7 @@ export default definePlugin({
         {
             find: "#{intl::CUSTOM_STATUS_SET_CUSTOM_STATUS}",
             replacement: {
-                match: /\.\i\i,children:\i\.\i\.string\(\i\.\i#{intl::SAVE}\)\}\)/,
+                match: /cancelButton,children:\i\.\i\.string\(\i\.\i#{intl::CANCEL}\)\}\)/,
                 replace: "$&,$self.renderSaveButton(this.state)"
             }
         },
