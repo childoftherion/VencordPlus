@@ -214,7 +214,7 @@ function totalFriendCount(): number {
 
 function memberCount(): string {
     const channelId = SelectedChannelStore.getChannelId();
-    const guildId = SelectedGuildStore.getGuildId();
+    const guildId = SelectedGuildStore.getGuildId()!;
     const { groups } = ChannelMemberStore.getProps(guildId, channelId);
     const total = GuildMemberCountStore.getMemberCount(guildId);
 
@@ -266,7 +266,7 @@ async function createActivity(): Promise<Activity | undefined> {
 
 
     const channelId = SelectedChannelStore.getChannelId();
-    const guildId = SelectedGuildStore.getGuildId();
+    const guildId = SelectedGuildStore.getGuildId()!;
     const voiceId = SelectedChannelStore.getVoiceChannelId();
     const currentUser = UserStore.getCurrentUser();
     if (userAvatarAsSmallImage) imageSmall = currentUser.getAvatarURL(undefined, undefined, true) || chino;
