@@ -7,12 +7,10 @@
 import { DataStore } from "@api/index";
 import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
-import { OptionType } from "@utils/types";
+import definePlugin, { OptionType, PluginNative } from "@utils/types";
+import { Message } from "@vencord/discord-types"
 import { ApplicationAssetUtils, FluxDispatcher } from "@webpack/common";
 import { UserStore } from "@webpack/common";
-import { Message } from "discord-types/general"
-import { PluginNative } from "@utils/types";
 
 export async function getApplicationAsset(key: string): Promise<string> {
     if (/https?:\/\/(cdn|media)\.discordapp\.(com|net)\/attachments\//.test(key)) return "mp:" + key.replace(/https?:\/\/(cdn|media)\.discordapp\.(com|net)\//, "");

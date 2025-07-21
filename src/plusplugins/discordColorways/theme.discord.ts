@@ -12,7 +12,7 @@ export default `/* stylelint-disable color-function-notation */
 }
 
 [data-theme="discord"] .dc-divider {
-    border-color: var(--background-modifier-accent);
+    border-color: var(--border-subtle);
 }
 
 [data-theme="discord"] .dc-switch-thumb {

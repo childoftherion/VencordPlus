@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { Message } from "@vencord/discord-types";
 import { findByPropsLazy, findStoreLazy } from "@webpack";
 import { ChannelStore, GuildStore } from "@webpack/common";
-import { Message } from "discord-types/general";
 
 const RecentMentionsStore = findStoreLazy("RecentMentionsStore");
 

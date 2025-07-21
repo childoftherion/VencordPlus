@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { GuildMember } from "discord-types/general";
+import { GuildMember } from "@vencord/discord-types";
 
 export interface ClientUser {
     id: string;

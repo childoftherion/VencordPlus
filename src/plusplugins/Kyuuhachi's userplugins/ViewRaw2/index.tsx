@@ -6,8 +6,8 @@ import { Devs } from "@utils/constants";
 import { Margins } from "@utils/margins";
 import { closeModal, ModalCloseButton, ModalContent, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
+import { Message } from "@vencord/discord-types";
 import { Forms, Menu, Text } from "@webpack/common";
-import { Message } from "discord-types/general";
 
 const CopyIcon = () => {
     return <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" width="18" height="18">

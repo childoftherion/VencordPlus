@@ -11,8 +11,8 @@ import { DataStore } from "@api/index";
 import { definePluginSettings, migratePluginSettings } from "@api/Settings";
 import { EquicordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
+import { CustomEmoji, UnicodeEmoji } from "@vencord/discord-types";
 import { Alerts, Button, EmojiStore, GuildStore, Menu, Toasts, useEffect, useState } from "@webpack/common";
-import { CustomEmoji, UnicodeEmoji } from "@webpack/types";
 
 interface ContextMenuEmoji {
     type: string;

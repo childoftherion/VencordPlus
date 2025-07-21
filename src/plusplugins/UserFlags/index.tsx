@@ -4,10 +4,11 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { ApplicationCommandInputType, ApplicationCommandOptionType, Argument, CommandContext, findOption, sendBotMessage } from "@api/Commands";
+import { ApplicationCommandInputType, ApplicationCommandOptionType, findOption, sendBotMessage } from "@api/Commands";
 import { DataStore } from "@api/index";
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
+import { CommandArgument, CommandContext } from "@vencord/discord-types";
 import { Parser, React, Text } from "@webpack/common";
 
 let userFlags = new Map<string, Flag>();

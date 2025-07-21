@@ -9,6 +9,7 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs } from "@utils/constants";
 import { getCurrentChannel, getCurrentGuild } from "@utils/discord";
 import definePlugin from "@utils/types";
+import { Channel, User } from "@vencord/discord-types";
 import {
     DefaultExtractAndLoadChunksRegex,
     extractAndLoadChunksLazy,
@@ -34,7 +35,6 @@ import {
     UserStore,
     useStateFromStores
 } from "@webpack/common";
-import { Channel, User } from "discord-types/general";
 
 import { settings, SidebarStore } from "./store";
 

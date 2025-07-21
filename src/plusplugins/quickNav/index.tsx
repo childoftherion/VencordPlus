@@ -6,10 +6,9 @@
 
 import { ApplicationCommandInputType, ApplicationCommandOptionType, findOption, sendBotMessage } from "@api/Commands";
 import * as DataStore from "@api/DataStore";
-import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
+import { Channel } from "@vencord/discord-types";
 import { NavigationRouter } from "@webpack/common";
-import { Channel } from "discord-types/general";
 
 interface QuickNavKeybind {
     id: number;

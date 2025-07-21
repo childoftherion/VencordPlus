@@ -8,14 +8,13 @@ import { definePluginSettings } from "@api/Settings";
 import { classNameFactory } from "@api/Styles";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Flex } from "@components/Flex";
-import { EquicordDevs } from "@utils/constants";
 import { getIntlMessage, openUserProfile } from "@utils/discord";
 import { Margins } from "@utils/margins";
 import { classes } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
-import { findByPropsLazy, findComponentByCodeLazy, findStoreLazy } from "@webpack";
-import { Clickable, Forms, RelationshipStore, Tooltip, UserStore, useStateFromStores } from "@webpack/common";
-import { User } from "discord-types/general";
+import { User } from "@vencord/discord-types";
+import { findByPropsLazy, findStoreLazy } from "@webpack";
+import { Clickable, Forms, RelationshipStore, Tooltip, UserStore, UserSummaryItem, useStateFromStores } from "@webpack/common";
 import { JSX } from "react";
 
 interface WatchingProps {
@@ -65,7 +64,6 @@ function Watching({ userIds, guildId }: WatchingProps): JSX.Element {
 
 const ApplicationStreamingStore = findStoreLazy("ApplicationStreamingStore");
 
-const UserSummaryItem = findComponentByCodeLazy("defaultRenderUser", "showDefaultAvatarsForNullUsers");
 const AvatarStyles = findByPropsLazy("moreUsers", "emptyUser", "avatarContainer", "clickableAvatar");
 
 export default definePlugin({

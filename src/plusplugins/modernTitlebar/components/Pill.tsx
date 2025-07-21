@@ -7,7 +7,7 @@
 import "./Pill.css";
 
 import { classes } from "@utils/misc";
-import { Icon } from "@webpack/types";
+import { Icon } from "@vencord/discord-types";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { cl } from "./TitleBar";

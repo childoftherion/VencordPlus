@@ -10,9 +10,9 @@ import { disableStyle, enableStyle } from "@api/Styles";
 import { Devs } from "@utils/constants";
 import { ModalProps, ModalRoot, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
+import { GuildMember, Message, User } from "@vencord/discord-types";
 import { findByCodeLazy } from "@webpack";
 import { Menu, Text, TextInput } from "@webpack/common";
-import { GuildMember, Message, User } from "discord-types/general";
 
 import style from "./style.css";
 import { ClientUser, MessageAuthor, userChange } from "./types";

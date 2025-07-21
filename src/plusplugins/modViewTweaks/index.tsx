@@ -6,8 +6,8 @@
 
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
+import { User } from "@vencord/discord-types";
 import { SelectedChannelStore, UserProfileActions } from "@webpack/common";
-import { User } from "discord-types/general";
 
 export default definePlugin({
     name: "ModViewTweaks",

@@ -4,11 +4,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { ApplicationCommandInputType, Argument, CommandContext } from "@api/Commands";
+import { ApplicationCommandInputType } from "@api/Commands";
 import { gitHash } from "@shared/vencordUserAgent";
 import { Devs } from "@utils/constants";
 import { sendMessage } from "@utils/discord";
 import definePlugin, { Plugin, PluginNative } from "@utils/types";
+import { CommandArgument, CommandContext } from "@vencord/discord-types";
 import { GuildMemberStore, UserStore } from "@webpack/common";
 
 import { PluginMeta } from "~plugins";
@@ -123,7 +124,7 @@ export default definePlugin({
             name: "venfetch",
             description: "Neofetch for Vencord",
             inputType: ApplicationCommandInputType.BUILT_IN,
-            execute: async (args: Argument[], ctx: CommandContext) => {
+            execute: async (args: CommandArgument[], ctx: CommandContext) => {
                 const commonIssues = {
                     "NoRPC": Vencord.Plugins.isPluginEnabled("NoRPC"),
                     "disabled activities": tryOrElse(() => !ShowCurrentGame.getSetting(), false),

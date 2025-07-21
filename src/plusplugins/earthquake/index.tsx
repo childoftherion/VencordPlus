@@ -1,11 +1,10 @@
 import { definePluginSettings } from "@api/Settings";
-import { makeRange } from "@components/PluginSettings/components";
-import { openPluginModal } from "@components/PluginSettings/PluginModal";
+import { openPluginModal } from "@components/settings/tabs";
 import { Devs } from "@utils/constants";
-import definePlugin, { OptionType } from "@utils/types";
+import definePlugin, { makeRange, OptionType } from "@utils/types";
+import { FluxEvents } from "@vencord/discord-types";
 import { mapMangledModuleLazy } from "@webpack";
 import { FluxDispatcher } from "@webpack/common";
-import { FluxEvents } from "@webpack/types";
 
 const Effects: { Dispatcher: { dispatch(eventName: string, args: any): void; }; } = mapMangledModuleLazy("this.emitter.setMaxListeners", {
     Dispatcher: e => "_savedDispatches" in e

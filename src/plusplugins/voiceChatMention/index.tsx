@@ -6,9 +6,9 @@
 
 import { insertTextIntoChatInputBox } from "@utils/discord";
 import definePlugin from "@utils/types";
+import { Channel } from "@vencord/discord-types";
 import { findByPropsLazy } from "@webpack";
 import { Menu, UserStore } from "@webpack/common";
-import { Channel } from "discord-types/general";
 
 const SortedVoiceStateStore = findByPropsLazy("getVoiceStatesForChannel");
 

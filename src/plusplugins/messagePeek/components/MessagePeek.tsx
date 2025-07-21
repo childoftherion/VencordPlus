@@ -6,16 +6,16 @@
 
 import "./styles.css";
 
+import { Message } from "@vencord/discord-types";
 import { findByPropsLazy } from "@webpack";
 import { MessageStore, Parser, TooltipContainer, useStateFromStores } from "@webpack/common";
-import { Message } from "discord-types/general";
 
 import { MessagePeekProps } from "../types";
 
 const ChannelWrapperStyles = findByPropsLazy("muted", "subText");
 const ChannelStyles = findByPropsLazy("closeButton", "subtext");
 
-declare module "discord-types/general" {
+declare module "@vencord/discord-types" {
     interface User {
         globalName?: string;
     }

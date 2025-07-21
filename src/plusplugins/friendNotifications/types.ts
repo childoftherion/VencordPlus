@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Channel, User } from "discord-types/general";
+import { Channel, User } from "@vencord/discord-types";
 
 export type Status = "online" | "idle" | "dnd" | "offline";
 export type Platform = "web" | "mobile" | "desktop";

@@ -1,4 +1,4 @@
-import type { WebpackInstance } from "discord-types/other";
+import type { WebpackInstance } from "@vencord/discord-types";
 
 export async function protectWebpack<T>(body: () => Promise<T>): Promise<T> {
     const prev_m = Object.getOwnPropertyDescriptor(Function.prototype, "m")!;

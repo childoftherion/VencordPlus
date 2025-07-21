@@ -8,7 +8,7 @@ import "./NewPluginsModal.css";
 
 import { Settings, useSettings } from "@api/Settings";
 import { classNameFactory } from "@api/Styles";
-import { PluginCard } from "@components/PluginSettings";
+import { PluginCard } from "@components/settings/tabs/plugins";
 import { ChangeList } from "@utils/ChangeList";
 import { classes, Margins } from "@utils/index";
 import { closeModal, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";

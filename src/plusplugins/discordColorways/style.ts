@@ -949,7 +949,7 @@ export default `/* stylelint-disable unknownAtRules */
 .dc-contextmenu-divider {
     box-sizing: border-box;
     margin: 4px;
-    border-bottom: 1px solid var(--background-modifier-accent);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .dc-contextmenu-item:hover {

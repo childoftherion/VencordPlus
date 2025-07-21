@@ -8,8 +8,8 @@ import "./styles.css";
 
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import definePlugin from "@utils/types";
+import type { Guild } from "@vencord/discord-types";
 import { Menu } from "@webpack/common";
-import type { Guild } from "discord-types/general";
 
 import { MemberIcon } from "./componenents/icons";
 import { openVMWRModal } from "./componenents/ViewMembersModal";

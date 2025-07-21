@@ -7,7 +7,7 @@
 import "./TitleBarGroupLeft.css";
 
 import { classes } from "@utils/misc";
-import { User } from "discord-types/general";
+import { User } from "@vencord/discord-types";
 
 import { settings } from "../settings";
 import HomeIcon from "./buttons/HomeIcon";

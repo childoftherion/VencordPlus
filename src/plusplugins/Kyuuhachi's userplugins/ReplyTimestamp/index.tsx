@@ -2,9 +2,9 @@ import "./style.css";
 
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
+import { Message } from "@vencord/discord-types";
 import { findByPropsLazy } from "@webpack";
 import { Timestamp } from "@webpack/common";
-import { Message } from "discord-types/general";
 import { HTMLAttributes } from "react";
 
 const { getMessageTimestampId } = findByPropsLazy("getMessageTimestampId");

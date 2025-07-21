@@ -17,8 +17,8 @@
 */
 
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
+import { User } from "@vencord/discord-types";
 import { Menu, PresenceStore, RelationshipStore, UserStore } from "@webpack/common";
-import { User } from "discord-types/general";
 
 import type { PresenceStoreState, Status, UserContextProps } from "./types";
 import { tracked, trackingStatusText, writeTrackedToDataStore } from "./utils";

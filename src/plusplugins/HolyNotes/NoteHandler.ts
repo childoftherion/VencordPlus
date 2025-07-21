@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { Channel, Message } from "@vencord/discord-types";
 import { ChannelStore, lodash, Toasts, UserStore } from "@webpack/common";
-import { Channel, Message } from "discord-types/general";
 
 import { User } from ".";
 import { Discord, HolyNotes } from "./types";

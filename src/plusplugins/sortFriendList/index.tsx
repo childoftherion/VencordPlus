@@ -6,10 +6,9 @@
 
 import { definePluginSettings } from "@api/Settings";
 import { Flex } from "@components/Flex";
-import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
+import { User } from "@vencord/discord-types";
 import { RelationshipStore } from "@webpack/common";
-import { User } from "discord-types/general";
 
 const settings = definePluginSettings({
     showDates: {

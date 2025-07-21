@@ -6,14 +6,13 @@
 
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { definePluginSettings } from "@api/Settings";
-import { makeRange } from "@components/PluginSettings/components";
 import { clearableDebounce, debounce } from "@shared/debounce";
 import { Devs } from "@utils/constants";
 import { humanFriendlyJoin } from "@utils/text";
-import definePlugin, { OptionType } from "@utils/types";
+import definePlugin, { makeRange, OptionType } from "@utils/types";
+import { User } from "@vencord/discord-types";
 import { findByPropsLazy, findStoreLazy } from "@webpack";
 import { ChannelStore, GuildMemberStore, Menu, RelationshipStore, SelectedChannelStore, Toasts, UserStore } from "@webpack/common";
-import { User } from "discord-types/general";
 
 const { toggleSelfMute } = findByPropsLazy("toggleSelfMute");
 

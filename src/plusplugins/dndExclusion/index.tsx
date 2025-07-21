@@ -11,8 +11,8 @@ import { Devs } from "@utils/constants";
 import { getCurrentChannel } from "@utils/discord";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
+import { MessageJSON } from "@vencord/discord-types";
 import { Button, Forms, Menu, React, UserStore, useState } from "@webpack/common";
-import { MessageJSON } from "discord-types/general";
 
 let excluded = new Set<string>();
 const EXCLUDED_KEY = "dnd-excluded-channels";

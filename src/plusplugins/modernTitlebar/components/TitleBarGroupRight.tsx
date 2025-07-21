@@ -7,7 +7,7 @@
 import "./TitleBarGroupRight.css";
 
 import { classes } from "@utils/misc";
-import { User } from "discord-types/general";
+import { User } from "@vencord/discord-types";
 
 import { settings } from "../settings";
 import ActionButtons from "./ActionButtons";

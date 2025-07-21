@@ -7,9 +7,9 @@
 import "./CallPill.css";
 
 import { classes, getIntlMessage } from "@utils/index";
+import { Channel, User } from "@vencord/discord-types";
 import { findByCodeLazy, findByPropsLazy, findComponentByCodeLazy, findStoreLazy } from "@webpack";
 import { ChannelStore, ContextMenuApi, GuildStore, Menu, NavigationRouter, Popout, RelationshipStore, SelectedChannelStore, UserStore, useStateFromStores } from "@webpack/common";
-import { Channel, User } from "discord-types/general";
 
 import { useCallTimer } from "../utils/callTimer";
 import Pill from "./Pill";

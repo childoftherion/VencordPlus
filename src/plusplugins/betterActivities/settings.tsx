@@ -41,7 +41,7 @@ export const settings = definePluginSettings({
             <div style={{
                 width: "100%",
                 height: 1,
-                borderTop: "thin solid var(--background-modifier-accent)",
+                borderTop: "thin solid var(--border-subtle)",
                 paddingTop: 5,
                 paddingBottom: 5
             }} />

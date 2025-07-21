@@ -8,8 +8,8 @@ import { CheckedTextInput } from "@components/CheckedTextInput";
 import { getGuildAcronym } from "@utils/discord";
 import { Margins } from "@utils/margins";
 import { ModalContent, ModalHeader, ModalRoot, openModalLazy } from "@utils/modal";
+import { Role } from "@vencord/discord-types";
 import { Forms, GuildStore, IconUtils, PermissionsBits, PermissionStore, React, Tooltip, UserStore } from "@webpack/common";
-import { Role } from "discord-types/general";
 
 import { createRole } from "./api";
 

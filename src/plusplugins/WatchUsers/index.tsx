@@ -10,6 +10,7 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { LazyComponent } from "@utils/lazyReact";
 import { classes } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
+import type { Channel, User } from "@vencord/discord-types";
 import { filters, find, findByPropsLazy, findStoreLazy } from "@webpack";
 import {
     ChannelStore,
@@ -18,7 +19,6 @@ import {
     Toasts,
     UserStore
 } from "@webpack/common";
-import type { Channel, User } from "discord-types/general";
 import type { PropsWithChildren, SVGProps } from "react";
 
 const HeaderBarIcon = LazyComponent(() => {

@@ -13,9 +13,9 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { classes } from "@utils/misc";
 import { openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
+import { Message } from "@vencord/discord-types";
 import { findByCodeLazy, findByProps, findByPropsLazy, findComponentByCodeLazy } from "@webpack";
 import { ChannelStore, Menu } from "@webpack/common";
-import { Message } from "discord-types/general";
 
 import { Popover as NoteButtonPopover, Popover } from "./components/icons/NoteButton";
 import { NoteModal } from "./components/modals/Notebook";

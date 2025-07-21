@@ -8,7 +8,7 @@ import { definePluginSettings } from "@api/Settings";
 import { EquicordDevs } from "@utils/constants";
 import { sendMessage } from "@utils/discord";
 import definePlugin, { OptionType } from "@utils/types";
-import { Message } from "discord-types/general";
+import { Message } from "@vencord/discord-types";
 
 // Taken From Signature :)
 const settings = definePluginSettings({

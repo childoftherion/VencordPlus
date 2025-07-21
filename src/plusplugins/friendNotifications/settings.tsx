@@ -21,8 +21,8 @@ import "./settings.css";
 import { definePluginSettings } from "@api/Settings";
 import { useForceUpdater } from "@utils/react";
 import { OptionType } from "@utils/types";
+import User from "@vencord/discord-types";
 import { Button, UserStore } from "@webpack/common";
-import User from "discord-types/general/User";
 
 import { NotificationAction } from "./types";
 import { tracked, writeTrackedToDataStore } from "./utils";

@@ -17,9 +17,9 @@ import { Margins } from "@utils/margins";
 import { copyWithToast } from "@utils/misc";
 import { closeModal, Modals, openModal } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
+import { User } from "@vencord/discord-types";
 import { findComponentByCodeLazy } from "@webpack";
 import { Button, Forms, Toasts, Tooltip, useEffect, useState } from "@webpack/common";
-import { User } from "discord-types/general";
 import virtualMerge from "virtual-merge";
 
 import { API_URL, BASE_URL, SKU_ID, SKU_ID_DISCORD, VERSION } from "./constants";

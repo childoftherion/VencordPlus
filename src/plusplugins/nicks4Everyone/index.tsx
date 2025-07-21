@@ -8,8 +8,8 @@ import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
+import type { User as DiscordUser } from "@vencord/discord-types";
 import { FluxDispatcher, Menu, UserStore } from "@webpack/common";
-import type { User as DiscordUser } from "discord-types/general";
 
 import { buildModal } from "./modal";
 

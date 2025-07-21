@@ -6,8 +6,8 @@
 
 import "./ProfileButton.css";
 
+import { User } from "@vencord/discord-types";
 import { Avatar, Popout, Text, UsernameUtils } from "@webpack/common";
-import { User } from "discord-types/general";
 
 import { cl } from "../TitleBar";
 import TitleBarButton from "../TitleBarButton";

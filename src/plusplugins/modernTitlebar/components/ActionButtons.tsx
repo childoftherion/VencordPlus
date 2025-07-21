@@ -5,7 +5,7 @@
  */
 
 import ErrorBoundary from "@components/ErrorBoundary";
-import { User } from "discord-types/general";
+import { User } from "@vencord/discord-types";
 
 import DeafenButton from "./buttons/DeafenButton";
 import MuteButton from "./buttons/MuteButton";

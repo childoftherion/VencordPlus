@@ -64,7 +64,7 @@ export function SetCustomWallpaperModal({ props, onSelect }: Props) {
                                 width: "100%",
                                 height: "auto",
                                 objectFit: "cover",
-                                border: "1px solid var(--background-modifier-accent)",
+                                border: "1px solid var(--border-subtle)",
                                 borderRadius: 8
                             }}
                         />

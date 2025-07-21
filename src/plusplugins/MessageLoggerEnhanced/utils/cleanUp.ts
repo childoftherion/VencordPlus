@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { User } from "@vencord/discord-types";
 import { MessageStore } from "@webpack/common";
-import { User } from "discord-types/general";
 
 import { LoggedMessageJSON, ReferencedMessage } from "../types";
 import { getGuildIdByChannel, isGhostPinged } from "./index";

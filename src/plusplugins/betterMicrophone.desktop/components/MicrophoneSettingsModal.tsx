@@ -7,8 +7,8 @@
 import { Flex } from "@components/Flex";
 import { Switch } from "@components/Switch";
 import { ModalSize } from "@utils/modal";
+import { SelectOption } from "@vencord/discord-types";
 import { Card, Forms, Select, Slider, TextInput, useEffect, useState } from "@webpack/common";
-import { SelectOption } from "@webpack/types";
 
 import {
     ProfilableStore,

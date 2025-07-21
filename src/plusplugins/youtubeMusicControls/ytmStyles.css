@@ -1,6 +1,6 @@
 #vc-ytm-player {
     padding: 0.375rem 0.5rem;
-    border-bottom: 1px solid var(--background-modifier-accent);
+    border-bottom: 1px solid var(--border-subtle);
 
     --vc-ytm-green: #1db954; /* so custom themes can easily change it */
 }

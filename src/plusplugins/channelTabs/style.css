@@ -148,7 +148,7 @@
     min-width: 0;
     margin-right: 0.25rem;
     background-color: var(--background-primary);
-    border: 1px solid var(--background-modifier-accent);
+    border: 1px solid var(--border-subtle);
     transition: background-color 0.15s ease;
 }
 
@@ -247,7 +247,7 @@
     padding: 0.125rem 0;
     min-width: 0;
     border-radius: 0.25rem;
-    border: 1px solid var(--background-modifier-accent);
+    border: 1px solid var(---border-subtle);
 }
 
 .vc-channeltabs-preview-tab-compact {

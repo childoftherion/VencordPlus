@@ -12,15 +12,13 @@ import { Margins } from "@utils/margins";
 import { classes } from "@utils/misc";
 import { ModalContent, ModalFooter, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import type { PluginNative } from "@utils/types";
-import { findComponentByCodeLazy } from "@webpack";
-import { Button, Forms, Parser, React, showToast, Toasts } from "@webpack/common";
+import { Button, Forms, Parser, React, showToast, Toasts, UserSummaryItem } from "@webpack/common";
 
 import { Theme, ThemeInfoModalProps } from "../types";
 import { ClockIcon, DownloadIcon, WarningIcon } from "../utils/Icons";
 import { logger } from "./ThemeTab";
 
 const Native = VencordNative.pluginHelpers.ThemeLibrary as PluginNative<typeof import("../native")>;
-const UserSummaryItem = findComponentByCodeLazy("defaultRenderUser", "showDefaultAvatarsForNullUsers");
 
 async function downloadTheme(themesDir: string, theme: Theme) {
     try {

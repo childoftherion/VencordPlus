@@ -6,9 +6,9 @@
 
 import { CogWheel } from "@components/Icons";
 import { getIntlMessage } from "@utils/discord";
+import { User } from "@vencord/discord-types";
 import { DefaultExtractAndLoadChunksRegex, extractAndLoadChunksLazy, findModuleId, proxyLazyWebpack, wreq } from "@webpack";
 import { ContextMenuApi, SettingsRouter, Tooltip } from "@webpack/common";
-import { User } from "discord-types/general";
 
 import { cl } from "../TitleBar";
 import TitleBarButton from "../TitleBarButton";

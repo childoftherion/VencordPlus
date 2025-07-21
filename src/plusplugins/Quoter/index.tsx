@@ -3,8 +3,8 @@ import { Devs } from "@utils/constants";
 import { getCurrentChannel } from "@utils/discord";
 import { ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
+import { Message } from "@vencord/discord-types";
 import { Button, Menu, Switch, Text, UploadHandler, useEffect, useState, Select } from "@webpack/common";
-import { Message } from "discord-types/general";
 import { QuoteIcon } from "./components";
 import { wrapText, canvasToBlob, FixUpQuote, fetchImageAsBlob} from "./utils";
 

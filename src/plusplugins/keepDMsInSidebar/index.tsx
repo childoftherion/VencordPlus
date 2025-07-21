@@ -6,12 +6,12 @@
 
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { definePluginSettings } from "@api/Settings";
-import { Devs } from "@utils/constants";
+import { Devs, IS_MAC } from "@utils/constants";
 import { useForceUpdater } from "@utils/react";
 import definePlugin, { OptionType } from "@utils/types";
+import { Channel, Message, User } from "@vencord/discord-types";
 import { findStoreLazy } from "@webpack";
 import { ChannelStore, ContextMenuApi, Menu, MessageStore, PresenceStore, PrivateChannelsStore, RelationshipStore, UserStore, useStateFromStores } from "@webpack/common";
-import { Channel, Message, User } from "discord-types/general";
 import { MouseEvent } from "react";
 
 enum UnreadDMsPosition {
@@ -90,7 +90,7 @@ function openSettingsContextMenu(e: MouseEvent) {
         settings.store.onlineMembersOnly = !settings.store.onlineMembersOnly;
         actionTaken = true;
     }
-    if (navigator.platform.includes("Mac") ? e.metaKey : e.altKey) {
+    if (IS_MAC ? e.metaKey : e.altKey) {
         settings.store.keepRecentDmsVisible = !settings.store.keepRecentDmsVisible;
         actionTaken = true;
     }

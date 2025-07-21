@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { Message, MessageAttachment, MessageJSON } from "discord-types/general";
+import { Message, MessageAttachment, MessageJSON } from "@vencord/discord-types";
 
 export interface LoggedAttachment extends MessageAttachment {
     fileExtension?: string | null;

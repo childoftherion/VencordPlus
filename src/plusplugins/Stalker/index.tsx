@@ -5,7 +5,7 @@ import { Menu, Toasts, UserStore, MessageStore, RestAPI, ChannelStore } from "@w
 import { findByProps } from "@webpack";
 import { getCurrentChannel, openUserProfile } from "@utils/discord";
 import { Notifications } from "@api/index";
-import { Message } from "discord-types/general";
+import { Message } from "@vencord/discord-types";
 import { MessageCreatePayload, MessageUpdatePayload, MessageDeletePayload, TypingStartPayload, UserUpdatePayload, ThreadCreatePayload } from "./types";
 import { addToWhitelist, isInWhitelist, logger, removeFromWhitelist, convertSnakeCaseToCamelCase } from "./utils";
 

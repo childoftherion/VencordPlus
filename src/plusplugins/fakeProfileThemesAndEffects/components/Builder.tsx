@@ -5,8 +5,8 @@
  */
 
 import { copyWithToast } from "@utils/misc";
+import type { Guild } from "@vencord/discord-types";
 import { Button, showToast, Switch, UserStore, useState, useToken } from "@webpack/common";
-import type { Guild } from "discord-types/general";
 
 import { buildFPTE } from "../lib/fpte";
 import { useAccentColor, usePrimaryColor, useProfileEffect, useShowPreview } from "../lib/profilePreview";

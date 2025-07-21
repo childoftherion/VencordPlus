@@ -8,13 +8,12 @@ import { addMessageDecoration, removeMessageDecoration } from "@api/MessageDecor
 import { Devs, EquicordDevs } from "@utils/constants";
 import { isPluginDev, isSuncordPluginDev, isEquicordPluginDev, isPlusPluginDev, isPlusMt } from "@utils/misc";
 import definePlugin from "@utils/types";
+import { User } from "@vencord/discord-types";
 import { findByPropsLazy, findComponentByCodeLazy } from "@webpack";
 import badges from "plugins/_api/badges";
 const roleIconClassName = findByPropsLazy("roleIcon", "separator").roleIcon;
 const RoleIconComponent = findComponentByCodeLazy("#{intl::ROLE_ICON_ALT_TEXT}");
 import "./styles.css";
-
-import { User } from "discord-types/general";
 
 import settings from "./settings";
 

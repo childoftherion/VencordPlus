@@ -9,10 +9,9 @@ import { Devs, EquicordDevs } from "@utils/constants";
 import { openUserProfile } from "@utils/discord";
 import { openModal } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
+import { ButtonProps, User } from "@vencord/discord-types";
 import { findByCodeLazy, findByPropsLazy, findComponentByCodeLazy } from "@webpack";
 import { Button, FluxDispatcher, React, RelationshipStore, Text, TextInput, UserStore } from "@webpack/common";
-import { ButtonProps } from "@webpack/types";
-import { User } from "discord-types/general";
 
 let lastSearch = "";
 let updateFunc = (v: any) => { };

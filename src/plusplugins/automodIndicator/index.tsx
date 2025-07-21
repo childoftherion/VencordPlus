@@ -8,10 +8,9 @@ import { SafetyIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
 import { getIntlMessage, hasGuildFeature } from "@utils/discord";
 import definePlugin from "@utils/types";
+import { Constants, Guild } from "@vencord/discord-types";
 import { findByPropsLazy } from "@webpack";
 import { Text, Tooltip } from "@webpack/common";
-import { Guild } from "discord-types/general";
-import { Constants } from "discord-types/other";
 
 const classes = findByPropsLazy("guildIconV2Container");
 const iconClasses = findByPropsLazy("flowerStarContainer");

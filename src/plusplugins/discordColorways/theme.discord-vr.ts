@@ -317,7 +317,7 @@ export default `[data-theme="discord-vr"] .dc-switch {
 }
 
 [data-theme="discord-vr"] .dc-divider {
-    border-color: var(--background-modifier-accent);
+    border-color: var(--border-subtle);
 }
 
 [data-theme="discord-vr"] .dc-select-popout {

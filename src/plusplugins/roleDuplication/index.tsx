@@ -9,8 +9,8 @@ import "./style.css";
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { getUserSettingLazy } from "@api/UserSettings";
 import definePlugin from "@utils/types";
+import { Guild, Role } from "@vencord/discord-types";
 import { GuildRoleStore, Menu, SelectedGuildStore } from "@webpack/common";
-import { Guild, Role } from "discord-types/general";
 
 import { createRole } from "./api";
 import { openModal } from "./modal";

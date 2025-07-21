@@ -1,4 +1,4 @@
-import { Channel, MessageJSON, UserJSON } from "discord-types/general";
+import { Channel, MessageJSON, UserJSON } from "@vencord/discord-types";
 
 export interface MessageUpdatePayload {
     type: string;

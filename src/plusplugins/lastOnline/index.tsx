@@ -1,8 +1,8 @@
 import definePlugin from "@utils/types";
+import { User } from "@vencord/discord-types";
 import { moment } from "@webpack/common";
 import { findByProps } from "@webpack";
 import { React } from "@webpack/common";
-import { User } from "discord-types/general";
 
 interface PresenceStatus {
     hasBeenOnline: boolean;

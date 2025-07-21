@@ -7,8 +7,8 @@
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
+import { Guild } from "@vencord/discord-types";
 import { GuildStore, Menu, PermissionStore, React } from "@webpack/common";
-import { Guild } from "discord-types/general";
 
 const NeedsToBePatchedFns = [ // if commented out, then it means it breaks your Discord client
     "can",

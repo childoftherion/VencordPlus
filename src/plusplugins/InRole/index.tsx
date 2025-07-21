@@ -12,8 +12,8 @@ import { getUserSettingLazy } from "@api/UserSettings";
 import { Devs } from "@utils/constants";
 import { getCurrentChannel, getCurrentGuild } from "@utils/discord";
 import definePlugin from "@utils/types";
+import { Guild, GuildMember } from "@vencord/discord-types";
 import { Forms, GuildMemberStore, GuildRoleStore, Menu, Parser } from "@webpack/common";
-import { Guild, GuildMember } from "discord-types/general";
 
 import { MemberIcon } from "./icons";
 import { showInRoleModal } from "./RoleMembersModal";

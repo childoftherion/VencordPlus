@@ -6,9 +6,9 @@
 
 import { Devs } from "@utils/constants.js";
 import definePlugin from "@utils/types";
+import { Channel, Message } from "@vencord/discord-types";
 import { findByPropsLazy } from "@webpack";
 import { MessageStore, UserStore } from "@webpack/common";
-import { Channel, Message } from "discord-types/general";
 
 const MessageActions = findByPropsLazy("editMessage", "sendMessage");
 

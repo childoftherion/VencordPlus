@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { IS_MAC } from "@utils/constants";
 import { findStoreLazy } from "@webpack";
 import { FluxDispatcher, useStateFromStores } from "@webpack/common";
 
@@ -32,8 +33,8 @@ export function useSidebar() {
 }
 
 export function keybindHandler(e: KeyboardEvent) {
-    const hasMod = navigator.platform.includes("Mac") ? e.metaKey : e.ctrlKey;
-    const hasMeta = navigator.platform.includes("Mac") ? e.ctrlKey : e.metaKey;
+    const hasMod = IS_MAC ? e.metaKey : e.ctrlKey;
+    const hasMeta = IS_MAC ? e.ctrlKey : e.metaKey;
     if (hasMod && !hasMeta && !e.shiftKey && !e.altKey && ["\\", "ContextMenu"].includes(e.key)) {
         e.preventDefault();
         e.stopPropagation();

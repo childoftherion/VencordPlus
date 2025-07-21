@@ -5,9 +5,9 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
-import { makeRange, SettingSliderComponent } from "@components/PluginSettings/components";
+import { SliderSetting } from "@components/settings/tabs/plugins/components";
 import { useAwaiter } from "@utils/react";
-import { OptionType } from "@utils/types";
+import { makeRange, OptionType } from "@utils/types";
 import { Button, showToast, Text, Toasts, useMemo } from "@webpack/common";
 
 import { clearLyricsCache, getLyricsCount, removeTranslations } from "./api";

@@ -7,9 +7,9 @@
 import { Devs } from "@utils/constants";
 import { LazyComponent } from "@utils/react";
 import definePlugin, { OptionType } from "@utils/types";
+import { Guild, User } from "@vencord/discord-types";
 import { findByCode, findStoreLazy } from "@webpack";
 import { React, Tooltip, useStateFromStores } from "@webpack/common";
-import { Guild, User } from "discord-types/general";
 
 import { ActivityIcon, Caret, ControllerIcon, HeadsetIcon, MobileIcon, PlaystationIcon, RichActivityIcon, XboxIcon } from "./icons";
 import { Activity, ActivityProps, ActivityType } from "./types";

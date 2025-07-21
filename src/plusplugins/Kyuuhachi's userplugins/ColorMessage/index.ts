@@ -1,8 +1,7 @@
 import { definePluginSettings } from "@api/Settings";
 import * as Styles from "@api/Styles";
-import { makeRange } from "@components/PluginSettings/components";
 import { Devs } from "@utils/constants";
-import definePlugin, { OptionType } from "@utils/types";
+import definePlugin, { makeRange, OptionType } from "@utils/types";
 import { findByCodeLazy } from "@webpack";
 
 const useMessageAuthor = findByCodeLazy('"Result cannot be null because the message is not null"');

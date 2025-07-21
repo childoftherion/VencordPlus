@@ -6,6 +6,7 @@
 
 import { DataStore } from "@api/index";
 import { showNotification } from "@api/Notifications";
+import { User } from "@vencord/discord-types";
 import { findByCodeLazy } from "@webpack";
 import {
     ChannelStore,
@@ -15,7 +16,6 @@ import {
     SelectedChannelStore,
     UserStore,
 } from "@webpack/common";
-import { User } from "discord-types/general";
 
 import plugin from "./index";
 import settings from "./settings";

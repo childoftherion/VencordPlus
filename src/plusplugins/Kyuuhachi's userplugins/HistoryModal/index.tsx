@@ -5,9 +5,9 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs } from "@utils/constants";
 import { closeModal, ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
+import { Message as _Message } from "@vencord/discord-types";
 import { findByPropsLazy } from "@webpack";
 import { Parser, Text, Timestamp, useState } from "@webpack/common";
-import { Message as _Message } from "discord-types/general";
 import { HTMLAttributes } from "react";
 
 type Message = _Message & { editHistory: { timestamp: any, content: string }[] };

@@ -8,9 +8,9 @@ import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { DataStore } from "@api/index";
 import { PlusDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
+import { User } from "@vencord/discord-types";
 import { findStoreLazy } from "@webpack";
 import { Menu, showToast } from "@webpack/common";
-import { User } from "discord-types/general";
 
 import { settings } from "./settings";
 

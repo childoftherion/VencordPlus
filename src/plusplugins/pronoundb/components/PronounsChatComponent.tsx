@@ -6,9 +6,9 @@
 
 import ErrorBoundary from "@components/ErrorBoundary";
 import { classes } from "@utils/misc";
+import { Message } from "@vencord/discord-types";
 import { findByPropsLazy } from "@webpack";
 import { UserStore } from "@webpack/common";
-import { Message } from "discord-types/general";
 
 import { useFormattedPronouns } from "../api";
 import { settings } from "../settings";
