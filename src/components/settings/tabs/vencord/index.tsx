@@ -27,7 +27,7 @@ import { openPluginModal } from "@components/settings/tabs/plugins/PluginModal";
 import { gitRemote } from "@shared/vencordUserAgent";
 import { IS_MAC, IS_WINDOWS } from "@utils/constants";
 import { Margins } from "@utils/margins";
-import { isPluginDev } from "@utils/misc";
+import { isPluginDev, isSuncordPluginDev, isEquicordPluginDev, isPlusPluginDev, isPlusMt } from "@utils/misc";
 import { relaunch } from "@utils/native";
 import { Forms, React, Switch, useMemo, UserStore } from "@webpack/common";
 
@@ -144,7 +144,59 @@ function VencordSettings() {
                 <SpecialCard
                     title="Contributions"
                     subtitle="Thank you for contributing!"
-                    description="Since you've contributed to Vencord you now have a cool new badge!"
+                    description="Since you've contributed to Vencord, you have a cool badge!"
+                    cardImage={COZY_CONTRIB_IMAGE}
+                    backgroundImage={CONTRIB_BACKGROUND_IMAGE}
+                    backgroundColor="#EDCC87"
+                    buttonTitle="See what you've contributed to"
+                    buttonOnClick={() => openContributorModal(user)}
+                />
+            )}
+
+            {isSuncordPluginDev(user?.id) && (
+                <SpecialCard
+                    title="Contributions"
+                    subtitle="Thank you for contributing!"
+                    description="Since you've contributed to Suncord, you have a cool badge!"
+                    cardImage={COZY_CONTRIB_IMAGE}
+                    backgroundImage={CONTRIB_BACKGROUND_IMAGE}
+                    backgroundColor="#EDCC87"
+                    buttonTitle="See what you've contributed to"
+                    buttonOnClick={() => openContributorModal(user)}
+                />
+            )}
+
+            {isEquicordPluginDev(user?.id) && (
+                <SpecialCard
+                    title="Contributions"
+                    subtitle="Thank you for contributing!"
+                    description="Since you've contributed to Equicord, you have a cool badge!"
+                    cardImage={COZY_CONTRIB_IMAGE}
+                    backgroundImage={CONTRIB_BACKGROUND_IMAGE}
+                    backgroundColor="#EDCC87"
+                    buttonTitle="See what you've contributed to"
+                    buttonOnClick={() => openContributorModal(user)}
+                />
+            )}
+
+            {isPlusPluginDev(user?.id) && (
+                <SpecialCard
+                    title="Contributions"
+                    subtitle="Thank you for contributing!"
+                    description="Since you've contributed to Vencord+, you have a cool badge!"
+                    cardImage={COZY_CONTRIB_IMAGE}
+                    backgroundImage={CONTRIB_BACKGROUND_IMAGE}
+                    backgroundColor="#EDCC87"
+                    buttonTitle="See what you've contributed to"
+                    buttonOnClick={() => openContributorModal(user)}
+                />
+            )}
+
+            {isPlusMt(user?.id) && (
+                <SpecialCard
+                    title="Contributions"
+                    subtitle="Thank you for maintaining!"
+                    description="Since you're the maintainer of Vencord+, you're awesome!"
                     cardImage={COZY_CONTRIB_IMAGE}
                     backgroundImage={CONTRIB_BACKGROUND_IMAGE}
                     backgroundColor="#EDCC87"
@@ -169,7 +221,7 @@ function VencordSettings() {
                         <>
                             <QuickAction
                                 Icon={RestartIcon}
-                                text="Relaunch Discord"
+                                text="Relaunch Discord Client"
                                 action={relaunch}
                             />
                             <QuickAction
