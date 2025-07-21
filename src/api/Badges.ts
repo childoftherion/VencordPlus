@@ -17,9 +17,8 @@
 */
 
 import ErrorBoundary from "@components/ErrorBoundary";
+import BadgeAPIPlugin from "plugins/_api/badges";
 import { ComponentType, HTMLProps } from "react";
-
-import Plugins from "~plugins";
 
 export const enum BadgePosition {
     START,
@@ -90,10 +89,10 @@ export function _getBadges(args: BadgeUserArgs) {
                 : badges.push(...b);
         }
     }
-    const donorBadges = (Plugins.BadgeAPI as unknown as typeof import("../plugins/_api/badges").default).getDonorBadges(args.userId);
-    const suncordDonorBadges = (Plugins.BadgeAPI as unknown as typeof import("../plugins/_api/badges").default).getSuncordDonorBadges(args.userId);
-    const equicordDonorBadges = (Plugins.BadgeAPI as unknown as typeof import("../plugins/_api/badges").default).getEquicordDonorBadges(args.userId);
-    const plusCustomBadges = (Plugins.BadgeAPI as unknown as typeof import("../plugins/_api/badges").default).getPlusCustomBadges(args.userId);
+    const donorBadges = BadgeAPIPlugin.getDonorBadges(args.userId);
+    const suncordDonorBadges = BadgeAPIPlugin.getSuncordDonorBadges(args.userId);
+    const equicordDonorBadges = BadgeAPIPlugin.getEquicordDonorBadges(args.userId);
+    const plusCustomBadges = BadgeAPIPlugin.getPlusCustomBadges(args.userId);
     if (donorBadges) badges.unshift(...donorBadges);
     if (suncordDonorBadges) badges.unshift(...suncordDonorBadges);
     if (equicordDonorBadges) badges.unshift(...equicordDonorBadges);
