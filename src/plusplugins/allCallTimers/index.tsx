@@ -8,8 +8,8 @@ import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
+import { PassiveUpdateState, VoiceState } from "@vencord/discord-types";
 import { FluxDispatcher, GuildStore, UserStore } from "@webpack/common";
-import { PassiveUpdateState, VoiceState } from "@webpack/types";
 
 import { Timer } from "./Timer";
 
@@ -55,7 +55,7 @@ export const settings = definePluginSettings({
     },
     watchLargeGuilds: {
         type: OptionType.BOOLEAN,
-        description: "Track users in large guilds. This may cause lag if you're in a lot of large guilds with active voice users. Tested with up to 2000 active voice users with no issues.",
+        description: "Track users in large guilds. This may cause lag if you're in a lot of large guilds with active voice users (Tested with up to 2000 active voice users with no issues)",
         restartNeeded: true,
         default: false
     }
@@ -101,7 +101,7 @@ let runOneTime = true;
 export default definePlugin({
     name: "AllCallTimers",
     description: "Adds a call timer to every user in a voice channel",
-    authors: [Devs.Max, Devs.D3SOX],
+    authors: [{ name: "MaxHerbold", id: 1189527130611138663n }, Devs.D3SOX],
     settings,
     patches: [
         {
@@ -109,7 +109,7 @@ export default definePlugin({
             predicate: () => !settings.store.showWithoutHover,
             replacement: [
                 {
-                    match: /(?<=user:(\i).*?)iconGroup,children:\[/,
+                    match: /(?<=user:(\i).*?)iconGroup,.{0,200}children:\[/,
                     replace: "$&$self.renderTimer($1.id),"
                 },
             ]
@@ -178,7 +178,7 @@ export default definePlugin({
             // Find all users that have the same `guildId` and if that user is not in the `voiceStates`, remove them from the map
             const { guildId } = passiveUpdate;
 
-            // Check the guildId in the `userJoinTimes` map
+            // Check the `guildId` in the `userJoinTimes` map
             for (const [userId, data] of userJoinTimes) {
                 if (data.guildId === guildId) {
                     // Check if the user is in the `voiceStates`
@@ -228,10 +228,10 @@ export default definePlugin({
     },
 
     renderTimer(userId: string) {
-        // Get the user's join time from the users object
+        // Get the user's join time from the user's object
         const joinTime = userJoinTimes.get(userId);
         if (!joinTime?.time) {
-            // Join time is unknown
+            // The join time is unknown
             return;
         }
         if (userId === UserStore.getCurrentUser().id && !settings.store.trackSelf) {

@@ -7,11 +7,10 @@
 import "./styles.css";
 
 import { definePluginSettings } from "@api/Settings";
-import { ErrorBoundary } from "@components/index";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { Channel } from "@vencord/discord-types";
-import { Text, useStateFromStores } from "@webpack/common";
+import { useStateFromStores } from "@webpack/common";
 
 import { ChannelContextPatch, GuildContextPatch, UserContextPatch } from "./components/ctxmenu";
 import { GlobalDefaultComponent, TipsComponent } from "./components/util";
@@ -29,26 +28,12 @@ export const settings = definePluginSettings({
         type: OptionType.COMPONENT,
         component: TipsComponent,
     },
-    customDomainsForCSP: {
-        description: "",
-        type: OptionType.COMPONENT,
-        target: "DESKTOP",
-        component: () => {
-            return (
-                <div>
-                    <Text>
-                        If an image doesn't load, the domain might not be whitelisted by Vencord's or Discord's Content Security Policy (CSP). Try restarting your Discord client. If that doesn't work, make an issue on the GitHub repository of Vencord+.
-                    </Text>
-                </div>
-            );
-        }
-    }
 });
 
 export default definePlugin({
     name: "WallpaperFree",
     authors: [Devs.Joona],
-    description: "Recreation of the old DM wallpaper experiment. Set a background image for any channel or server",
+    description: "Recreation of the old DM wallpaper experiment. Set a background image for any channel, server or DM",
     patches: [
         {
             find: ".handleSendMessage,onResize",
@@ -70,20 +55,20 @@ export default definePlugin({
         "user-context": UserContextPatch,
         "channel-context": ChannelContextPatch,
         "thread-context": ChannelContextPatch,
-        "guild-context": GuildContextPatch,
         "gdm-context": ChannelContextPatch,
+        "guild-context": GuildContextPatch,
     },
     Wallpaper({ url }: { url: string; }) {
         // No, we can't place the hook here
         if (!url) return null;
 
-        return <ErrorBoundary noop>
-            <div className="wallpaperContainer vc-wpfree-wp-container" style={{
+        return <div
+            className="vc-wpfree-wp-container"
+            style={{
                 backgroundImage: `url(${url})`,
-            }}></div>
-        </ErrorBoundary>;
+            }}></div>;
     },
     WallpaperState(channel: Channel) {
         return useStateFromStores([WallpaperFreeStore], () => WallpaperFreeStore.getUrl(channel));
-    }
+    },
 });

@@ -1,12 +1,13 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 import "./ytmStyles.css";
 
 import { ImageIcon, LinkIcon, OpenExternalIcon } from "@components/Icons";
+import { SeekBar } from "@plugins/spotifyControls/SeekBar";
 import { debounce } from "@shared/debounce";
 import { openImageModal } from "@utils/discord";
 import { classes, copyWithToast } from "@utils/misc";
@@ -144,7 +145,7 @@ const seek = debounce((v: number) => {
     YoutubeMusicStore.seek(v);
 });
 
-function SeekBar() {
+function YtmSeekBar() {
     const { songDuration } = YoutubeMusicStore.song!;
 
     const [storePosition, isSettingPosition, isPlaying] = useStateFromStores(
@@ -154,7 +155,6 @@ function SeekBar() {
 
     const [position, setPosition] = useState<number>(storePosition);
 
-    // eslint-disable-next-line consistent-return
     useEffect(() => {
         if (isPlaying && !isSettingPosition) {
             setPosition(YoutubeMusicStore.position);
@@ -166,6 +166,12 @@ function SeekBar() {
         }
     }, [storePosition, isSettingPosition, isPlaying]);
 
+    const onChange = (v: number) => {
+        if (isSettingPosition) return;
+        setPosition(v);
+        seek(v);
+    };
+
     return (
         <div id={cl("progress-bar")}>
             <Forms.FormText
@@ -175,16 +181,13 @@ function SeekBar() {
             >
                 {msToHuman(position)}
             </Forms.FormText>
-            <Menu.MenuSliderControl
+            <SeekBar
+                initialValue={position}
                 minValue={0}
                 maxValue={songDuration * 1000}
-                value={position}
-                onChange={(v: number) => {
-                    if (isSettingPosition) return;
-                    setPosition(v);
-                    seek(v);
-                }}
-                renderValue={msToHuman}
+                onValueChange={onChange}
+                asValueChanges={onChange}
+                onValueRender={msToHuman}
             />
             <Forms.FormText
                 variant="text-xs/medium"
@@ -345,7 +348,7 @@ export function Player() {
     return (
         <div id={cl("player")} style={exportTrackImageStyle}>
             <Info track={track} />
-            <SeekBar />
+            <YtmSeekBar />
             <Controls />
         </div>
     );

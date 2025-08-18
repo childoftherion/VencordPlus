@@ -16,14 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import "../_misc/styles.css";
+
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { PermissionStore } from "@webpack/common";
 
 export default definePlugin({
     name: "GodMode [Risky]",
-    description: "Get all permissions (client-side). This is a risky plugin! Use this plugin at your own risk!",
+    description: "Get all permissions (client-side)",
     authors: [Devs.Tolgchu],
+    settingsAboutComponent: () => <>
+        <Forms.FormText className="plugin-warning">
+            Usage of this plugin might get detected by Discord. Use this plugin at your own risk!
+        </Forms.FormText>
+    </>,
+    settings,
 
     start: () => {
         // if commented out then it means it breaks ur discord

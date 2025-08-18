@@ -1,13 +1,11 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 import definePlugin from "@utils/types";
-import { findByPropsLazy } from "@webpack";
-
-const { getMessages } = findByPropsLazy("getMessages");
+import { MessageStore } from "@webpack/common";
 
 export default definePlugin({
     name: "BetterPlusReacts",
@@ -18,7 +16,7 @@ export default definePlugin({
     description: "The amount of plus before :emoji: is the message to add it to",
     patches: [
         {
-            find: "#{intl::SLASH_COMMAND_USED}",
+            find: ".SLASH_COMMAND_USED,",
             replacement: [
                 {
                     match: /\\\+/,
@@ -36,7 +34,7 @@ export default definePlugin({
         },
         {
             find: "this.props.activeCommandOption,",
-            replacement:[
+            replacement: [
                 // Enable auto complete for multiple plusses
                 // and set the message reference
                 {
@@ -57,6 +55,7 @@ export default definePlugin({
         return message;
     },
     setMsgReference(plusses: string, channelId: string) {
+        const { getMessages } = MessageStore;
         this.message = getMessages(channelId).getByIndex(getMessages(channelId).length - plusses.split("+").length + 1);
     }
 });

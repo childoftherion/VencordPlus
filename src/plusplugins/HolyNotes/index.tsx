@@ -14,7 +14,7 @@ import { classes } from "@utils/misc";
 import { openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
 import { Message } from "@vencord/discord-types";
-import { findByCodeLazy, findByProps, findByPropsLazy, findComponentByCodeLazy } from "@webpack";
+import { findByCodeLazy, findByProps, findComponentByCodeLazy } from "@webpack";
 import { ChannelStore, Menu } from "@webpack/common";
 
 import { Popover as NoteButtonPopover, Popover } from "./components/icons/NoteButton";
@@ -22,10 +22,7 @@ import { NoteModal } from "./components/modals/Notebook";
 import noteHandler, { noteHandlerCache } from "./NoteHandler";
 import { DataStoreToCache, HolyNoteStore } from "./utils";
 
-export const User = findByCodeLazy("isSystemUser(){");
-export const { message, groupStart, cozyMessage } = findByPropsLazy("cozyMessage");
 export const MessageType = findByCodeLazy("isEdited(){");
-export const Channel = findByCodeLazy("computeLurkerPermissionsAllowList(){");
 
 const HeaderBarIcon = findComponentByCodeLazy(".HEADER_BAR_BADGE_TOP:", '.iconBadge,"top"');
 
@@ -63,7 +60,7 @@ function ToolBarHeader() {
 
 export default definePlugin({
     name: "HolyNotes",
-    description: "Holy Notes allows you to save messages",
+    description: "Allows you to save messages to easily find them later",
     authors: [{ id: 347096063569559553n, name: "wolfieeeeeeee" }],
     dependencies: ["MessagePopoverAPI", "ChatInputButtonAPI"],
 

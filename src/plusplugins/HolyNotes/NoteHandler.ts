@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { makeDummyUser } from "@components/settings/tabs/plugins/PluginModal";
 import { Channel, Message } from "@vencord/discord-types";
 import { ChannelStore, lodash, Toasts, UserStore } from "@webpack/common";
 
-import { User } from ".";
 import { Discord, HolyNotes } from "./types";
 import { deleteCacheFromDataStore, DeleteEntireStore, saveCacheToDataStore } from "./utils";
 
@@ -145,7 +145,7 @@ export default new (class NoteHandler {
         for (const notebook in notebooks)
             for (const noteId in notebooks[notebook]) {
                 const note = notebooks[notebook][noteId];
-                const user = UserStore.getUser(note.author.id) ?? new User({ ...note.author });
+                const user = UserStore.getUser(note.author.id) ?? makeDummyUser(note.author);
 
                 Object.assign(notebooks[notebook][noteId].author, {
                     avatar: user.avatar,

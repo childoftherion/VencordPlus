@@ -7,18 +7,28 @@
 import "./style.css";
 
 import { ApplicationCommandInputType, ApplicationCommandOptionType, sendBotMessage } from "@api/Commands";
-import { findGroupChildrenByChildId } from "@api/ContextMenu";
 import { getUserSettingLazy } from "@api/UserSettings";
+import { InfoIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
 import { getCurrentChannel, getCurrentGuild } from "@utils/discord";
 import definePlugin from "@utils/types";
-import { Guild, GuildMember } from "@vencord/discord-types";
+import { GuildMember } from "@vencord/discord-types";
 import { Forms, GuildMemberStore, GuildRoleStore, Menu, Parser } from "@webpack/common";
 
-import { MemberIcon } from "./icons";
 import { showInRoleModal } from "./RoleMembersModal";
 
 const DeveloperMode = getUserSettingLazy("appearance", "developerMode")!;
+
+function getMembersInRole(roleId: string, guildId: string) {
+    const members = GuildMemberStore.getMembers(guildId);
+    const membersInRole: GuildMember[] = [];
+    members.forEach(member => {
+        if (member.roles.includes(roleId)) {
+            membersInRole.push(member);
+        }
+    });
+    return membersInRole;
+}
 
 export default definePlugin({
     name: "InRole",
@@ -69,7 +79,7 @@ export default definePlugin({
                     return sendBotMessage(ctx.channel.id, { content: "Make sure that you are in a server." });
                 }
                 const role = args[0].value;
-                showInRoleModal(ctx.guild.id, role);
+                showInRoleModal(getMembersInRole(role, ctx.guild.id), role, ctx.channel.id);
             }
         }
     ],
@@ -92,44 +102,6 @@ export default definePlugin({
                         showInRoleModal(getMembersInRole(role.id, guild.id), role.id, channel.id);
                     }}
                     icon={InfoIcon}
-                />
-            );
-        },
-        "message"(children, { message }: { message: any; }) {
-            const guild = getCurrentGuild();
-            if (!guild) return;
-
-            const roleMentions = message.content.match(/<@&(\d+)>/g);
-            if (!roleMentions?.length) return;
-
-            const channel = getCurrentChannel();
-            if (!channel) return;
-
-            const roleIds = roleMentions.map(mention => mention.match(/<@&(\d+)>/)![1]);
-
-            const role = GuildRoleStore.getRole(guild.id, roleIds);
-            if (!role) return;
-
-            children.push(
-                <Menu.MenuItem
-                    id="vc-view-inrole"
-                    label="View Members in Role"
-                    action={() => {
-                        showInRoleModal(guild.id, role.id);
-                    }}
-                    icon={MemberIcon}
-                />
-            );
-        },
-        "guild-header-popout"(children, { guild }: { guild: Guild, onClose(): void; }) {
-            if (!guild) return;
-            const group = findGroupChildrenByChildId("privacy", children);
-            group?.push(
-                <Menu.MenuItem
-                    label="View Members in Role"
-                    id="inrole-menuitem"
-                    icon={MemberIcon}
-                    action={() => showInRoleModal(guild.id, "0")}
                 />
             );
         }

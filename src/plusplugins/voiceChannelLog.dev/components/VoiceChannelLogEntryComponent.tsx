@@ -1,6 +1,6 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -8,7 +8,7 @@ import "./VoiceChannelLogEntryComponent.css";
 
 import { classes } from "@utils/misc";
 import { Channel } from "@vencord/discord-types";
-import { React, Timestamp, UserStore } from "@webpack/common";
+import { React, Timestamp, Tooltip, UserStore } from "@webpack/common";
 import { Util } from "Vencord";
 
 import { cl } from "..";
@@ -20,11 +20,16 @@ export function VoiceChannelLogEntryComponent({ logEntry, channel }: { logEntry:
     return <li className="vc-voice-channel-log">
         <Timestamp className={cl("timestamp")} timestamp={new Date(logEntry.timestamp)} compact isInline={false} cozyAlt></Timestamp>
         <Icon logEntry={logEntry} channel={channel} className={cl("icon")} />
-        <img
-            className={classes(cl("avatar"))}
-            onClick={() => Util.openUserProfile(logEntry.userId)}
-            src={user.getAvatarURL(channel.getGuildId())}
-        />
+        <Tooltip text={logEntry.username}>
+            {(tooltipProps: any) => (
+                <img
+                    {...tooltipProps}
+                    className={classes(cl("avatar"))}
+                    onClick={() => Util.openUserProfile(logEntry.userId)}
+                    src={user.getAvatarURL(channel.getGuildId())}
+                />
+            )}
+        </Tooltip>
         <div className={cl("content")}>
             { }
         </div>

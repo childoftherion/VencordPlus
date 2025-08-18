@@ -5,8 +5,8 @@
  */
 
 import { type ModalProps, openModal } from "@utils/modal";
-import { extractAndLoadChunksLazy, findByCodeLazy, findByPropsLazy, findComponentByCodeLazy } from "@webpack";
 import type { Guild, useToken } from "@vencord/discord-types";
+import { extractAndLoadChunksLazy, findByCodeLazy, findByPropsLazy, findComponentByCodeLazy } from "@webpack";
 import type { ComponentType, FunctionComponent, PropsWithChildren, ReactNode } from "react";
 
 import type { ProfileEffectConfig } from "../lib/profileEffects";

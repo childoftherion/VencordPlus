@@ -7,10 +7,9 @@
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { definePluginSettings } from "@api/Settings";
 import definePlugin, { OptionType } from "@utils/types";
-import { Channel, User } from "@vencord/discord-types";
+import { Channel, User, VoiceState } from "@vencord/discord-types";
 import { findByPropsLazy, findStoreLazy } from "@webpack";
-import { Menu, React } from "@webpack/common";
-import { VoiceState } from "@webpack/types";
+import { Forms, Menu, React, VoiceStateStore } from "@webpack/common";
 
 type TFollowedUserInfo = {
     lastChannelId: string;
@@ -26,7 +25,6 @@ interface UserContextProps {
 let followedUserInfo: TFollowedUserInfo = null;
 
 const voiceChannelAction = findByPropsLazy("selectVoiceChannel");
-const VoiceStateStore = findStoreLazy("VoiceStateStore");
 const UserStore = findStoreLazy("UserStore");
 
 const settings = definePluginSettings({

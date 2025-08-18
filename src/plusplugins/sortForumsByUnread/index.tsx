@@ -6,7 +6,6 @@
 
 import { findGroupChildrenByChildId } from "@api/ContextMenu";
 import { definePluginSettings } from "@api/Settings";
-import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { FluxDispatcher, Menu, ReadStateStore } from "@webpack/common";
 
@@ -23,12 +22,7 @@ const settings = definePluginSettings({
 export default definePlugin({
     name: "SortForumsByUnread",
     description: "Sort forum posts by unread status",
-    authors: [
-        {
-            name: "Suffocate",
-            id: 772601756776923187n
-        }
-    ],
+    authors: [{ name: "Suffocate", id: 772601756776923187n }],
 
     settings,
 

@@ -8,7 +8,7 @@ import { addMessagePopoverButton, removeMessagePopoverButton } from "@api/Messag
 import { disableStyle, enableStyle } from "@api/Styles";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
-import Message from "@vencord/discord-types";
+import { Message } from "@vencord/discord-types";
 import { findByPropsLazy } from "@webpack";
 import { ChannelStore, createRoot, MessageStore, Toasts } from "@webpack/common";
 import { Root } from "react-dom/client";
@@ -56,7 +56,7 @@ function findReplies(message: Message) {
 
 export default definePlugin({
     name: "FindReply",
-    description: "Jumps to the earliest reply to a message in a channel (lets you follow past conversations more easily).",
+    description: "Jumps to the earliest reply to a message in a channel (Lets you follow past conversations more easily)",
     authors: [Devs.newwares],
     start() {
         enableStyle(styles);

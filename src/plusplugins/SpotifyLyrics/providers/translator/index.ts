@@ -1,6 +1,6 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -75,16 +75,16 @@ async function processLyrics(
     }));
 }
 
-export async function translateLyrics(lyrics: LyricsData["lyricsVersions"][Provider]): Promise<SyncedLyric[] | null> {
+async function translateLyrics(lyrics: LyricsData["lyricsVersions"][Provider]): Promise<SyncedLyric[] | null> {
     const language = settings.store.TranslateTo;
-    // Why not make only one request to translate?
-    // because occasionally it will add a new line
-    // and i dont have a good way to handle that
     return processLyrics(lyrics, language, false);
 }
 
-export async function romanizeLyrics(lyrics: LyricsData["lyricsVersions"][Provider]): Promise<SyncedLyric[] | null> {
-    // Why not make only one request to romanize?
-    // it will romanize it as one string, and how would i know where to split it?
+async function romanizeLyrics(lyrics: LyricsData["lyricsVersions"][Provider]): Promise<SyncedLyric[] | null> {
     return processLyrics(lyrics, "", true);
 }
+
+export const lyricsAlternativeFetchers = {
+    [Provider.Translated]: translateLyrics,
+    [Provider.Romanized]: romanizeLyrics
+};

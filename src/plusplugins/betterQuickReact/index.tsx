@@ -1,6 +1,6 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -44,7 +44,7 @@ export const settings = definePluginSettings({
 
 export default definePlugin({
     name: "BetterQuickReact",
-    description: "Improves the quick react buttons in the message context menu.",
+    description: "Improves the quick react buttons in the message context menu",
     authors: [Devs.Ven, Devs.Sqaaakoi],
     settings,
 
@@ -58,7 +58,7 @@ export default definePlugin({
             }
         },
         {
-            find: "#{intl::ADD_REACTION_NAMED},{emojiName",
+            find: "#{intl::ADD_REACTION_NAMED}",
             group: true,
             replacement: [
                 // Override limit of emojis to display with offset hook.
@@ -102,7 +102,4 @@ export default definePlugin({
             setScrollHook(Math.max(0, Math.min(newValue, emojisLength - this.getMaxQuickReactions())));
         };
     },
-    AddReactionsButton() {
-
-    }
 });

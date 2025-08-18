@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { addChatBarButton, ChatBarButton, ChatBarButtonFactory, removeChatBarButton } from "@api/ChatButtons";
+import { ChatBarButton, ChatBarButtonFactory } from "@api/ChatButtons";
 import { addMessagePreSendListener, MessageSendListener, removeMessagePreSendListener } from "@api/MessageEvents";
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
@@ -47,7 +47,5 @@ export default definePlugin({
     authors: [Devs.Tolgchu],
     description: "Reverses the message content before sending it.",
     dependencies: ["MessageEventsAPI", "ChatInputButtonAPI"],
-
-    start: () => addChatBarButton("ReverseMessageToggle", ReverseMessageToggle),
-    stop: () => removeChatBarButton("ReverseMessageToggle")
+    renderChatBarButton: ReverseMessageToggle,
 });

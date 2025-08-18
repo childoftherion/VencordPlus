@@ -1,12 +1,12 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 import { findGroupChildrenByChildId } from "@api/ContextMenu";
 import { updateMessage } from "@api/MessageUpdater";
-import { ImageVisible } from "@components/Icons";
+import { ImageInvisible, ImageVisible } from "@components/Icons";
 import { Logger } from "@utils/Logger";
 import { parseUrl } from "@utils/misc";
 import definePlugin from "@utils/types";
@@ -16,29 +16,8 @@ import { ChannelStore, Constants, Menu, MessageStore, React, RestAPI, showToast,
 
 const logger = new Logger("ShowMessageEmbeds");
 
-export default definePlugin({
-    name: "ShowMessageEmbeds",
-    description: "Adds a context menu option to show embeds for links that don't have one",
-    authors: [{ name: "Suffocate", id: 772601756776923187n }],
-
-    patches: [
-        {
-            find: "className:\"attachmentLink\",",
-            replacement: {
-                match: /(?:(\i).noStyleAndInteraction.*?)attachmentName:\i.attachmentName/,
-                replace: "$&,channelId:$1.channelId,messageId:$1.messageId",
-            }
-        }
-    ],
-
-    contextMenus: {
-        "message": addShowEmbedButton,
-        "attachment-link-context": addShowAttachmentEmbedButton
-    }
-});
-
 function addShowEmbedButton(children, props) {
-    if (props.itemSrc || !props.itemHref || !props.message) return; // itemSrc means the right clicked item is an image/attachment
+    if (props.itemSrc || !props.itemHref || !props.message) return; // "itemSrc" means the right clicked item is an image/attachment
 
     const group = findGroupChildrenByChildId("copy-native-link", children);
     if (!group) return;
@@ -63,11 +42,19 @@ function addButton(menu, message, url) {
     if (!isEmbedInMessage(message, url)) {
         menu.splice(0, 0,
             <Menu.MenuItem
-                id="unfurl-url"
+                id="vc-sme-show"
                 label="Show Embed"
                 action={_ => unfurlEmbed(url, message)}
                 icon={ImageVisible}
-                key="unfurl-url"/>);
+                key="vc-sme-show"/>);
+    } else if (isUrlInMessage(message, url)) { // Check if the URL is actually in the message text, so we know it's one people can actually add back
+        menu.splice(0, 0,
+            <Menu.MenuItem
+                id="vc-sme-remove"
+                label="Remove Embed"
+                action={_ => removeEmbed(url, message)}
+                icon={ImageInvisible}
+                key="vc-sme-remove"/>);
     }
 }
 
@@ -79,11 +66,27 @@ function isEmbedInMessage(message: Message, url: string): boolean {
     });
 }
 
-// special cases where the unfurl api endpoint returns an embed with a different url than the one we requested
+function isUrlInMessage(message: Message, url: string): boolean {
+    const urls = message?.content?.match(/https?:\/\/[^\s]+/g) || [];
+    for (const u of urls) {
+        if (u === url || normaliseUrl(u) === url) {
+            return true;
+        }
+    }
+    for (const embed of message.embeds) {
+        // Check if the embed content contains the URL, but not the "embed.url" property itself
+        if (embed.url !== url && (embed.rawDescription?.includes(url) || embed.fields.some((field: any) => field.value.includes(url)))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Special cases where the unfurling API endpoint returns an embed with a different URL than the one we requested
 // e.g. you request an embed for a youtu.be link and the returned object has { ... url: youtube.com }
-// this is not an exhaustive list, may need to add more cases in the future
+// This is not an exhaustive list, may need to add more cases in the future
 function normaliseUrl(url: string): string {
-    // normalise youtube urls to the /watch?v= format (t param is replaced with start, v always comes first)
+    // Normalise YouTube URLs to the "/watch?v=" format ("t" parameter is replaced with start, "v" parameter always comes first)
     const youtubeRegex = /(https?:\/\/)?(?:m\.|www\.)?(youtu\.be|youtube\.com)\/(embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/)?((\w|-){11})(?:\S+)?/;
 
     if (youtubeRegex.test(url)) {
@@ -107,11 +110,20 @@ function normaliseUrl(url: string): string {
         url = url.replace(youtubeRegex, `https://www.youtube.com/watch?v=$4${start ? "&start=" + start : ""}`);
     }
 
-    // x.com links still return an embed with url twitter.com at the moment
+    // x.com links still return an embed with a twitter.com URL at the moment
     const xDotComRegex = /(https?:\/\/(?:www\.)?)x\.com(\/.*)?/;
 
     if (xDotComRegex.test(url)) {
-        url = url.replace(xDotComRegex, "$1twitter.com$2");
+        url = url.replace(xDotComRegex, (match, p1, p2) => p1 + "twitter.com" + (p2 || ""));
+    }
+
+    // TikTok adds "?enable_tiktok_webview=true"
+    const tiktokRegex = /(https?:\/\/(?:www\.)?)tiktok\.com(\/.*)?/;
+    const searchParams = url.includes("?") ? new URLSearchParams(url.split("?")[1]) : new URLSearchParams();
+    if (tiktokRegex.test(url) && !searchParams.has("enable_tiktok_webview")) {
+        searchParams.append("enable_tiktok_webview", "true");
+        const newSearch = searchParams.toString();
+        url = url.split("?")[0] + (newSearch ? "?" + newSearch : "");
     }
 
     return url;
@@ -126,11 +138,10 @@ function unfurlEmbed(url: string, message: Message) {
         return;
     }
 
-
     RestAPI.post({
         url: Constants.Endpoints.UNFURL_EMBED_URLS,
         body: {
-            urls: [url] // The endpoint accepts up to 5 urls at a time but if we send 5 and one fails, it will just return 4 embeds with no indication of which embed corresponds to which url
+            urls: [url]
         }
     }).catch(e => {
         showFailureToast("Failed to get embed");
@@ -169,6 +180,32 @@ function unfurlEmbed(url: string, message: Message) {
     });
 }
 
+function removeEmbed(url: string, message: Message) {
+    const newEmbeds = message.embeds.filter((embed: any) => embed.url !== url);
+    updateMessage(message.channel_id, message.id, { embeds: newEmbeds });
+}
+
 function showFailureToast(message: string) {
     showToast(message, Toasts.Type.FAILURE, { position: Toasts.Position.BOTTOM });
 }
+
+export default definePlugin({
+    name: "ShowMessageEmbeds",
+    description: "Adds a context menu option to show embeds for links that don't have one",
+    authors: [{ name: "Suffocate", id: 772601756776923187n }],
+
+    patches: [
+        {
+            find: "className:\"attachmentLink\",",
+            replacement: {
+                match: /(?:(\i).noStyleAndInteraction.*?)attachmentName:\i.attachmentName/,
+                replace: "$&,channelId:$1.channelId,messageId:$1.messageId",
+            }
+        }
+    ],
+
+    contextMenus: {
+        "message": addShowEmbedButton,
+        "attachment-link-context": addShowAttachmentEmbedButton
+    }
+});

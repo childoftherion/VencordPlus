@@ -4,29 +4,18 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs } from "@utils/constants";
-import { isNonNullish } from "@utils/guards";
-import definePlugin, { OptionType } from "@utils/types";
+import definePlugin from "@utils/types";
 import { Embed } from "@vencord/discord-types";
 import { useState } from "@webpack/common";
 
 interface ToggleableDescriptionProps { embed: Embed, original: () => any; }
 
-const settings = definePluginSettings({
-    defaultState: {
-        type: OptionType.BOOLEAN,
-        default: false,
-        description: "Show full description by default",
-    }
-});
-
 export default definePlugin({
     name: "YoutubeDescription",
     description: "Adds descriptions to YouTube video embeds",
     authors: [Devs.arHSM],
-    settings,
     patches: [
         {
             find: "#{intl::SUPPRESS_ALL_EMBEDS}",
@@ -37,22 +26,25 @@ export default definePlugin({
         }
     ],
     ToggleableDescription: ErrorBoundary.wrap(({ embed, original }: ToggleableDescriptionProps) => {
-        const [isOpen, setOpen] = useState(settings.store.defaultState);
+        const [isOpen, setOpen] = useState(false);
 
-        return !isNonNullish(embed.rawDescription)
-            ? null
-            : embed.rawDescription.length > 20
-                ? <div
-                    style={{ cursor: "pointer", marginTop: isOpen ? "0px" : "8px" }}
-                    onClick={() => setOpen(o => !o)}
-                >
-                    {isOpen
-                        ? original()
-                        : embed.rawDescription.substring(0, 20) + "..."}
-                </div>
-                : original();
+        if (!embed.rawDescription)
+            return null;
+        if (embed.rawDescription.length <= 20)
+            return original();
+
+        return (
+            <div
+                style={{ cursor: "pointer", marginTop: isOpen ? "0px" : "8px" }}
+                onClick={() => setOpen(o => !o)}
+            >
+                {isOpen
+                    ? original()
+                    : embed.rawDescription.substring(0, 20) + "..."}
+            </div>
+        );
     }),
     ToggleableDescriptionWrapper(props: ToggleableDescriptionProps) {
-        return <this.ToggleableDescription {...props}></this.ToggleableDescription>;
+        return <this.ToggleableDescription {...props} ></this.ToggleableDescription >;
     }
 });

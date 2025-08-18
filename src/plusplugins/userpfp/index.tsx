@@ -1,6 +1,6 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -13,7 +13,7 @@ import { User } from "@vencord/discord-types";
 let data = {
     avatars: {} as Record<string, string>,
 };
-
+const API_URL = "https://userpfp.github.io/UserPFP/source/data.json";
 const settings = definePluginSettings({
     preferNitro: {
         description: "Which profile picture to show if both a default animated (Nitro) profile picture and UserPFP profile picture are present",
@@ -22,12 +22,6 @@ const settings = definePluginSettings({
             { label: "UserPFP", value: true, default: true },
             { label: "Nitro", value: false },
         ],
-    },
-    urlForDB: {
-        type: OptionType.STRING,
-        description: "The source to use to load profile pictures from",
-        default: "https://userpfp.github.io/UserPFP/source/data.json",
-        placeholder: "Default value: https://userpfp.github.io/UserPFP/source/data.json"
     }
 });
 
@@ -50,7 +44,6 @@ export default definePlugin({
     ),
     patches: [
         {
-            // Normal Profiles
             find: "getUserAvatarURL:",
             replacement: [
                 {
@@ -66,7 +59,10 @@ export default definePlugin({
         return data.avatars[user.id] ?? original(user, animated, size);
     },
     async start() {
-        const res = await fetch(settings.store.urlForDB);
-        if (res.ok) this.data = data = await res.json();
+        await fetch(API_URL)
+            .then(async res => {
+                if (res.ok) this.data = data = await res.json();
+            })
+            .catch(() => null);
     }
 });

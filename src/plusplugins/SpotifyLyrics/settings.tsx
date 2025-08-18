@@ -109,7 +109,6 @@ const settings = definePluginSettings({
                     }}
                     pluginSettings={Vencord.Settings.plugins.SpotifyLyrics}
                     id={"LyricDelay"}
-                    onError={() => { }}
                 />
                 <Lyrics />
             </>

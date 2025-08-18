@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import "../_misc/styles.css";
+
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { definePluginSettings } from "@api/Settings";
 import definePlugin, { OptionType } from "@utils/types";
@@ -42,8 +44,13 @@ const SoundButtonContext: NavContextMenuPatchCallback = (children, data: { sound
 
 export default definePlugin({
     name: "ExitSounds [Risky]",
-    description: "Play a sound when you disconnect from a channel. This is a risky plugin! Use this plugin at your own risk!",
+    description: "Play a sound when you disconnect from a channel",
     authors: [{ name: "niko", id: 341377368075796483n }],
+    settingsAboutComponent: () => <>
+        <Forms.FormText className="plugin-warning">
+            Usage of this plugin might get detected by Discord. Use this plugin at your own risk!
+        </Forms.FormText>
+    </>,
     settings,
 
     contextMenus: {

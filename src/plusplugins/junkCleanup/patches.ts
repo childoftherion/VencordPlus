@@ -35,7 +35,7 @@ const Patches: Record<string, ConfigurablePatchDefinition> = {
         default: false
     },
     removeChatboxStickerButton: {
-        description: "Remove the stickers button in the chatbox",
+        description: "Remove the Stickers button in the chatbox",
         patches: {
             find: '"sticker")',
             replacement: {
@@ -66,7 +66,7 @@ const Patches: Record<string, ConfigurablePatchDefinition> = {
                 find: "#{intl::PRIVATE_CHANNELS_A11Y_LABEL}",
                 replacement: [
                     {
-                        match: /\i\?\(0,\i\.\i\)\(.{0,350}?\},"premium"\):null,/,
+                        match: /\i\?\(0,\i\.\i\)\(.{0,250}?\},"premium"\):null,/,
                         replace: ""
                     },
                     {
@@ -81,9 +81,9 @@ const Patches: Record<string, ConfigurablePatchDefinition> = {
     profileEditorShopUpsell: {
         description: "Hide the collectibles upsell banner in the Profiles settings",
         patches: {
-            find: '"CollectiblesUpsellBanner"',
+            find: "COLLECTIBLES_PROFILE_SETTINGS_UPSELL,",
             replacement: {
-                match: /"CollectiblesUpsellBanner".{0,150}?return /,
+                match: /COLLECTIBLES_PROFILE_SETTINGS_UPSELL\).{0,150}?return /,
                 replace: "$&null;"
             }
         }
@@ -161,22 +161,10 @@ const Patches: Record<string, ConfigurablePatchDefinition> = {
     contentInventory: {
         description: "Hide the Activity Feed in the members list",
         patches: {
-            find: /features\.has\(\i\.\i\.ACTIVITY_FEED_ENABLED_BY_USER\)/,
+            find: /hasFeature\(\i\.\i\.ACTIVITY_FEED_ENABLED_BY_USER\)/,
             replacement: {
-                match: /(?=let.{0,50}?features\.has\(\i\.\i\.ACTIVITY_FEED_ENABLED_BY_USER\))/,
+                match: /(?=let.{0,50}?hasFeature\(\i\.\i\.ACTIVITY_FEED_ENABLED_BY_USER\))/,
                 replace: "return false;"
-            }
-        },
-        default: false
-    },
-
-    contentInventoryProfilePanel: {
-        description: "Hide the Recent Activity section in the DM profile sidebar",
-        patches: {
-            find: "UserProfilePanelRecentActivity",
-            replacement: {
-                match: /0===\i\.length/,
-                replace: "true"
             }
         },
         default: false
@@ -196,22 +184,13 @@ const Patches: Record<string, ConfigurablePatchDefinition> = {
 
     transferToConsole: {
         description: "Hide the transfer to console button",
-        patches: [
-            {
-                find: '"transfer-".concat',
-                replacement: {
-                    match: /(?<=function \i\(\i\){)(?=let.{0,500}?"Console Transfer Item")/,
-                    replace: "return null;"
-                }
-            },
-            {
-                find: 'navId:"transfer-menu"',
-                replacement: {
-                    match: /(?<=function \i\(\i\){)(?=let.{0,500}?twoWayLink)/,
-                    replace: "return null;"
-                }
+        patches: {
+            find: '"transfer-".concat',
+            replacement: {
+                match: /(?<=function \i\(\i\){)(?=let.{0,500}?"Console Transfer Item")/,
+                replace: "return null;"
             }
-        ]
+        }
     },
 
     textChannelActivityNameHeader: {
@@ -283,7 +262,7 @@ const Patches: Record<string, ConfigurablePatchDefinition> = {
     newMemberBadge: {
         description: "Hide the new member badge",
         patches: {
-            find: ".newMemberBadge,",
+            find: ".newMemberBadge},",
             replacement: {
                 match: /(?<=return)\(0,\i\.\i\)\(\i\.id,\i\.author\.id\)\?/,
                 replace: " false?"
@@ -303,13 +282,24 @@ const Patches: Record<string, ConfigurablePatchDefinition> = {
         }
     },
 
+    questsActiveNow: {
+        description: "Hide the Quest promotions in the Active Now sidebar",
+        patches: {
+            find: 'NOW_PLAYING_CARD_HOVERED,{',
+            replacement: {
+                match: /(quest:)\i}\)/,
+                replace: "$1null})"
+            }
+        }
+    },
+
     supportLink: {
         description: "Hide the link to Discord support in the top right",
         patches: {
-            find: "toolbar:function",
+            find: "HELP_CLICKED,{highlighted",
             replacement: {
-                match: /!\i&&\(\i\?\(0,\i\.jsx\)\(\i\.\i,{}\):\(0,\i\.jsx\)\(\i\.\i,{}\)\),/,
-                replace: ""
+                match: /(?<=function \i\(\i\){)(?=let\{className)/,
+                replace: "return null;"
             }
         },
         default: false
@@ -320,12 +310,36 @@ const Patches: Record<string, ConfigurablePatchDefinition> = {
         patches: {
             find: 'tutorialId:"direct-messages",',
             replacement: {
-                match: /\(0,\i\.jsx\)\(\i\.\i,{tutorialId:"direct-messages",.{0,600}?\}\)\}\)\}\),/,
+                match: /\(0,\i\.jsx\)\(\i\.\i,{.{0,50}?tutorialId:"direct-messages",.{0,600}?\}\)\}\)\}\),/,
                 replace: ""
             }
         },
         default: false
     },
+
+    alsoKnownAs: {
+        description: "Hide the AKA nicknames in DMs",
+        patches: {
+            find: "this.generateNicknameGuildPairs(this.user)",
+            replacement: {
+                match: /this\.generateNicknameGuildPairs\(this\.user\)/,
+                replace: "[];$&"
+            }
+        },
+        default: false
+    },
+
+    voiceGradientBackground: {
+        description: "Hide the gradient backgrounds in voice channels",
+        patches: {
+            find: '.gradientBackground,children:\[\(0',
+            all: true,
+            replacement: {
+                match: /\i\.\i\.getEnableHardwareAcceleration\(\)/,
+                replace: "true?()=>null:$&"
+            }
+        },
+    }
 
 
 };

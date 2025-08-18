@@ -124,7 +124,7 @@ export const settings = definePluginSettings({
     },
     autoMoveBack: {
         type: OptionType.BOOLEAN,
-        description: "Automatically move back to the voice channel of the followed user when you got moved",
+        description: "Automatically move back to the voice channel of the followed user when you get moved",
         restartNeeded: false,
         default: false
     },
@@ -137,7 +137,7 @@ export const settings = definePluginSettings({
     },
     channelFull: {
         type: OptionType.BOOLEAN,
-        description: "Attempt to move you to the voice channel when it's no longer full",
+        description: "When the target voice channel is full, attempt to move you to the voice channel when it's no longer full",
         restartNeeded: false,
         default: true,
     }

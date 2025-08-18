@@ -8,7 +8,7 @@ import "./style.css";
 
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
-import { ChannelStore, DateUtils, GuildStore, IconUtils, NavigationRouter, Popout, SelectedGuildStore, SnowflakeUtils, Text, UserStore, useStateFromStores } from "@webpack/common";
+import { ChannelStore, DateUtils, GuildStore, IconUtils, NavigationRouter, Popout, SelectedGuildStore, SnowflakeUtils, Text, useRef, UserStore, useStateFromStores } from "@webpack/common";
 
 import { ArrowSvg, checkForIconExistence, cl, ServerProfileComponent } from "./utils";
 
@@ -20,6 +20,7 @@ export default definePlugin({
         const { guild_id, channel_id, message_id } = message.message.messageReference;
         const guild = useStateFromStores([GuildStore], () => GuildStore.getGuild(guild_id));
         const channel = useStateFromStores([ChannelStore], () => ChannelStore.getChannel(channel_id));
+        const guildDivRef = useRef(null);
 
         return <div className={cl("footer")} >
             {
@@ -28,8 +29,9 @@ export default definePlugin({
                         guild_id !== SelectedGuildStore.getGuildId() && <Popout
                             position="top"
                             renderPopout={() => <ServerProfileComponent guildId={guild_id} />}
+                            targetElementRef={guildDivRef}
                         >
-                            {popoutProps => <div className={cl("footer-element")} {...popoutProps}>
+                            {popoutProps => <div ref={guildDivRef} className={cl("footer-element")} {...popoutProps}>
                                 {
                                     checkForIconExistence(guild) && <img src={guild.icon && IconUtils.getGuildIconURL({
                                         id: guild.id,

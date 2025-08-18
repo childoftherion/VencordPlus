@@ -8,7 +8,7 @@
     border-radius: 1rem;
     background-color: var(--background-secondary);
     border-style: dashed;
-    border-color: var(--border-subtle);
+    border-color: var(--background-modifier-accent);
     border-width: 4px;
     display: flex;
     flex-direction: column;

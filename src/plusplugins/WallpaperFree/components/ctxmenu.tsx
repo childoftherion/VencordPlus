@@ -8,7 +8,8 @@ import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { openModal } from "@utils/modal";
 import { ChannelStore, FluxDispatcher, Menu } from "@webpack/common";
 
-import { SetCustomWallpaperModal } from "./modal";
+import { WallpaperFreeStore } from "../store";
+import { SetWallpaperModal } from "./modal";
 
 
 const addWallpaperMenu = (channelId?: string, guildId?: string) => {
@@ -22,18 +23,22 @@ const addWallpaperMenu = (channelId?: string, guildId?: string) => {
         });
     };
 
+    const initialUrl = channelId ? WallpaperFreeStore.getForChannel(channelId) :
+        guildId ? WallpaperFreeStore.getForGuild(guildId) : undefined;
+
     return (
         <Menu.MenuItem label="Wallpaper Free" key="vc-wpfree-menu" id="vc-wpfree-menu">
             <Menu.MenuItem
-                label="Set Custom Wallpaper"
-                id="vc-wpfree-set-custom"
-                action={() => openModal(props => <SetCustomWallpaperModal props={props} onSelect={setWallpaper} />)}
+                label="Set Wallpaper"
+                id="vc-wpfree-set-wallpaper"
+                action={() => openModal(props => <SetWallpaperModal props={props} onSelect={setWallpaper} initialUrl={initialUrl} />)}
             />
             <Menu.MenuSeparator />
             <Menu.MenuItem
-                label="Remove Custom Wallpaper"
-                id="vc-wpfree-remove"
+                label="Remove Wallpaper"
+                id="vc-wpfree-remove-wallpaper"
                 color="danger"
+                disabled={!initialUrl}
                 action={() => setWallpaper(void 0)}
             />
         </Menu.MenuItem>

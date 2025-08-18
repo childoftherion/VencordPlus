@@ -8,7 +8,7 @@ import { SafetyIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
 import { getIntlMessage, hasGuildFeature } from "@utils/discord";
 import definePlugin from "@utils/types";
-import { Constants, Guild } from "@vencord/discord-types";
+import { Guild } from "@vencord/discord-types";
 import { findByPropsLazy } from "@webpack";
 import { Text, Tooltip } from "@webpack/common";
 
@@ -35,7 +35,11 @@ export default definePlugin({
         // @ts-expect-error
         const hasAutoMod = hasGuildFeature(guild, "AUTO_MODERATION" as keyof Constants["GuildFeatures"]);
         const imageFilterDescriptions = ["", "EXPLICIT_CONTENT_FILTER_MEDIUM_DESCRIPTION_V2", "EXPLICIT_CONTENT_FILTER_HIGH_DESCRIPTION_V2"];
-        const labels = [
+        const labels: {
+            key: string;
+            label: string;
+            description: string;
+        }[] = [
             hasAutoMod && {
                 key: "automod",
                 label: getIntlMessage("GUILD_AUTOMOD_USERNAME"),
@@ -46,7 +50,7 @@ export default definePlugin({
                 label: getIntlMessage("FORM_LABEL_EXPLICIT_CONTENT_FILTER_V2"),
                 description: getIntlMessage(imageFilterDescriptions[guild.explicitContentFilter])
             },
-        ].filter(Boolean) as { key: string; label: string; description: string; }[];
+        ].filter(Boolean);
         if (!labels.length) return null;
         return <div className={classes.guildIconV2Container}>
             <Tooltip

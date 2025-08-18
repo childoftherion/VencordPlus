@@ -7,7 +7,15 @@
 import { definePluginSettings } from "@api/Settings";
 import { proxyLazy } from "@utils/lazy";
 import { OptionType } from "@utils/types";
-import { ChannelStore, Flux, FluxDispatcher, GuildStore, PrivateChannelsStore } from "@webpack/common";
+import { FluxEmitter, FluxStore } from "@vencord/discord-types";
+import { findByPropsLazy } from "@webpack";
+import { ChannelActionCreators, ChannelStore, FluxDispatcher, GuildStore } from "@webpack/common";
+
+interface IFlux {
+    PersistedStore: typeof FluxStore;
+    Emitter: FluxEmitter;
+}
+const Flux: IFlux = findByPropsLazy("connectStores");
 
 export const settings = definePluginSettings({
     persistSidebar: {
@@ -29,7 +37,7 @@ export const SidebarStore = proxyLazy(() => {
     let width = 0;
     class SidebarStore extends Flux.PersistedStore {
         static persistKey = "SidebarStore";
-
+        // @ts-ignore
         initialize(previous: { guildId?: string; channelId?: string; width?: number; } | undefined) {
             if (!settings.store.persistSidebar || !previous) return;
             const { guildId: prevGId, channelId: prevCId, width: prevWidth } = previous;
@@ -65,7 +73,7 @@ export const SidebarStore = proxyLazy(() => {
                 return;
             }
 
-            channelId = await PrivateChannelsStore.getOrEnsurePrivateChannel(id);
+            channelId = await ChannelActionCreators.getOrEnsurePrivateChannel(id);
             store.emitChange();
         },
 
@@ -75,10 +83,10 @@ export const SidebarStore = proxyLazy(() => {
             store.emitChange();
         },
 
-        SIDEBAR_CHAT_WIDTH({ newWidth }: { newWidth: number; }) {
+        /* SIDEBAR_CHAT_WIDTH({ newWidth }: { newWidth: number; }) {
             width = newWidth;
             store.emitChange();
-        }
+        }*/
     });
 
     return store;

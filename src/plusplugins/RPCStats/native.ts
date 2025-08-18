@@ -23,11 +23,11 @@ export async function fetchTopAlbum(_, args)
         const topAlbum = data.topalbums.album[0];
         const albumName = topAlbum.name;
         const artistName = topAlbum.artist.name;
-        const albumCoverUrl = topAlbum.image[topAlbum.image.length - 1]['#text']; 
+        const albumCoverUrl = topAlbum.image[topAlbum.image.length - 1]['#text'];
 
         return JSON.stringify({ albumName: albumName, artistName: artistName, albumCoverUrl });
-    } 
-    else 
+    }
+    else
     {
         return null;
     }

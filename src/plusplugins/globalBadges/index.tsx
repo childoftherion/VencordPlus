@@ -12,6 +12,7 @@ import { ModalContent, ModalRoot, openModal } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
 import { User } from "@vencord/discord-types";
 import { Forms, React, Tooltip, UserStore } from "@webpack/common";
+import { JSX } from "react";
 
 type CustomBadge = string | {
     name: string;
@@ -75,7 +76,6 @@ const GlobalBadges = ({ userId }: { userId: string; }) => {
     Object.keys(badges).forEach(mod => {
         if (mod.toLowerCase() === "vencord") return;
         if (mod.toLowerCase() === "equicord") return;
-        if (mod.toLowerCase() === "suncord") return;
         badges[mod].forEach(badge => {
             if (typeof badge === "string") {
                 const fullNames = { "hunter": "Bug Hunter", "early": "Early User" };

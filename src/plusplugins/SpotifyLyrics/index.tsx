@@ -1,6 +1,6 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -26,10 +26,11 @@ export default definePlugin({
         {
             find: "this.isCopiedStreakGodlike",
             replacement: {
-                match: /Vencord\.Plugins\.plugins\["SpotifyControls"]\.PanelWrapper/,
+                match: /Vencord\.Plugins\.plugins\["SpotifyControls"\]\.PanelWrapper/,
                 replace: "$self.FakePanelWrapper",
             },
             predicate: () => Settings.plugins.SpotifyControls.enabled,
+            noWarn: true,
         },
     ],
     FakePanelWrapper({ VencordOriginal, ...props }) {

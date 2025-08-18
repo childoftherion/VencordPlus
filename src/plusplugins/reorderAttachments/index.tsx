@@ -7,7 +7,6 @@
 import "./style.css";
 
 import { classNameFactory } from "@api/Styles";
-import { Devs } from "@utils/constants";
 import { classes } from "@utils/misc";
 import { useForceUpdater } from "@utils/react";
 import definePlugin from "@utils/types";
@@ -63,12 +62,20 @@ const DraggableItem = ({ uploadItem, index, moveItem, children }) => {
     );
 };
 
-const DraggableList = ({ attachments, channelId, draftType, keyboardModeEnabled }) => {
+const DraggableList = ({ channelId, draftType, keyboardModeEnabled, size, attachments, ignoredFilename }) => {
     const forceUpdate = useForceUpdater();
 
+    // Discord filters the attachments before rendering them, but we need the original, unfiltered attachments
+    // to edit the upload order, so we remove the ignored files here while retaining the array reference
+    for (let i = attachments.length - 1; i >= 0; i--) {
+        if (attachments[i].filename === ignoredFilename) {
+            attachments.splice(i, 1);
+        }
+    }
+
     const moveItem = (from, to) => {
-        const [movedItem] = attachments.splice(from, 1);
-        attachments.splice(to, 0, movedItem);
+        if (from === to || from < 0 || to < 0 || from >= attachments.length || to >= attachments.length) return;
+        attachments.splice(to, 0, ...attachments.splice(from, 1));
         forceUpdate();
     };
 
@@ -85,6 +92,7 @@ const DraggableList = ({ attachments, channelId, draftType, keyboardModeEnabled 
                 draftType={draftType}
                 keyboardModeEnabled={keyboardModeEnabled}
                 clip={uploadItem.clip}
+                size={size}
             />
         </DraggableItem>
     ));
@@ -99,13 +107,13 @@ export default definePlugin({
             find: ')("attachments",',
             replacement: [
                 {
-                    match: /:(\i).map\(\i=>.*?(channelId:\i),(draftType:.*?),(keyboardModeEnabled:\i),.*?\.id\)\)/,
-                    replace: ":$self.DraggableList({attachments:$1,$2,$3,$4})"
+                    match: /:(\i).map\(\i=>.*?(channelId:\i,.*?\i\.\i\.MEDIUM)},\i\.id\)\)(?<=\1=(\i).filter\(\i=>\i.filename!==(\i)\).{0,500})/,
+                    replace: ":$self.DraggableList({$2,attachments:$3,ignoredFilename:$4})"
                 }
             ]
         },
         { // make the img in AttachmentItem not draggable so it doesn't try to add it as a new attachment
-            find: '["image/jpeg",',
+            find: '"video/quicktime","video/mp4"];',
             replacement: [
                 {
                     match: /"img",{src:\i,/,

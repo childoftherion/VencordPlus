@@ -1,6 +1,6 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -108,7 +108,7 @@ export default definePlugin({
                                 </Menu.Menu>
                             );
                         }}>
-                        <SpeedIcon/>
+                        <SpeedIcon />
                     </button>
                 )}
             </Tooltip>
@@ -128,6 +128,15 @@ export default definePlugin({
             replacement: {
                 match: /onVolumeShow:\i,onVolumeHide:\i\}\)(?<=useCallback\(\(\)=>\{let \i=(\i).current;.+?)/,
                 replace: "$&,$self.renderComponent($1)"
+            }
+        },
+        // remove native voice message control
+        // thought about removing it from here but this provides extra functionality like default/other speeds
+        {
+            find: "\"VoiceMessagePlayer\"",
+            replacement: {
+                match: /(?<=\}\)),\i(?=&&\(0,\i\.jsx\)\(\i\.\i,)/,
+                replace: ",false"
             }
         },
         // audio & video embeds

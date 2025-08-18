@@ -1,6 +1,6 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -9,11 +9,10 @@ import { Devs, EquicordDevs } from "@utils/constants";
 import { humanFriendlyJoin } from "@utils/text";
 import definePlugin, { OptionType } from "@utils/types";
 import { Message, User } from "@vencord/discord-types";
-import { findByCodeLazy, findByPropsLazy } from "@webpack";
-import { ChannelStore, FluxDispatcher, MessageActions, MessageStore, RelationshipStore, SelectedChannelStore, UserStore } from "@webpack/common";
+import { findByCodeLazy } from "@webpack";
+import { ChannelStore, FluxDispatcher, MessageActions, MessageStore, RelationshipStore, SelectedChannelStore, UserStore, VoiceStateStore } from "@webpack/common";
 
 const createBotMessage = findByCodeLazy('username:"Clyde"');
-const SortedVoiceStateStore = findByPropsLazy("getVoiceStatesForChannel", "getCurrentClientVoiceChannelId");
 
 const settings = definePluginSettings({
     friendDirectMessages: {
@@ -127,7 +126,7 @@ export default definePlugin({
                     const selfInChannel = SelectedChannelStore.getVoiceChannelId() === channelId;
                     let memberListContent = "";
                     if (settings.store.friendDirectMessagesShowMembers || settings.store.friendDirectMessagesShowMemberCount) {
-                        const voiceState = SortedVoiceStateStore.getVoiceStatesForChannel(channelId);
+                        const voiceState = VoiceStateStore.getVoiceStatesForChannel(channelId);
                         const sortedVoiceStates: User[] = Object.values(voiceState as { [key: string]: VoiceState; })
                             .filter((voiceState: VoiceState) => { voiceState.user && voiceState.user.id !== userId; })
                             .map((voiceState: VoiceState) => voiceState.user);

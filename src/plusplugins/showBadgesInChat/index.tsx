@@ -5,15 +5,17 @@
  */
 
 import { addMessageDecoration, removeMessageDecoration } from "@api/MessageDecorations";
-import { Devs, EquicordDevs } from "@utils/constants";
+import { Devs, isSuncordPluginDev, isEquicordPluginDev, isPlusPluginDev, isPlusMt } from "@utils/constants";
 import { isPluginDev, isSuncordPluginDev, isEquicordPluginDev, isPlusPluginDev, isPlusMt } from "@utils/misc";
 import definePlugin from "@utils/types";
-import { User } from "@vencord/discord-types";
 import { findByPropsLazy, findComponentByCodeLazy } from "@webpack";
 import badges from "plugins/_api/badges";
 const roleIconClassName = findByPropsLazy("roleIcon", "separator").roleIcon;
 const RoleIconComponent = findComponentByCodeLazy("#{intl::ROLE_ICON_ALT_TEXT}");
 import "./styles.css";
+
+import { User } from "@vencord/discord-types";
+import { JSX } from "react";
 
 import settings from "./settings";
 
@@ -36,10 +38,14 @@ function CheckBadge({ badge, author }: { badge: string; author: User; }): JSX.El
 
     switch (badge) {
         case "VencordDonor":
+            const donorBadges = badges.getDonorBadges(author.id)?.slice(0, 12);
+            if (!donorBadges || donorBadges.length === 0) return null;
+
             return (
                 <span style={{ order: settings.store.VencordDonorPosition }}>
-                    {badges.getDonorBadges(author.id)?.map(badge => (
+                    {donorBadges.map(badge => (
                         <RoleIconComponent
+                            key={author.id}
                             className={roleIconClassName}
                             name={badge.description}
                             size={20}
@@ -60,10 +66,14 @@ function CheckBadge({ badge, author }: { badge: string; author: User; }): JSX.El
                 </span>
             ) : null;
         case "SuncordDonor":
+            const suncordDonorBadges = badges.getSuncordDonorBadges(author.id)?.slice(0, 12);
+            if (!suncordDonorBadges || suncordDonorBadges.length === 0) return null;
+
             return (
                 <span style={{ order: settings.store.SuncordDonorPosition }}>
-                    {badges.getSuncordDonorBadges(author.id)?.map((badge: any) => (
+                    {suncordDonorBadges.map((badge: any) => (
                         <RoleIconComponent
+                            key={author.id}
                             className={roleIconClassName}
                             name={badge.description}
                             size={20}
@@ -84,10 +94,14 @@ function CheckBadge({ badge, author }: { badge: string; author: User; }): JSX.El
                 </span>
             ) : null;
         case "EquicordDonor":
+            const equicordDonorBadges = badges.getEquicordDonorBadges(author.id)?.slice(0, 12);
+            if (!equicordDonorBadges || equicordDonorBadges.length === 0) return null;
+
             return (
                 <span style={{ order: settings.store.EquicordDonorPosition }}>
-                    {badges.getEquicordDonorBadges(author.id)?.map((badge: any) => (
+                    {equicordDonorBadges.map((badge: any) => (
                         <RoleIconComponent
+                            key={author.id}
                             className={roleIconClassName}
                             name={badge.description}
                             size={20}
@@ -108,10 +122,14 @@ function CheckBadge({ badge, author }: { badge: string; author: User; }): JSX.El
                 </span>
             ) : null;
         case "PlusCustom":
+            const plusCustomBadges = badges.getPlusCustomBadges(author.id)?.slice(0, 12);
+            if (!plusCustomBadges || plusCustomBadges.length === 0) return null;
+
             return (
                 <span style={{ order: settings.store.PlusCustomPosition }}>
-                    {badges.getPlusCustomBadges(author.id)?.map((badge: any) => (
+                    {plusCustomBadges.map((badge: any) => (
                         <RoleIconComponent
+                            key={author.id}
                             className={roleIconClassName}
                             name={badge.description}
                             size={20}
@@ -148,6 +166,7 @@ function CheckBadge({ badge, author }: { badge: string; author: User; }): JSX.El
                 .map(badge => (
 
                     <RoleIconComponent
+                        key={author.id}
                         className={roleIconClassName}
                         name={badge[1]}
                         size={20}

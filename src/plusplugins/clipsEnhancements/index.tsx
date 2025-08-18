@@ -9,15 +9,9 @@ import { Link } from "@components/Link";
 import { Devs } from "@utils/constants";
 import { ModalAPI } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
-import { SelectOption } from "@vencord/discord-types";
+import { Activity, SelectOption } from "@vencord/discord-types";
 import { findStoreLazy } from "@webpack";
 import { PresenceStore, UserStore } from "@webpack/common";
-
-interface Activity {
-    name: string;
-    application_id?: string;
-    type: number;
-}
 
 const settings = definePluginSettings({
     richPresenceTagging: {
@@ -51,7 +45,7 @@ const settings = definePluginSettings({
 
 export default definePlugin({
     name: "ClipsEnhancements",
-    description: "Add more FPS and duration options for Clips, plus RPC tagging",
+    description: "Add more FPS and duration options for clips, plus RPC tagging",
     authors: [Devs.niko],
     settings,
     patches: [
@@ -90,7 +84,7 @@ export default definePlugin({
         const newFramerates = [...framerates];
         const extraFramerates = [45, 90, 120, 144, 165, 240];
 
-        // Lower framerates than 15FPS have adverse affects on compression, 3-minute clips at 10FPS skyrocket the filesize to 200 MB!
+        // Framerates lower than 15 FPS have adverse effects on compression – a 3-minute clip at 10 FPS skyrockets the file size to 200 MB!
         extraFramerates.forEach(framerate => newFramerates.push({ value: framerate, label: `${framerate}FPS` }));
 
         return newFramerates.toSorted();

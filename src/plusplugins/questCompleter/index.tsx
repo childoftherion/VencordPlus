@@ -244,7 +244,7 @@ const settings = definePluginSettings({
 
 export default definePlugin({
     name: "QuestCompleter",
-    description: "A plugin that allows you to complete quests without the need to have the game installed",
+    description: "Allows you to complete quests without the need to have the game installed",
     authors: [Devs.amia, Devs.HappyEnderman, EquicordDevs.SerStars, EquicordDevs.thororen],
     settings,
     patches: [

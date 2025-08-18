@@ -598,7 +598,7 @@ function sendTextToChat(text: string) {
     }
 }
 
-async function resolveFile(options: Argument[], ctx: CommandContext): Promise<File | null> {
+async function resolveFile(options: CommandArgument[], ctx: CommandContext): Promise<File | null> {
     for (const opt of options) {
         if (opt.name === "file") {
             const upload = UploadStore.getUpload(ctx.channel.id, opt.name, DraftType.SlashCommand);

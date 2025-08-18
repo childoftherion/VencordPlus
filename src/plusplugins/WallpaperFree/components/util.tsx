@@ -6,9 +6,10 @@
 
 import { openModal } from "@utils/modal";
 import { makeCodeblock } from "@utils/text";
-import { Button, FluxDispatcher, Parser } from "@webpack/common";
+import { Button, FluxDispatcher, Parser, Text } from "@webpack/common";
 
-import { SetCustomWallpaperModal } from "./modal";
+import { WallpaperFreeStore } from "../store";
+import { SetWallpaperModal } from "./modal";
 
 export function GlobalDefaultComponent() {
     const setGlobal = (url?: string) => {
@@ -22,8 +23,8 @@ export function GlobalDefaultComponent() {
     return (
         <>
             <Button onClick={() => {
-                openModal(props => <SetCustomWallpaperModal props={props} onSelect={setGlobal} />);
-            }}>Set a global custom wallpaper</Button>
+                openModal(props => <SetWallpaperModal props={props} onSelect={setGlobal} initialUrl={WallpaperFreeStore.globalDefault} />);
+            }}>Set a global wallpaper</Button>
 
             <Button
                 color={Button.Colors.RED}
@@ -47,6 +48,35 @@ export function TipsComponent() {
         transform: scaleX(-1); /* flip it horizontally */
         filter: blur(4px); /* apply a blur */
         opacity: 0.7; /* self-explanatory */
+    }
+
+    /* If you don't like embeds being transparent */
+
+    [class*=embedFull__] {
+        background: var(--background-surface-high) !important;
+    }
+
+    /* the same for codeblocks (or use ShikiCodeblocks) */
+
+    .hljs {
+        background-color: var(--background-base-lowest) !important;
     }`;
-    return Parser.parse(makeCodeblock(tipText, "css"));
+    return (
+        <div style={{ userSelect: "text" }}>
+            {!IS_WEB && (
+                <>
+                    <Text>
+                        You can use local files by having them in Vencord's themes directory and using the URL <code>vencord:///themes/filename.ext</code>
+                    </Text>
+                    <Button onClick={() => VencordNative.themes.openFolder()}>
+                        Open Themes Directory
+                    </Button>
+                </>
+            )}
+            {Parser.parse(makeCodeblock(tipText, "css"))}
+            <Button onClick={() => VencordNative.quickCss.openEditor()}>
+                Open QuickCSS
+            </Button>
+        </div>
+    );
 }

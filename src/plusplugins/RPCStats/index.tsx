@@ -1,6 +1,6 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -8,9 +8,8 @@ import { DataStore } from "@api/index";
 import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType, PluginNative } from "@utils/types";
-import { Message } from "@vencord/discord-types"
-import { ApplicationAssetUtils, FluxDispatcher } from "@webpack/common";
-import { UserStore } from "@webpack/common";
+import { Message } from "@vencord/discord-types";
+import { ApplicationAssetUtils, FluxDispatcher, UserStore } from "@webpack/common";
 
 export async function getApplicationAsset(key: string): Promise<string> {
     if (/https?:\/\/(cdn|media)\.discordapp\.(com|net)\/attachments\//.test(key)) return "mp:" + key.replace(/https?:\/\/(cdn|media)\.discordapp\.(com|net)\//, "");
@@ -18,8 +17,7 @@ export async function getApplicationAsset(key: string): Promise<string> {
 }
 
 
-enum StatsDisplay
-{
+enum StatsDisplay {
     messagesSentToday,
     messagesSentAllTime,
     mostListenedAlbum
@@ -83,10 +81,8 @@ const settings = definePluginSettings(
     });
 
 async function setRpc(disable?: boolean, details?: string, imageURL?: string) {
-    if(!disable)
-    {
-        if(!settings.store.lastFMApiKey.length && settings.store.statDisplay == StatsDisplay.mostListenedAlbum)
-        {
+    if (!disable) {
+        if (!settings.store.lastFMApiKey.length && settings.store.statDisplay === StatsDisplay.mostListenedAlbum) {
             FluxDispatcher.dispatch({
                 type: "LOCAL_ACTIVITY_UPDATE",
                 activity: null,
@@ -101,10 +97,10 @@ async function setRpc(disable?: boolean, details?: string, imageURL?: string) {
         "type": 0,
         "flags": 1,
         "assets": {
-            //I love insanely long statements
-            "large_image": 
-                (imageURL == null || !settings.store.albumCoverImage) ? 
-                    await getApplicationAsset(settings.store.assetURL.length ? settings.store.assetURL : UserStore.getCurrentUser().getAvatarURL()) : 
+            // I love insanely long statements
+            "large_image":
+                (imageURL == null || !settings.store.albumCoverImage) ?
+                    await getApplicationAsset(settings.store.assetURL.length ? settings.store.assetURL : UserStore.getCurrentUser().getAvatarURL()) :
                     await getApplicationAsset(imageURL)
         }
     };
@@ -133,49 +129,44 @@ interface IMessageCreate {
 
 const Native = VencordNative.pluginHelpers.RPCStats as PluginNative<typeof import("./native")>;
 
-async function updateData()
-{
-    switch(settings.store.statDisplay)
-    {
+async function updateData() {
+    switch (settings.store.statDisplay) {
         case StatsDisplay.messagesSentToday:
             let messagesSent;
-            if(await DataStore.get("RPCStatsDate") == getCurrentDate())
-            {
+            if (await DataStore.get("RPCStatsDate") === getCurrentDate()) {
                 messagesSent = await DataStore.get("RPCStatsMessages");
             }
-            else
-            {
+            else {
                 await DataStore.set("RPCStatsDate", getCurrentDate());
                 await DataStore.set("RPCStatsMessages", 0);
                 messagesSent = 0;
             }
             setRpc(false, `Messages sent today: ${messagesSent}\n`);
-        break;
+            break;
         case StatsDisplay.messagesSentAllTime:
             let messagesAllTime = await DataStore.get("RPCStatsAllTimeMessages");
-            if(!messagesAllTime)
-            {
+            if (!messagesAllTime) {
                 DataStore.set("RPCStatsAllTimeMessages", 0);
                 messagesAllTime = 0;
             }
             setRpc(false, `Messages sent all time: ${messagesAllTime}\n`);
-        break;
-        //slightly cursed
+            break;
+        // Slightly cursed
         case StatsDisplay.mostListenedAlbum:
 
-            let lastFMDataJson = await Native.fetchTopAlbum(
-            {
-               apiKey: settings.store.lastFMApiKey,  
-               user: settings.store.lastFMUsername, 
-               period: "7day"
-            });
+            const lastFMDataJson = await Native.fetchTopAlbum(
+                {
+                    apiKey: settings.store.lastFMApiKey,
+                    user: settings.store.lastFMUsername,
+                    period: "7day"
+                });
 
-            if(lastFMDataJson == null) return;
+            if (lastFMDataJson == null) return;
 
-            let lastFMData = JSON.parse(lastFMDataJson);
+            const lastFMData = JSON.parse(lastFMDataJson);
             console.log(lastFMData);
             setRpc(false, settings.store.lastFMStatFormat.replace("$album", lastFMData.albumName).replace("$artist", lastFMData.artistName), lastFMData?.albumCoverUrl);
-        break;
+            break;
     }
 }
 
@@ -183,20 +174,17 @@ export default definePlugin({
     name: "RPCStats",
     description: "Display statistics about your activity as a rich presence",
     authors: [Devs.Samwich],
-    async start()
-    {
+    async start() {
         updateData();
 
-        setInterval(() => 
-        {
+        setInterval(() => {
             checkForNewDay();
             updateData();
         }, 1000);
 
     },
     settings,
-    stop()
-    {
+    stop() {
         setRpc(true);
     },
     flux:
@@ -204,7 +192,7 @@ export default definePlugin({
         async MESSAGE_CREATE({ optimistic, type, message }: IMessageCreate) {
             if (optimistic || type !== "MESSAGE_CREATE") return;
             if (message.state === "SENDING") return;
-            if (message.author.id != UserStore.getCurrentUser().id) return;
+            if (message.author.id !== UserStore.getCurrentUser().id) return;
             await DataStore.set("RPCStatsMessages", await DataStore.get("RPCStatsMessages") + 1);
             await DataStore.set("RPCStatsAllTimeMessages", await DataStore.get("RPCStatsAllTimeMessages") + 1);
             updateData();

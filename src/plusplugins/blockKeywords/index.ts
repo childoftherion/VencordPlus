@@ -31,7 +31,7 @@ const settings = definePluginSettings({
         restartNeeded: true
     },
     ignoreBlockedMessages: {
-        description: "Completely ignore (recent) new messages bar",
+        description: "Completely ignore the new messages bar",
         type: OptionType.BOOLEAN,
         default: true,
         restartNeeded: true,

@@ -25,7 +25,7 @@ export function Builder({ guild }: BuilderProps) {
 
     const avatarColors = useAvatarColors(
         UserStore.getCurrentUser()?.getAvatarURL(guild?.id, 80),
-        useToken(tokens.unsafe_rawColors.PRIMARY_530).hex(),
+        useToken(tokens.unsafe_rawColors.PRIMARY_530 as any).hex(),
         false
     );
 

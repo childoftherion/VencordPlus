@@ -27,7 +27,7 @@ export default definePlugin({
         {
             find: "multiaccount_cta_tooltip_seen",
             replacement: {
-                match: /(let \i=)\d+(,\i="switch-accounts-modal",\i="multiaccount_cta_tooltip_seen")/,
+                match: /(let \i=)\d+(,\i="switch-accounts-modal")/,
                 replace: "$1Infinity$2",
             },
         },

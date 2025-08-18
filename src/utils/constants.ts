@@ -652,6 +652,10 @@ export const EquicordDevs = Object.freeze({
         name: "thororen",
         id: 848339671629299742n
     },
+    dotdas: {
+        name: "dotdas",
+        id: 353229259482857475n
+    },
     nyx: {
         name: "verticalsync",
         id: 1207087393929171095n
@@ -1067,6 +1071,22 @@ export const EquicordDevs = Object.freeze({
     veygax: {
         name: "veygax",
         id: 1119938236245094521n
+    },
+    secp192k1: {
+        name: "secp192k1",
+        id: 477497542205243392n
+    },
+    VillainsRule: {
+        name: "VillainsRule",
+        id: 0n
+    },
+    Etorix: {
+        name: "Etorix",
+        id: 94597845868355584n
+    },
+    Johannes7k75: {
+        name: "Johannes7k75",
+        id: 587701169103699994n
     }
 } satisfies Record<string, Dev>);
 

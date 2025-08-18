@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import "../_misc/styles.css";
+
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
@@ -71,8 +73,14 @@ const ContextMenuPatch: NavContextMenuPatchCallback = (children, { guild }: { gu
 
 export default definePlugin({
     name: "BetterGodMode [Risky]",
-    description: "Get all permissions on any guild (client-side). This is a risky plugin! Use this plugin at your own risk!",
+    description: "Get all permissions on any guild (client-side)",
     authors: [EquicordDevs.TheArmagan],
+    settingsAboutComponent: () => <>
+        <Forms.FormText className="plugin-warning">
+            Usage of this plugin might get detected by Discord. Use this plugin at your own risk!
+        </Forms.FormText>
+    </>,
+    settings,
     start: () => {
         OriginalFns = Object.fromEntries(
             NeedsToBePatchedFns.map(fnName => [fnName, PermissionStore[fnName]])

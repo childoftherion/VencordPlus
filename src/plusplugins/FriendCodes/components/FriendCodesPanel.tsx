@@ -1,8 +1,16 @@
-import { copyToClipboard } from "@utils/clipboard";
-import { Button, Flex, Forms, Parser, Text, useEffect, useState } from "@webpack/common";
-import { findByPropsLazy } from "@webpack";
-import { FriendInvite } from "../types";
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import "./styles.css";
+
+import { copyToClipboard } from "@utils/clipboard";
+import { findByPropsLazy } from "@webpack";
+import { Button, Flex, Forms, Parser, Text, useEffect, useState } from "@webpack/common";
+
+import { FriendInvite } from "../types";
 
 const FormStyles = findByPropsLazy("header", "title", "emptyState");
 const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = findByPropsLazy("createFriendInvite");
@@ -49,7 +57,7 @@ function FriendInviteCard({ invite }: { invite: FriendInvite }) {
                 </Flex>
             </Flex>
         </div>
-    )
+    );
 }
 
 export default function FriendCodesPanel() {
@@ -119,5 +127,5 @@ export default function FriendCodesPanel() {
                         </div>
             }
         </header>
-    )
+    );
 }

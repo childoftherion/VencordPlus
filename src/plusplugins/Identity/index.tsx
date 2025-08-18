@@ -6,7 +6,7 @@
 
 import { DataStore } from "@api/index";
 import { Flex } from "@components/Flex";
-import { Devs } from "@utils/constants";
+import { Devs, EquicordDevs } from "@utils/constants";
 import definePlugin, { PluginNative } from "@utils/types";
 import { findComponentByCodeLazy } from "@webpack";
 import { Alerts, Button, FluxDispatcher, Forms, Toasts, UserProfileStore, UserStore } from "@webpack/common";
@@ -23,17 +23,17 @@ async function SetNewData() {
     // holy moly
     FluxDispatcher.dispatch({ type: "USER_SETTINGS_ACCOUNT_SET_PENDING_AVATAR", avatar: pfpBase64 });
     FluxDispatcher.dispatch({ type: "USER_SETTINGS_ACCOUNT_SET_PENDING_GLOBAL_NAME", globalName: `${PersonData.name.first} ${PersonData.name.last}` });
-    FluxDispatcher.dispatch({ type: "USER_SETTINGS_ACCOUNT_SET_PENDING_PRONOUNS", pronouns: "" });
+    FluxDispatcher.dispatch({ type: "USER_SETTINGS_ACCOUNT_SET_PENDING_PRONOUNS", pronouns: `${PersonData.gender === "male" ? "he/him" : PersonData.gender === "female" ? "she/her" : ""}` });
     FluxDispatcher.dispatch({ type: "USER_SETTINGS_ACCOUNT_SET_PENDING_BANNER", banner: null });
     FluxDispatcher.dispatch({ type: "USER_SETTINGS_ACCOUNT_SET_PENDING_ACCENT_COLOR", color: null });
     FluxDispatcher.dispatch({ type: "USER_SETTINGS_ACCOUNT_SET_PENDING_THEME_COLORS", themeColors: [null, null] });
-    FluxDispatcher.dispatch({ type: "USER_SETTINGS_ACCOUNT_SET_PENDING_BIO", bio: `Hello! I am ${PersonData.name.first} ${PersonData.name.last}` });
+    FluxDispatcher.dispatch({ type: "USER_SETTINGS_ACCOUNT_SET_PENDING_BIO", bio: `Hello! I am ${PersonData.name.first} ${PersonData.name.last}.` });
 }
 
 async function SaveData() {
-    const userData = UserProfileStore.getUserProfile(UserStore.getCurrentUser().id);
+    const userData = UserProfileStore.getUserProfile(UserStore.getCurrentUser().id)!;
 
-    // the getUserProfile function doesn't return all the information we need, so we append the standard user object data to the end
+    // The `getUserProfile` function doesn't return all the information we need, so we append the standard user object data to the end
     const extraUserObject: any = { extraUserObject: UserStore.getCurrentUser() };
 
     const pfp = JSON.parse(await native.ToBase64ImageUrl({ imgUrl: `https://cdn.discordapp.com/avatars/${userData.userId}/${extraUserObject.extraUserObject.avatar}.webp?size=4096` })).data;
@@ -90,7 +90,7 @@ function ResetCard() {
                                     If you save, it will overwrite your previous data.
                                 </Forms.FormText>
                             </div>,
-                            confirmText: "Save Anyway",
+                            confirmText: "Save",
                             cancelText: "Cancel",
                             onConfirm: SaveData
                         });
@@ -111,7 +111,7 @@ function ResetCard() {
                                     If you load, it will overwrite your current profile configuration.
                                 </Forms.FormText>
                             </div>,
-                            confirmText: "Load Anyway",
+                            confirmText: "Load",
                             cancelText: "Cancel",
                             onConfirm: LoadData
                         });
@@ -133,8 +133,8 @@ function ResetCard() {
 
 export default definePlugin({
     name: "Identity",
-    description: "Allows you to edit your profile to a random fake person with the click of a button",
-    authors: [Devs.Samwich],
+    description: "Allows you to edit your profile to a random, fake person with the click of a button",
+    authors: [Devs.Samwich, EquicordDevs.port22exposed],
     ResetCard: ResetCard,
     patches: [
         {
