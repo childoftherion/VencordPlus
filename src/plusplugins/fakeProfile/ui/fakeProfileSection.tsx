@@ -6,9 +6,8 @@
 
 import { classNameFactory } from "@api/Styles";
 import { Flex } from "@components/Flex";
-import { Button, UserStore } from "@vencord/discord-types";
 import { findComponentByCodeLazy } from "@webpack";
-import { Toasts } from "@webpack/common";
+import { Button, Toasts, UserStore } from "@webpack/common";
 
 import { useUsersProfileStore } from "../lib/stores/UsersProfileStore";
 

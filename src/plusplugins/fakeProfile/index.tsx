@@ -10,8 +10,8 @@ import { Devs } from "@utils/constants";
 import { Margins } from "@utils/margins";
 import { copyWithToast } from "@utils/misc";
 import definePlugin from "@utils/types";
-import { Button, User, UserStore } from "@vencord/discord-types";
-import { Toasts } from "@webpack/common";
+import { User } from "@vencord/discord-types";
+import { Button, Toasts, UserStore } from "@webpack/common";
 import virtualMerge from "virtual-merge";
 
 import style from "./index.css?managed";
