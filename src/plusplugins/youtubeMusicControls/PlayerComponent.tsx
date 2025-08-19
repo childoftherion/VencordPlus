@@ -7,7 +7,7 @@
 import "./ytmStyles.css";
 
 import { ImageIcon, LinkIcon, OpenExternalIcon } from "@components/Icons";
-import { SeekBar } from "@plugins/spotifyControls/SeekBar";
+import { SeekBar } from "../../plugins/spotifyControls/SeekBar";
 import { debounce } from "@shared/debounce";
 import { openImageModal } from "@utils/discord";
 import { classes, copyWithToast } from "@utils/misc";

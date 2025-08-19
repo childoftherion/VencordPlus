@@ -69,8 +69,8 @@ export default definePlugin({
         SuncordDevs.Cortex,
         Devs.Samwich,
         EquicordDevs.Synth,
-        EquicordDevs.thororen
-        SuncordDevs.Woosh,
+        EquicordDevs.thororen,
+        SuncordDevs.Woosh
     ],
     contextMenus: {
         "guild-context": Patch,

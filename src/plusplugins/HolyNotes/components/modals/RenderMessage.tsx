@@ -5,7 +5,7 @@
  */
 
 import { makeDummyUser } from "@components/settings/tabs/plugins/PluginModal";
-import { MessageType } from "../../holyNotes";
+import { MessageType } from "../..";
 import { copyToClipboard } from "@utils/clipboard";
 import { classes } from "@utils/misc";
 import { ModalProps } from "@utils/modal";
