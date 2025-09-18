@@ -15,21 +15,38 @@ import { memoize } from "../utils/memoize";
 
 const execFile = promisify(cpExecFile);
 
-const isFlatpak = process.platform === "linux" && Boolean(process.env.FLATPAK_ID?.includes("discordapp") || process.env.FLATPAK_ID?.includes("Discord"));
-if (process.platform === "darwin") process.env.PATH = `/usr/local/bin:${process.env.PATH}`;
-
+const isFlatpak =
+    process.platform === "linux" &&
+    Boolean(
+        process.env.FLATPAK_ID?.includes("discordapp") ||
+            process.env.FLATPAK_ID?.includes("Discord")
+    );
+if (process.platform === "darwin")
+    process.env.PATH = `/usr/local/bin:${process.env.PATH}`;
 
 const VENCORD_PLUS_PLUGIN_DIR = join(__dirname, "..", "src", "plusplugins");
 const getCwd = memoize(async () => {
-    const dirs = await readdir(VENCORD_PLUS_PLUGIN_DIR, { withFileTypes: true });
+    try {
+        const dirs = await readdir(VENCORD_PLUS_PLUGIN_DIR, {
+            withFileTypes: true,
+        });
 
-    for (const dir of dirs) {
-        if (!dir.isDirectory()) continue;
+        for (const dir of dirs) {
+            if (!dir.isDirectory()) continue;
 
-        const pluginDir = join(VENCORD_PLUS_PLUGIN_DIR, dir.name);
-        const files = await readdir(pluginDir);
+            const pluginDir = join(VENCORD_PLUS_PLUGIN_DIR, dir.name);
+            let files: string[];
+            try {
+                files = await readdir(pluginDir);
+            } catch {
+                continue;
+            }
 
-        if (files.includes("LoggedMessageManager.ts")) return join(VENCORD_PLUS_PLUGIN_DIR, dir.name);
+            if (files.includes("LoggedMessageManager.ts"))
+                return join(VENCORD_PLUS_PLUGIN_DIR, dir.name);
+        }
+    } catch {
+        // Directory does not exist in this environment; fall through to undefined
     }
 
     return;
@@ -41,7 +58,11 @@ async function git(...args: string[]): Promise<GitResult> {
     try {
         let result;
         if (isFlatpak) {
-            result = await execFile("flatpak-spawn", ["--host", "git", ...args], opts);
+            result = await execFile(
+                "flatpak-spawn",
+                ["--host", "git", ...args],
+                opts
+            );
         } else {
             result = await execFile("git", args, opts);
         }
@@ -52,7 +73,7 @@ async function git(...args: string[]): Promise<GitResult> {
             ok: false,
             cmd: error.cmd as string,
             message: error.stderr as string,
-            error
+            error,
         };
     }
 }
@@ -87,8 +108,8 @@ export async function getRepoInfo(): Promise<GitResult> {
             repo: res.value
                 .replace(/git@(.+):/, "https://$1/")
                 .replace(/\.git$/, ""),
-            gitHash: gitHash.value
-        }
+            gitHash: gitHash.value,
+        },
     };
 }
 
@@ -111,7 +132,11 @@ export async function getNewCommits(): Promise<GitResult> {
     try {
         await git("fetch");
 
-        const logOutput = await git("log", `--format="${logFormat}"`, branchRange);
+        const logOutput = await git(
+            "log",
+            `--format="${logFormat}"`,
+            branchRange
+        );
 
         if (!logOutput.ok) {
             return logOutput;
@@ -122,9 +147,14 @@ export async function getNewCommits(): Promise<GitResult> {
         }
 
         const commitLines = logOutput.value.trim().split("\n");
-        const commits: Commit[] = commitLines.map(line => {
+        const commits: Commit[] = commitLines.map((line) => {
             const [hash, author, ...rest] = line.split(";");
-            return { longHash: hash, hash: hash.slice(0, 7), author, message: rest.join(";") } satisfies Commit;
+            return {
+                longHash: hash,
+                hash: hash.slice(0, 7),
+                author,
+                message: rest.join(";"),
+            } satisfies Commit;
         });
 
         return { ok: true, value: commits };

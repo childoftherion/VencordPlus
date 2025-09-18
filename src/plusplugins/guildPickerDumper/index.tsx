@@ -8,7 +8,7 @@ import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/Co
 import { Devs, SuncordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import type { Guild } from "@vencord/discord-types";
-import { EmojiStore, Menu, StickerStore } from "@webpack/common";
+import { EmojiStore, Menu, StickersStore as StickerStore } from "@webpack/common";
 import { zipSync } from "fflate";
 
 const Patch: NavContextMenuPatchCallback = (children, { guild }: { guild: Guild; }) => {

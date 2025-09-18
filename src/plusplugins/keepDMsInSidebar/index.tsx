@@ -11,7 +11,8 @@ import { useForceUpdater } from "@utils/react";
 import definePlugin, { OptionType } from "@utils/types";
 import { Channel, Message, User } from "@vencord/discord-types";
 import { findStoreLazy } from "@webpack";
-import { ChannelStore, ContextMenuApi, Menu, MessageStore, PresenceStore, PrivateChannelsStore, RelationshipStore, UserStore, useStateFromStores } from "@webpack/common";
+import { ChannelStore, ContextMenuApi, Menu, MessageStore, PresenceStore, RelationshipStore, UserStore, useStateFromStores } from "@webpack/common";
+const PrivateChannelsStore = findStoreLazy("PrivateChannelsStore");
 import { MouseEvent } from "react";
 
 enum UnreadDMsPosition {

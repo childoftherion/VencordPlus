@@ -19,7 +19,7 @@
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { copyWithToast } from "@utils/misc";
 import definePlugin from "@utils/types";
-import { Menu, React, StickerStore } from "@webpack/common";
+import { Menu, React, StickersStore as StickerStore } from "@webpack/common";
 import { Promisable } from "type-fest";
 
 interface Sticker {

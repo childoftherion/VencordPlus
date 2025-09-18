@@ -183,10 +183,10 @@ async function start() {
     });
 }
 
-const Native = VencordNative.pluginHelpers.XSOverlay as PluginNative<typeof import("./native")>;
+const Native = VencordNative.pluginHelpers.XSOverlayNotifier as PluginNative<typeof import("./native")>;
 
 export default definePlugin({
-    name: "XSOverlay",
+    name: "XSOverlay Notifier",
     description: "Forwards notifications from Discord to XSOverlay for easy viewing in VR",
     authors: [Devs.Nyako],
     tags: ["vr", "notify"],

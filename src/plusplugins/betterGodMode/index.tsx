@@ -7,10 +7,19 @@
 import "../_misc/styles.css";
 
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
+import { definePluginSettings } from "@api/Settings";
 import { EquicordDevs } from "@utils/constants";
-import definePlugin from "@utils/types";
+import definePlugin, { OptionType } from "@utils/types";
 import { Guild } from "@vencord/discord-types";
-import { GuildStore, Menu, PermissionStore, React } from "@webpack/common";
+import { Forms, GuildStore, Menu, PermissionStore, React } from "@webpack/common";
+
+const settings = definePluginSettings({
+    enabledGuilds: {
+        type: OptionType.STRING,
+        description: "Comma-separated list of guild IDs where God Mode is enabled",
+        default: ""
+    }
+});
 
 const NeedsToBePatchedFns = [ // if commented out, then it means it breaks your Discord client
     "can",

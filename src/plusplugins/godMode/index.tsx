@@ -18,9 +18,18 @@
 
 import "../_misc/styles.css";
 
+import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
-import { PermissionStore } from "@webpack/common";
+import definePlugin, { OptionType } from "@utils/types";
+import { Forms, PermissionStore } from "@webpack/common";
+
+const settings = definePluginSettings({
+    enabled: {
+        type: OptionType.BOOLEAN,
+        description: "Enable God Mode (client-side permissions)",
+        default: false
+    }
+});
 
 export default definePlugin({
     name: "GodMode [Risky]",
