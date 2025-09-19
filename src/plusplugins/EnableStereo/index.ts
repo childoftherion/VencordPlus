@@ -1,5 +1,11 @@
-import definePlugin, { OptionType } from "@utils/types";
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import { definePluginSettings } from "@api/Settings";
+import definePlugin, { OptionType } from "@utils/types";
 
 const settings = definePluginSettings({
     stereochannel: {
@@ -28,7 +34,7 @@ export default definePlugin({
             find: "Audio codecs",
             replacement: {
                 match: /channels\:1\,/,
-                replace: `channels:1,prams:{stereo:\"1\"},`,
+                replace: "channels:1,prams:{stereo:\"1\"},",
                 predicate: () => settings.store.stereochannel === 1
             }
         },
@@ -36,7 +42,7 @@ export default definePlugin({
             find: "Audio codecs",
             replacement: {
                 match: /channels\:1\,/,
-                replace: `channels:2,prams:{stereo:\"2\"},`,
+                replace: "channels:2,prams:{stereo:\"2\"},",
                 predicate: () => settings.store.stereochannel === 2
             }
         },
@@ -44,7 +50,7 @@ export default definePlugin({
             find: "Audio codecs",
             replacement: {
                 match: /channels\:1\,/,
-                replace: `channels:7.1,prams:{stereo:\"7.1\"},`,
+                replace: "channels:7.1,prams:{stereo:\"7.1\"},",
                 predicate: () => settings.store.stereochannel === 7.1
             }
         }

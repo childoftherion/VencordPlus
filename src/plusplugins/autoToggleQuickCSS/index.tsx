@@ -1,7 +1,13 @@
-import definePlugin from "@utils/types";
-import { Settings, useSettings } from "@api/Settings";
-import { PlusDevs } from "@utils/constants";
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import { ApplicationCommandInputType } from "@api/Commands";
+import { Settings } from "@api/Settings";
+import { PlusDevs } from "@utils/constants";
+import definePlugin from "@utils/types";
 
 export default definePlugin({
     name: "Auto Toggle QuickCSS",

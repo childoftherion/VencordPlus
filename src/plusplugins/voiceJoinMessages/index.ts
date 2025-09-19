@@ -10,6 +10,7 @@ import { humanFriendlyJoin } from "@utils/text";
 import definePlugin, { OptionType } from "@utils/types";
 import { Message, User } from "@vencord/discord-types";
 import { findByCodeLazy } from "@webpack";
+import { findStoreLazy } from "@webpack";
 import {
     ChannelStore,
     FluxDispatcher,
@@ -19,7 +20,6 @@ import {
     SelectedChannelStore,
     UserStore,
 } from "@webpack/common";
-import { findStoreLazy } from "@webpack";
 const VoiceStateStore = findStoreLazy("VoiceStateStore");
 
 const createBotMessage = findByCodeLazy('username:"Clyde"');
@@ -98,7 +98,7 @@ function sendVoiceStatusMessage(
     // If we try to send a message into an unloaded channel, the client-sided messages get overwritten when the channel gets loaded
     // This might be messy but It Works:tm:
     const messagesLoaded: Promise<any> = MessageStore.hasPresent(channelId)
-        ? new Promise<void>((r) => r())
+        ? new Promise<void>(r => r())
         : MessageActions.fetchMessages({ channelId });
     messagesLoaded.then(() => {
         FluxDispatcher.dispatch({
@@ -119,7 +119,7 @@ function isFriendAllowlisted(friendId: string) {
         .split(",")
         .join(" ")
         .split(" ")
-        .filter((i) => i.length > 0);
+        .filter(i => i.length > 0);
     if (list.join(" ").length < 1) return true;
     return list.includes(friendId);
 }
@@ -186,7 +186,7 @@ export default definePlugin({
                             .map((voiceState: VoiceState) => voiceState.user);
                         console.log(sortedVoiceStates);
                         const otherMembers = sortedVoiceStates.filter(
-                            (s) => s.id !== userId
+                            s => s.id !== userId
                         );
                         const otherMembersCount = otherMembers.length;
                         if (otherMembersCount <= 0) {
@@ -208,7 +208,7 @@ export default definePlugin({
                                 ? ", "
                                 : " with ";
                             memberListContent += humanFriendlyJoin(
-                                otherMembers.map((s) => `<@${s.id}>`)
+                                otherMembers.map(s => `<@${s.id}>`)
                             );
                         }
                     }

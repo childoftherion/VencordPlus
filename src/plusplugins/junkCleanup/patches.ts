@@ -1,3 +1,9 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import { Patch } from "@utils/types";
 
 type StockPatch = Omit<Patch, "plugin">;
@@ -285,7 +291,7 @@ const Patches: Record<string, ConfigurablePatchDefinition> = {
     questsActiveNow: {
         description: "Hide the Quest promotions in the Active Now sidebar",
         patches: {
-            find: 'NOW_PLAYING_CARD_HOVERED,{',
+            find: "NOW_PLAYING_CARD_HOVERED,{",
             replacement: {
                 match: /(quest:)\i}\)/,
                 replace: "$1null})"
@@ -332,7 +338,7 @@ const Patches: Record<string, ConfigurablePatchDefinition> = {
     voiceGradientBackground: {
         description: "Hide the gradient backgrounds in voice channels",
         patches: {
-            find: '.gradientBackground,children:\[\(0',
+            find: ".gradientBackground,children:\[\(0",
             all: true,
             replacement: {
                 match: /\i\.\i\.getEnableHardwareAcceleration\(\)/,

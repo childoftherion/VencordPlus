@@ -1,19 +1,7 @@
 /*
- * Vencord, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 import { LazyComponent } from "@utils/lazyReact";
@@ -161,16 +149,16 @@ export let listScrollerClasses: Record<string, string>;
 
 waitFor(
     filters.byCode('="ltr",orientation:', "customTheme:", "forwardRef"),
-    (m) => (createScroller = m)
+    m => (createScroller = m)
 );
 waitFor(
     filters.byCode("getScrollerNode:", "resizeObserver:", "sectionHeight:"),
-    (m) => (createListScroller = m)
+    m => (createListScroller = m)
 );
-waitFor(["thin", "auto", "customTheme"], (m) => (scrollerClasses = m));
+waitFor(["thin", "auto", "customTheme"], m => (scrollerClasses = m));
 waitFor(
-    (m) => m.thin && m.auto && !m.customTheme,
-    (m) => (listScrollerClasses = m)
+    m => m.thin && m.auto && !m.customTheme,
+    m => (listScrollerClasses = m)
 );
 
 export const ScrollerNone = LazyComponent(() =>
@@ -233,7 +221,7 @@ export const FocusLock = LazyComponent(() => FocusLock_);
 
 export let useToken: t.useToken;
 waitFor(
-    (m) => {
+    m => {
         if (typeof m !== "function") {
             return false;
         }
@@ -241,7 +229,7 @@ waitFor(
         const str = String(m);
         return str.includes(".resolve({theme:null") && !str.includes("useMemo");
     },
-    (m) => (useToken = m)
+    m => (useToken = m)
 );
 
 export const MaskedLink = waitForComponent<t.MaskedLink>(

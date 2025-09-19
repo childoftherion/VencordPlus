@@ -4,10 +4,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { Devs } from "@utils/constants";
+import { definePluginSettings } from "@api/Settings";
 import definePlugin, { OptionType } from "@utils/types";
 import { React } from "@webpack/common";
-import { definePluginSettings } from "@api/Settings";
 
 const settings = definePluginSettings({
     enableHoverReveal: {
@@ -28,7 +27,7 @@ export default definePlugin({
             find: ".removeObscurity,",
             replacement: {
                 match: /super\(\.\.\.\i\),/,
-                replace: '$&Vencord.Plugins.plugins.SpoilerReveal.createHoverWrapper(this),'
+                replace: "$&Vencord.Plugins.plugins.SpoilerReveal.createHoverWrapper(this),"
             }
         }
     ],

@@ -8,7 +8,7 @@ import { ApplicationCommandInputType, ApplicationCommandOptionType, findOption, 
 import { DataStore } from "@api/index";
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
-import { CommandArgument, CommandContext } from "@vencord/discord-types";
+import { CommandContext } from "@vencord/discord-types";
 import { Parser, React, Text } from "@webpack/common";
 
 let userFlags = new Map<string, Flag>();
@@ -59,7 +59,7 @@ const subscribers = new Set<() => void>();
 function subscribe(callback: () => void) {
     subscribers.add(callback);
     return () => subscribers.delete(callback);
-};
+}
 
 function Flag({ id }: { id: string; }) {
     const flag = React.useSyncExternalStore(subscribe, () => userFlags.get(id));
@@ -78,7 +78,7 @@ function Flag({ id }: { id: string; }) {
 
 export default definePlugin({
     name: "UserFlags",
-    description: `Add "flags" to users that will always show underneath their messages`,
+    description: "Add \"flags\" to users that will always show underneath their messages",
     authors: [Devs.nin0dev],
     dependencies: ["MessageAccessoriesAPI"],
     async start() {

@@ -147,7 +147,7 @@ export async function getNewCommits(): Promise<GitResult> {
         }
 
         const commitLines = logOutput.value.trim().split("\n");
-        const commits: Commit[] = commitLines.map((line) => {
+        const commits: Commit[] = commitLines.map(line => {
             const [hash, author, ...rest] = line.split(";");
             return {
                 longHash: hash,

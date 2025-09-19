@@ -1,14 +1,20 @@
-import { PlusDevs } from "@utils/constants";
-import definePlugin from "@utils/types";
-import { Button, Menu, Switch, Text, UploadHandler, useEffect, useState } from "@webpack/common";
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import { addMessagePopoverButton, removeMessagePopoverButton } from "@api/MessagePopover";
+import { PlusDevs } from "@utils/constants";
+import { Logger } from "@utils/Logger";
+import { classes } from "@utils/misc";
+import { ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
+import definePlugin from "@utils/types";
+import { findByCodeLazy } from "@webpack";
+import { Button, Text, useState } from "@webpack/common";
 import { ChannelStore } from "@webpack/common";
 import { PropsWithChildren } from "react";
-import { classes } from "@utils/misc";
-import { Logger } from "@utils/Logger";
 import { SVGProps } from "react";
-import { ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
-import { findByCode, findByCodeLazy } from "@webpack";
 
 const logger = new Logger("TextReact");
 
@@ -102,8 +108,8 @@ function convertToRegionalIndicators(text: string) {
         [" ", ["▪", "◾", "➖", "◼", "⬛", "⚫", "\uD83D\uDDA4", "\uD83D\uDD76"]]
     ]);
 
-    let result = '';
-    let reactionIndexes = new Map<string, number>();
+    let result = "";
+    const reactionIndexes = new Map<string, number>();
 
     for (const char of text.toLowerCase()) {
         const emojis = regionalIndicators.get(char);
@@ -131,7 +137,7 @@ function convertToRegionalIndicators(text: string) {
 function OpenWindow(props: ModalProps & { message: any; onClose: () => void }) {
     const { message, onClose, ...modalProps } = props;
 
-    const [inputText, setInputText] = useState('');
+    const [inputText, setInputText] = useState("");
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInputText(event.target.value);
@@ -165,14 +171,14 @@ function OpenWindow(props: ModalProps & { message: any; onClose: () => void }) {
                     value={inputText}
                     onChange={handleInputChange}
                     style={{
-                        padding: '10px',
-                        borderRadius: '5px',
-                        border: '1px solid #ccc',
-                        fontSize: '16px',
-                        width: '100%',
-                        boxSizing: 'border-box',
-                        background: 'transparent',
-                        color: '#ffffff',
+                        padding: "10px",
+                        borderRadius: "5px",
+                        border: "1px solid #ccc",
+                        fontSize: "16px",
+                        width: "100%",
+                        boxSizing: "border-box",
+                        background: "transparent",
+                        color: "#ffffff",
                     }}
                 />
                 <Button onClick={handleConfirm}>Add Reactions</Button>

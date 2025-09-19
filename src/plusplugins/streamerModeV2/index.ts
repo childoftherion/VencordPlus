@@ -1,26 +1,14 @@
 /*
- * Vencord, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 let down: ((event: any) => void) | null = null;
-let up = null
+let up = null;
 
 export default definePlugin({
     name: "streamerModeV2",
@@ -29,13 +17,13 @@ export default definePlugin({
 
     start: () => {
         const injectCSS = css => {
-            let el = document.createElement('style');
-            el.type = 'text/css';
+            const el = document.createElement("style");
+            el.type = "text/css";
             el.innerText = css;
             return el;
         };
 
-        let css = injectCSS(`.interactive__776ee  {
+        const css = injectCSS(`.interactive__776ee  {
     filter: blur(9px) brightness(0.4)
 }
 
@@ -96,7 +84,7 @@ export default definePlugin({
 }`);
 
         function toggleStreamerModeV2(enable) {
-            if (enable) { 
+            if (enable) {
                 document.head.appendChild(css);
             } else {
                 document.head.removeChild(css);
@@ -104,26 +92,26 @@ export default definePlugin({
         }
 
         if (down === null) {
-            down = function(event) {    
+            down = function(event) {
                 if (event.key === "Shift") {
-                    toggleStreamerModeV2(true)
+                    toggleStreamerModeV2(true);
                 }
-            }
+            };
         }
-        
+
          if (up === null) {
-            up = function(event) {    
+            up = function(event) {
                 if (event.key === "Shift") {
-                    setTimeout(function(){toggleStreamerModeV2(false)}, 1000)
+                    setTimeout(function(){ toggleStreamerModeV2(false); }, 1000);
                 }
-            }
+            };
         }
-        
-        document.addEventListener('keydown', down)
-        document.addEventListener('keyup', up)
+
+        document.addEventListener("keydown", down);
+        document.addEventListener("keyup", up);
     },
     stop: () => {
-        document.removeEventListener('keydown', down)
-        document.removeEventListener('keyup', up)
+        document.removeEventListener("keydown", down);
+        document.removeEventListener("keyup", up);
     }
 });

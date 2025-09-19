@@ -5,7 +5,6 @@
  */
 
 import { addMessagePreSendListener, MessageExtra, MessageObject, removeMessagePreSendListener } from "@api/MessageEvents";
-import { EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 const handleMessage = (channelID: string, message: MessageObject, messageEx: MessageExtra) => messageEx.uploads && messageEx.uploads.forEach(att => (att as any).isRemix = true);

@@ -1,8 +1,13 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import { definePluginSettings } from "@api/Settings";
 import { openPluginModal } from "@components/settings/tabs";
 import { Devs } from "@utils/constants";
 import definePlugin, { makeRange, OptionType } from "@utils/types";
-import { FluxEvents } from "@vencord/discord-types";
 import { mapMangledModuleLazy } from "@webpack";
 import { FluxDispatcher } from "@webpack/common";
 
@@ -52,7 +57,7 @@ const settings = definePluginSettings({
     multiplier: {
         type: OptionType.SLIDER,
         description: "Intensity multiplier",
-        markers: (() => { let range = makeRange(0, 10, 0.5); range[0] = 0.1; return range; })(),
+        markers: (() => { const range = makeRange(0, 10, 0.5); range[0] = 0.1; return range; })(),
         default: 1,
         stickToMarkers: false,
     },

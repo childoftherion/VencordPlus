@@ -1,8 +1,14 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import ErrorBoundary from "@components/ErrorBoundary";
 import definePlugin from "@utils/types";
 import { findByPropsLazy, findComponentByCodeLazy, findStoreLazy } from "@webpack";
 
-const Routes = findByPropsLazy('GUILD_MEMBER_VERIFICATION_FOR_HUB', 'QUEST_HOME');
+const Routes = findByPropsLazy("GUILD_MEMBER_VERIFICATION_FOR_HUB", "QUEST_HOME");
 
 const QuestsStore = findStoreLazy("QuestsStore");
 

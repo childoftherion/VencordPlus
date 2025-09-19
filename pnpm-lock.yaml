@@ -24,9 +24,6 @@ importers:
             "@vap/shiki":
                 specifier: 0.10.5
                 version: 0.10.5
-            buttplug:
-                specifier: ^3.2.2
-                version: 3.2.2
             fflate:
                 specifier: ^0.8.2
                 version: 0.8.2
@@ -39,12 +36,6 @@ importers:
             nanoid:
                 specifier: ^5.1.5
                 version: 5.1.5
-            openai:
-                specifier: ^4.76.3
-                version: 4.104.0(ws@8.18.1)(zod@3.24.2)
-            socket.io:
-                specifier: ^4.7.5
-                version: 4.8.1
             virtual-merge:
                 specifier: ^1.0.1
                 version: 1.0.2
@@ -76,6 +67,9 @@ importers:
             "@vencord/discord-types":
                 specifier: link:packages/discord-types
                 version: link:packages/discord-types
+            buttplug:
+                specifier: ^3.2.2
+                version: 3.2.2
             diff:
                 specifier: ^7.0.0
                 version: 7.0.0
@@ -112,9 +106,15 @@ importers:
             moment:
                 specifier: ^2.22.2
                 version: 2.30.1
+            openai:
+                specifier: ^4.76.3
+                version: 4.104.0(ws@8.18.1)(zod@3.24.2)
             puppeteer-core:
                 specifier: ^24.4.0
                 version: 24.4.0
+            socket.io:
+                specifier: ^4.7.5
+                version: 4.8.1
             standalone-electron-types:
                 specifier: ^34.2.0
                 version: 34.2.0

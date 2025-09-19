@@ -5,18 +5,18 @@
  */
 
 import { ApplicationCommandInputType } from "@api/Commands";
+import { getUserSettingLazy } from "@api/UserSettings.js";
 import { gitHash } from "@shared/vencordUserAgent";
 import { Devs } from "@utils/constants";
 import { sendMessage } from "@utils/discord";
+import { isEquicordPluginDev, isPluginDev, isPlusMt, isPlusPluginDev, isSuncordPluginDev, tryOrElse } from "@utils/misc";
 import definePlugin, { Plugin, PluginNative } from "@utils/types";
 import { CommandArgument, CommandContext } from "@vencord/discord-types";
+import { findByCodeLazy } from "@webpack";
 import { GuildMemberStore, UserStore } from "@webpack/common";
 
 import { PluginMeta } from "~plugins";
 
-import { isPluginDev, isSuncordPluginDev, isEquicordPluginDev, isPlusPluginDev, isPlusMt, tryOrElse } from "@utils/misc";
-import { findByCodeLazy } from "@webpack";
-import { getUserSettingLazy } from "../../api/UserSettings.js";
 import SettingsPlugin from "../../plugins/_core/settings";
 
 const Native = VencordNative.pluginHelpers.venfetch as PluginNative<typeof import("./native")>;
@@ -26,10 +26,10 @@ const clientVersion = () => {
     // @ts-ignore
     const name = IS_DISCORD_DESKTOP ? "Desktop" : IS_VESKTOP ? "Vesktop+" : typeof unsafeWindow !== "undefined" ? "UserScript" : "Web";
 
-    return `${name}${version ? ` v${version}` : ''}`;
+    return `${name}${version ? ` v${version}` : ""}`;
 };
 
-const COLOR_TEST = '[2;40m[2;30m███[0m[2;40m[0m[2;31m[0m[2;30m███[0m[2;31m███[0m[2;32m███[0m[2;33m███[0m[2;34m███[0m[2;35m███[0m[2;36m███[0m[2;37m███[0m';
+const COLOR_TEST = "[2;40m[2;30m███[0m[2;40m[0m[2;31m[0m[2;30m███[0m[2;31m███[0m[2;32m███[0m[2;33m███[0m[2;34m███[0m[2;35m███[0m[2;36m███[0m[2;37m███[0m";
 
 
 const LOGO_WITH_ANSI = `\
@@ -73,7 +73,7 @@ function getEnabledPlugins() {
         }
     };
 
-    Object.values(Vencord.Plugins.plugins).filter((plugin) => !isApiPlugin(plugin)).forEach((plugin) => {
+    Object.values(Vencord.Plugins.plugins).filter(plugin => !isApiPlugin(plugin)).forEach(plugin => {
         if (PluginMeta[plugin.name]?.plusPlugin) {
             if (plugin.started) counters.plus.enabled++;
             counters.plus.total++;
@@ -129,7 +129,7 @@ export default definePlugin({
                     "NoRPC": Vencord.Plugins.isPluginEnabled("NoRPC"),
                     "disabled activities": tryOrElse(() => !ShowCurrentGame.getSetting(), false),
                     "outdated": BUILD_TIMESTAMP < Date.now() - 12096e5,
-                    "likes java": ['287555395151593473', '886685857560539176', "728342296696979526", "304932282475479051"].includes(UserStore.getCurrentUser().id),
+                    "likes java": ["287555395151593473", "886685857560539176", "728342296696979526", "304932282475479051"].includes(UserStore.getCurrentUser().id),
                 };
 
                 const memory = await Native?.getMemory();
@@ -137,10 +137,10 @@ export default definePlugin({
                 const { username } = UserStore.getCurrentUser();
                 const versions = getVersions();
                 const info: Record<string, string | null> = {
-                    version: `${VERSION} ~ ${gitHash}${SettingsPlugin.additionalInfo} - ${Intl.DateTimeFormat(navigator.language, { dateStyle: "medium" }).format(BUILD_TIMESTAMP)}${!IS_STANDALONE ? ` ~ dev` : ""}`,
+                    version: `${VERSION} ~ ${gitHash}${SettingsPlugin.additionalInfo} - ${Intl.DateTimeFormat(navigator.language, { dateStyle: "medium" }).format(BUILD_TIMESTAMP)}${!IS_STANDALONE ? " ~ dev" : ""}`,
                     client: `${t(window.GLOBAL_ENV.RELEASE_CHANNEL)} ~ ${clientVersion()}`,
-                    'Build Number': `${versions.buildNumber} ~ Hash: ${versions.versionHash?.slice(0, 7) ?? 'unknown'}`,
-                    issues: Object.entries(commonIssues).filter(([_, value]) => value).map(([key]) => key).join(", ") || '',
+                    "Build Number": `${versions.buildNumber} ~ Hash: ${versions.versionHash?.slice(0, 7) ?? "unknown"}`,
+                    issues: Object.entries(commonIssues).filter(([_, value]) => value).map(([key]) => key).join(", ") || "",
 
                     _: null,
 
@@ -148,16 +148,16 @@ export default definePlugin({
                     platform: navigator.userAgentData?.platform ? `${navigator.userAgentData?.platform} (${navigator.platform})` : navigator.platform,
                     plugins: getEnabledPlugins(),
                     uptime: `${~~((Date.now() - window.GLOBAL_ENV.HTML_TIMESTAMP) / 1000)}s`,
-                    memory: memory ? `${humanFileSize(memory.heapUsed)} / ${humanFileSize(memory.heapTotal)}` : '',
+                    memory: memory ? `${humanFileSize(memory.heapUsed)} / ${humanFileSize(memory.heapTotal)}` : "",
 
                     __: null,
 
                     donor: getDonorStatus() ? "yes" : "no",
-                    'Vencord Contributor': getVencordContribStatus() ? "yes" : "no",
-                    'Suncord Contributor': getSuncordContribStatus() ? "yes" : "no",
-                    'Equicord Contributor': getEquicordContribStatus() ? "yes" : "no",
-                    'Vencord+ Contributor': getPlusContribStatus() ? "yes" : "no",
-                    'Vencord+ Maintainer': getPlusMtStatus() ? "yes" : "no",
+                    "Vencord Contributor": getVencordContribStatus() ? "yes" : "no",
+                    "Suncord Contributor": getSuncordContribStatus() ? "yes" : "no",
+                    "Equicord Contributor": getEquicordContribStatus() ? "yes" : "no",
+                    "Vencord+ Contributor": getPlusContribStatus() ? "yes" : "no",
+                    "Vencord+ Maintainer": getPlusMtStatus() ? "yes" : "no",
 
                     ___: null,
 
@@ -188,7 +188,7 @@ export default definePlugin({
                         str += `[2;35m${key[0].toUpperCase()}${key.slice(1)}: [0m${value}`;
                     }
 
-                    str += '\n';
+                    str += "\n";
                 }
 
                 str += `${" ".repeat(MAGIC_NUMBER)}${COLOR_TEST}\n`;

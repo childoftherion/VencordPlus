@@ -5,13 +5,13 @@
  */
 
 import { makeDummyUser } from "@components/settings/tabs/plugins/PluginModal";
-import { MessageType } from "../..";
 import { copyToClipboard } from "@utils/clipboard";
 import { classes } from "@utils/misc";
 import { ModalProps } from "@utils/modal";
 import { findByCodeLazy, findByProps, findComponentByCodeLazy } from "@webpack";
 import { ContextMenuApi, FluxDispatcher, Menu, NavigationRouter, React } from "@webpack/common";
 
+import { MessageType } from "../..";
 import noteHandler from "../../NoteHandler";
 import { HolyNotes } from "../../types";
 

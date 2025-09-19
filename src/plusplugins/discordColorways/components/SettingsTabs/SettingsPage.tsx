@@ -350,8 +350,8 @@ function Settings() {
             alignItems: "center",
             cursor: "pointer"
         }}>
-            <a role="link" target="_blank" className="dc-button dc-button-primary" style={{ width: "fit-content" }} href="https://github.com/DaBluLite/DiscordColorways">DiscordColorways <OpenExternalIcon width={16} height={16} /></a>
-            <a role="link" target="_blank" className="dc-button dc-button-primary" style={{ width: "fit-content", marginLeft: "8px" }} href="https://github.com/DaBluLite/ProjectColorway">Project Colorway <OpenExternalIcon width={16} height={16} /></a>
+            <a role="link" target="_blank" className="dc-button dc-button-primary" style={{ width: "fit-content" }} href="https://github.com/DaBluLite/DiscordColorways" rel="noreferrer">DiscordColorways <OpenExternalIcon width={16} height={16} /></a>
+            <a role="link" target="_blank" className="dc-button dc-button-primary" style={{ width: "fit-content", marginLeft: "8px" }} href="https://github.com/DaBluLite/ProjectColorway" rel="noreferrer">Project Colorway <OpenExternalIcon width={16} height={16} /></a>
         </div>
     </>;
 }

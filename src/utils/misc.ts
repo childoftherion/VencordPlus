@@ -19,7 +19,7 @@
 import { Toasts } from "@webpack/common";
 
 import { copyToClipboard } from "./clipboard";
-import { DevsById, SuncordDevsById, EquicordDevsById, PlusDevsById, PlusMtsById } from "./constants";
+import { DevsById, EquicordDevsById, PlusDevsById, PlusMtsById,SuncordDevsById } from "./constants";
 
 /**
  * Calls .join(" ") on the arguments
