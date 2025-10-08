@@ -27,17 +27,13 @@ import { openContributorModal } from "@components/settings/tabs";
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import { Margins } from "@utils/margins";
-import { shouldShowContributorBadge, shouldShowEquicordContributorBadge, shouldShowPlusContributorBadge, shouldShowPlusMaintainerBadge,shouldShowSuncordContributorBadge } from "@utils/misc";
+import { copyWithToast, shouldShowContributorBadge } from "@utils/misc";
 import { closeModal, ModalContent, ModalFooter, ModalHeader, ModalRoot, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
 import { User } from "@vencord/discord-types";
-import { Forms, Toasts, UserStore } from "@webpack/common";
+import { ContextMenuApi, Forms, Menu, Toasts, UserStore } from "@webpack/common";
 
 const CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";
-const SUNCORD_CONTRIBUTOR_BADGE = "https://raw.githubusercontent.com/verticalsync/Suncord/main/src/assets/icon.png";
-const EQUICORD_CONTRIBUTOR_BADGE = "https://i.imgur.com/UpcDwX0.png";
-const PLUS_CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64"; // Help, I need a custom thingy
-const PLUS_MAINTAINER_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64"; // Will be the same icon as above
 
 const ContributorBadge: ProfileBadge = {
     description: "Vencord Contributor",
@@ -47,67 +43,47 @@ const ContributorBadge: ProfileBadge = {
     onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId))
 };
 
-const SuncordContributorBadge: ProfileBadge = {
-    description: "Suncord Contributor",
-    image: SUNCORD_CONTRIBUTOR_BADGE,
-    position: BadgePosition.START,
-    shouldShow: ({ userId }) => shouldShowSuncordContributorBadge(userId),
-    onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId))
-};
-
-const EquicordContributorBadge: ProfileBadge = {
-    description: "Equicord Contributor",
-    image: EQUICORD_CONTRIBUTOR_BADGE,
-    position: BadgePosition.START,
-    shouldShow: ({ userId }) => shouldShowEquicordContributorBadge(userId),
-    onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId))
-};
-
-const PlusContributorBadge: ProfileBadge = {
-    description: "Vencord+ Contributor",
-    image: PLUS_CONTRIBUTOR_BADGE,
-    position: BadgePosition.START,
-    shouldShow: ({ userId }) => shouldShowPlusContributorBadge(userId),
-    onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId))
-};
-
-const PlusMaintainerBadge: ProfileBadge = {
-    description: "Vencord+ Maintainer",
-    image: PLUS_MAINTAINER_BADGE,
-    position: BadgePosition.START,
-    shouldShow: ({ userId }) => shouldShowPlusMaintainerBadge(userId),
-    onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId))
-};
-
 let DonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
-let SuncordDonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
-let EquicordDonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
-let PlusCustomBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
 
-async function loadBadges(url: string, noCache = false) {
+async function loadBadges(noCache = false) {
     const init = {} as RequestInit;
-    if (noCache) init.cache = "no-cache";
+    if (noCache)
+        init.cache = "no-cache";
 
-    return await fetch(url, init).then(r => r.json());
-}
-
-async function loadAllBadges(noCache = false) {
-    const vencordBadges = await loadBadges("https://badges.vencord.dev/badges.json", noCache);
-    const suncordBadges = await loadBadges("https://raw.githubusercontent.com/verticalsync/Suncord/main/src/assets/badges.json", noCache);
-    const equicordBadges = await loadBadges("https://raw.githubusercontent.com/Equicord/Ignore/main/badges.json", noCache);
-    const plusBadges = await loadBadges("https://jestinkt.nl/files/Vencord%2B%20Custom%20Badges.json", noCache);
-
-    DonorBadges = vencordBadges;
-    SuncordDonorBadges = suncordBadges;
-    EquicordDonorBadges = equicordBadges;
-    PlusCustomBadges = plusBadges;
+    DonorBadges = await fetch("https://badges.vencord.dev/badges.json", init)
+        .then(r => r.json());
 }
 
 let intervalId: any;
 
+function BadgeContextMenu({ badge }: { badge: ProfileBadge & BadgeUserArgs; }) {
+    return (
+        <Menu.Menu
+            navId="vc-badge-context"
+            onClose={ContextMenuApi.closeContextMenu}
+            aria-label="Badge Options"
+        >
+            {badge.description && (
+                <Menu.MenuItem
+                    id="vc-badge-copy-name"
+                    label="Copy Badge Name"
+                    action={() => copyWithToast(badge.description!)}
+                />
+            )}
+            {badge.image && (
+                <Menu.MenuItem
+                    id="vc-badge-copy-link"
+                    label="Copy Badge Image Link"
+                    action={() => copyWithToast(badge.image!)}
+                />
+            )}
+        </Menu.Menu>
+    );
+}
+
 export default definePlugin({
     name: "BadgeAPI",
-    description: "API to add badges to users.",
+    description: "API to add badges to users",
     authors: [Devs.Megu, Devs.Ven, Devs.TheSun],
     required: true,
     patches: [
@@ -129,12 +105,19 @@ export default definePlugin({
                     match: /(?<="aria-label":(\i)\.description,.{0,200})children:/,
                     replace: "children:$1.component?$self.renderBadgeComponent({...$1}) :"
                 },
-                // conditionally override their onClick with badge.onClick if it exists
+                // handle onClick and onContextMenu
                 {
                     match: /href:(\i)\.link/,
-                    replace: "...($1.onClick&&{onClick:vcE=>$1.onClick(vcE,$1)}),$&"
+                    replace: "...$self.getBadgeMouseEventHandlers($1),$&"
                 }
             ]
+        },
+        {
+            find: "profileCardUsernameRow,children:",
+            replacement: {
+                match: /badges:(\i)(?<=displayProfile:(\i).+?)/,
+                replace: "badges:[...$self.getBadges($2),...$1]"
+            }
         }
     ],
 
@@ -145,7 +128,7 @@ export default definePlugin({
 
     toolboxActions: {
         async "Refetch Badges"() {
-            await loadAllBadges(true);
+            await loadBadges(true);
             Toasts.show({
                 id: Toasts.genId(),
                 message: "Successfully refetched badges!",
@@ -157,14 +140,10 @@ export default definePlugin({
     userProfileBadge: ContributorBadge,
 
     async start() {
-        Vencord.Api.Badges.addProfileBadge(SuncordContributorBadge);
-        Vencord.Api.Badges.addProfileBadge(EquicordContributorBadge);
-        Vencord.Api.Badges.addProfileBadge(PlusContributorBadge);
-        Vencord.Api.Badges.addProfileBadge(PlusMaintainerBadge);
-        await loadAllBadges();
+        await loadBadges();
 
         clearInterval(intervalId);
-        intervalId = setInterval(loadAllBadges, 1000 * 60 * 30); // 30 minutes
+        intervalId = setInterval(loadBadges, 1000 * 60 * 30); // 30 minutes
     },
 
     async stop() {
@@ -190,6 +169,19 @@ export default definePlugin({
     }, { noop: true }),
 
 
+    getBadgeMouseEventHandlers(badge: ProfileBadge & BadgeUserArgs) {
+        const handlers = {} as Record<string, (e: React.MouseEvent) => void>;
+
+        if (!badge) return handlers; // sanity check
+
+        const { onClick, onContextMenu } = badge;
+
+        if (onClick) handlers.onClick = e => onClick(e, badge);
+        if (onContextMenu) handlers.onContextMenu = e => onContextMenu(e, badge);
+
+        return handlers;
+    },
+
     getDonorBadges(userId: string) {
         return DonorBadges[userId]?.map(badge => ({
             image: badge.badge,
@@ -200,6 +192,9 @@ export default definePlugin({
                     borderRadius: "50%",
                     transform: "scale(0.9)" // The image is a bit too big compared to default badges
                 }
+            },
+            onContextMenu(event, badge) {
+                ContextMenuApi.openContextMenu(event, () => <BadgeContextMenu badge={badge} />);
             },
             onClick() {
                 const modalKey = openModal(props => (
@@ -240,10 +235,10 @@ export default definePlugin({
                                 </Flex>
                                 <div style={{ padding: "1em" }}>
                                     <Forms.FormText>
-                                        This badge is a special perk for Vencord Donors
+                                        This Badge is a special perk for Vencord Donors
                                     </Forms.FormText>
                                     <Forms.FormText className={Margins.top20}>
-                                        Please consider supporting the development of Vencord by becoming a donor. It would mean a lot!
+                                        Please consider supporting the development of Vencord by becoming a donor. It would mean a lot!!
                                     </Forms.FormText>
                                 </div>
                             </ModalContent>
@@ -256,195 +251,6 @@ export default definePlugin({
                     </ErrorBoundary>
                 ));
             },
-        }));
-    },
-
-    getSuncordDonorBadges(userId: string) {
-        return SuncordDonorBadges[userId]?.map(badge => ({
-            image: badge.badge,
-            description: badge.tooltip,
-            position: BadgePosition.START,
-            props: {
-                style: {
-                    borderRadius: "50%",
-                    transform: "scale(0.9)" // The image is a bit too big compared to default badges
-                }
-            },
-            onClick() {
-                const modalKey = openModal(props => (
-                    <ErrorBoundary noop onError={() => {
-                        closeModal(modalKey);
-                        VencordNative.native.openExternal("https://github.com/sponsors/verticalsync");
-                    }}>
-                        <ModalRoot {...props}>
-                            <ModalHeader>
-                                <Flex style={{ width: "100%", justifyContent: "center" }}>
-                                    <Forms.FormTitle
-                                        tag="h2"
-                                        style={{
-                                            width: "100%",
-                                            textAlign: "center",
-                                            margin: 0
-                                        }}
-                                    >
-                                        <Heart />
-                                        Suncord Donor
-                                    </Forms.FormTitle>
-                                </Flex>
-                            </ModalHeader>
-                            <ModalContent>
-                                <Flex>
-                                    <img
-                                        role="presentation"
-                                        src="https://cdn.discordapp.com/emojis/1026533070955872337.png"
-                                        alt=""
-                                        style={{ margin: "auto" }}
-                                    />
-                                    <img
-                                        role="presentation"
-                                        src="https://cdn.discordapp.com/emojis/1026533090627174460.png"
-                                        alt=""
-                                        style={{ margin: "auto" }}
-                                    />
-                                </Flex>
-                                <div style={{ padding: "1em" }}>
-                                    <Forms.FormText>
-                                        This badge is a special perk for Suncord Donors
-                                    </Forms.FormText>
-                                    <Forms.FormText className={Margins.top20}>
-                                        Please consider supporting the development of Suncord by becoming a donor. It would mean a lot!
-                                    </Forms.FormText>
-                                </div>
-                            </ModalContent>
-                            <ModalFooter>
-                                <Flex style={{ width: "100%", justifyContent: "center" }}>
-                                    <DonateButton />
-                                </Flex>
-                            </ModalFooter>
-                        </ModalRoot>
-                    </ErrorBoundary>
-                ));
-            },
-        }));
-    },
-
-    getEquicordDonorBadges(userId: string) {
-        return EquicordDonorBadges[userId]?.map(badge => ({
-            image: badge.badge,
-            description: badge.tooltip,
-            position: BadgePosition.START,
-            props: {
-                style: {
-                    borderRadius: "50%",
-                    transform: "scale(0.9)" // The image is a bit too big compared to default badges
-                }
-            },
-            onClick() {
-                const modalKey = openModal(props => (
-                    <ErrorBoundary noop onError={() => {
-                        closeModal(modalKey);
-                        // Will get its own in the future
-                        VencordNative.native.openExternal("https://github.com/sponsors/Vendicated");
-                    }}>
-                        <ModalRoot {...props}>
-                            <ModalHeader>
-                                <Flex style={{ width: "100%", justifyContent: "center" }}>
-                                    <Forms.FormTitle
-                                        tag="h2"
-                                        style={{
-                                            width: "100%",
-                                            textAlign: "center",
-                                            margin: 0
-                                        }}
-                                    >
-                                        <Heart />
-                                        Equicord Donor
-                                    </Forms.FormTitle>
-                                </Flex>
-                            </ModalHeader>
-                            <ModalContent>
-                                <Flex>
-                                    <img
-                                        role="presentation"
-                                        src="https://cdn.discordapp.com/emojis/1026533070955872337.png"
-                                        alt=""
-                                        style={{ margin: "auto" }}
-                                    />
-                                    <img
-                                        role="presentation"
-                                        src="https://cdn.discordapp.com/emojis/1026533090627174460.png"
-                                        alt=""
-                                        style={{ margin: "auto" }}
-                                    />
-                                </Flex>
-                                <div style={{ padding: "1em" }}>
-                                    <Forms.FormText>
-                                        This badge is a special perk for Equicord Donors
-                                    </Forms.FormText>
-                                    <Forms.FormText className={Margins.top20}>
-                                        Please consider supporting the development of Equicord by becoming a donor. It would mean a lot!
-                                    </Forms.FormText>
-                                </div>
-                            </ModalContent>
-                            <ModalFooter>
-                                <Flex style={{ width: "100%", justifyContent: "center" }}>
-                                    <DonateButton />
-                                </Flex>
-                            </ModalFooter>
-                        </ModalRoot>
-                    </ErrorBoundary>
-                ));
-            },
-        }));
-    },
-
-    getPlusCustomBadges(userId: string) {
-        return PlusCustomBadges[userId]?.map(badge => ({
-            image: badge.badge,
-            description: badge.tooltip,
-            position: BadgePosition.START,
-            props: {
-                style: {
-                    borderRadius: "50%",
-                    transform: "scale(0.9)" // The image is a bit too big compared to default badges
-                }
-            },
-            onClick() {
-                const modalKey = openModal(props => (
-                    <ErrorBoundary noop onError={() => {
-                        closeModal(modalKey);
-                        VencordNative.native.openExternal("https://github.com/RobinRMC/VencordPlus");
-                    }}>
-                        <ModalRoot {...props}>
-                            <ModalHeader>
-                                <Flex style={{ width: "100%", justifyContent: "center" }}>
-                                    <Forms.FormTitle
-                                        tag="h2"
-                                        style={{
-                                            width: "100%",
-                                            textAlign: "center",
-                                            margin: 0
-                                        }}
-                                    >
-                                        <Heart />
-                                        Vencord+ Custom Badge
-                                    </Forms.FormTitle>
-                                </Flex>
-                            </ModalHeader>
-                            <ModalContent>
-                                <div style={{ padding: "1em" }}>
-                                    <Forms.FormText>
-                                        This badge is a special perk exclusively given by RobinRMC
-                                    </Forms.FormText>
-                                    <Forms.FormText className={Margins.top20}>
-                                        I don't know what else I should put here.
-                                    </Forms.FormText>
-                                </div>
-                            </ModalContent>
-                        </ModalRoot>
-                    </ErrorBoundary>
-                ));
-            },
-        }));
+        } satisfies ProfileBadge));
     }
 });
