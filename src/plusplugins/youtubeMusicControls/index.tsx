@@ -7,12 +7,11 @@
 import { definePluginSettings, Settings } from "@api/Settings";
 import { disableStyle, enableStyle } from "@api/Styles";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { Lyrics } from "../SpotifyLyrics/components/lyrics";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
-import { Forms, MaskedLink } from "@webpack/common";
 import { Player as SpotifyPlayer } from "plugins/spotifyControls/PlayerComponent";
 
+import { Lyrics } from "../SpotifyLyrics/components/lyrics";
 import hoverOnlyStyle from "./hoverOnly.css?managed";
 import { Player } from "./PlayerComponent";
 

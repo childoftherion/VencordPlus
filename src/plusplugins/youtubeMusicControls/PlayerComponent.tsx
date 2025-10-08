@@ -7,12 +7,12 @@
 import "./ytmStyles.css";
 
 import { ImageIcon, LinkIcon, OpenExternalIcon } from "@components/Icons";
-import { SeekBar } from "../../plugins/spotifyControls/SeekBar";
 import { debounce } from "@shared/debounce";
 import { openImageModal } from "@utils/discord";
 import { classes, copyWithToast } from "@utils/misc";
 import { ContextMenuApi, Flex, FluxDispatcher, Forms, Menu, React, useEffect, useState, useStateFromStores } from "@webpack/common";
 
+import { SeekBar } from "../../plugins/spotifyControls/SeekBar";
 import { type PlayerState, type Repeat, YoutubeMusicStore } from "./YtmStore";
 
 const cl = (className: string) => `vc-ytm-${className}`;

@@ -1,4 +1,10 @@
-import { Channel, MessageJSON, UserJSON } from "@vencord/discord-types";
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+import { Channel, MessageJSON } from "@vencord/discord-types";
 
 export interface MessageUpdatePayload {
     type: string;

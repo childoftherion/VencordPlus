@@ -6,8 +6,8 @@
 
 import "./styles.css";
 
-import { copyToClipboard } from "@utils/clipboard";
 import { Flex } from "@components/Flex";
+import { copyToClipboard } from "@utils/clipboard";
 import { openModal } from "@utils/modal";
 import { Button, Forms } from "@webpack/common";
 

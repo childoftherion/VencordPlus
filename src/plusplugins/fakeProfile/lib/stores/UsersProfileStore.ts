@@ -7,8 +7,8 @@
 import { addProfileBadge, BadgePosition, removeProfileBadge } from "@api/Badges";
 import { debounce } from "@shared/debounce";
 import { proxyLazy } from "@utils/lazy";
-import { useEffect, useState, zustandCreate } from "@webpack/common";
 import { User } from "@vencord/discord-types";
+import { useEffect, useState, zustandCreate } from "@webpack/common";
 
 import { settings } from "../../settings";
 import { Badge, Decoration, getBadges, getEffects, getPresets, getUsers, ProfileEffects } from "../api";

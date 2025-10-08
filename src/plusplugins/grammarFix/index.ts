@@ -6,8 +6,8 @@
 
 import {
     addMessagePreSendListener,
-    removeMessagePreSendListener,
     MessageSendListener,
+    removeMessagePreSendListener,
 } from "@api/MessageEvents";
 import { definePluginSettings } from "@api/Settings";
 import { EquicordDevs } from "@utils/constants";

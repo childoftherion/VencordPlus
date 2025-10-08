@@ -27,7 +27,7 @@ import { openPluginModal } from "@components/settings/tabs/plugins/PluginModal";
 import { gitRemote } from "@shared/vencordUserAgent";
 import { IS_MAC, IS_WINDOWS } from "@utils/constants";
 import { Margins } from "@utils/margins";
-import { isPluginDev, isSuncordPluginDev, isEquicordPluginDev, isPlusPluginDev, isPlusMt } from "@utils/misc";
+import { isEquicordPluginDev, isPluginDev, isPlusMt,isPlusPluginDev, isSuncordPluginDev } from "@utils/misc";
 import { relaunch } from "@utils/native";
 import { Forms, React, Switch, useMemo, UserStore } from "@webpack/common";
 

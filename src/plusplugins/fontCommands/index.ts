@@ -5,7 +5,6 @@
  */
 
 import { findOption, RequiredMessageOption } from "@api/Commands";
-import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 const ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

@@ -1,9 +1,16 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+import { definePluginSettings } from "@api/Settings";
+import { Link } from "@components/Link";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType, PluginSettingDef } from "@utils/types";
-import Patches from "./patches";
-import { definePluginSettings } from "@api/Settings";
 import { Forms } from "@webpack/common";
-import { Link } from "@components/Link";
+
+import Patches from "./patches";
 
 export const ParsedPatches = Object.entries(Patches).map(([patchName, { description, default: defaultValue, patches }]) => {
     return {

@@ -1,3 +1,9 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import definePlugin, { OptionType } from "@utils/types";
 import { Settings } from "Vencord";
 
@@ -97,7 +103,7 @@ export default definePlugin({
     description: "Adds the keyboard sounds from Opera GX to Discord",
     authors: [{ name: "domi.btnr", id: 354191516979429376n }],
     start: () => {
-        const volume = Settings.plugins.KeyboardSounds.volume;
+        const { volume } = Settings.plugins.KeyboardSounds;
         const currentPack = packs[getActiveSoundPack()];
         for (const sound of Object.values(currentPack))
             if (sound instanceof Audio) sound.volume = volume / 100;
@@ -113,10 +119,10 @@ export default definePlugin({
                     label: pack,
                     value: pack,
                     default: i === 0
-                }
+                };
             }),
             onChange: () => {
-                const volume = Settings.plugins.KeyboardSounds.volume;
+                const { volume } = Settings.plugins.KeyboardSounds;
                 const currentPack = packs[getActiveSoundPack()];
                 for (const sound of Object.values(currentPack))
                     if (sound instanceof Audio) sound.volume = volume / 100;

@@ -10,14 +10,11 @@ import { useSettings } from "@api/Settings";
 import { classNameFactory } from "@api/Styles";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Link } from "@components/Link";
-import { DevsById, SuncordDevsById, EquicordDevsById, PlusDevsById, PlusMtsById } from "@utils/constants";
+import { DevsById, EquicordDevsById, PlusDevsById, PlusMtsById, SuncordDevsById } from "@utils/constants";
 import { fetchUserProfile } from "@utils/discord";
 import { classes, pluralise } from "@utils/misc";
 import { ModalContent, ModalRoot, openModal } from "@utils/modal";
-import { User } from "@vencord/discord-types";
-import { Forms, showToast, useEffect, useMemo, UserProfileStore, useStateFromStores } from "@webpack/common";
-
-import Plugins from "~plugins";
+import { Forms } from "@webpack/common";
 
 import { GithubButton, WebsiteButton } from "./LinkIconButton";
 import { PluginCard } from "./PluginCard";

@@ -5,7 +5,7 @@
  */
 
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
-import { Devs, SuncordDevs, EquicordDevs } from "@utils/constants";
+import { Devs, EquicordDevs,SuncordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import type { Guild } from "@vencord/discord-types";
 import { EmojiStore, Menu, StickerStore } from "@webpack/common";

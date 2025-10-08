@@ -27,7 +27,7 @@ import { openContributorModal } from "@components/settings/tabs";
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import { Margins } from "@utils/margins";
-import { shouldShowContributorBadge, shouldShowSuncordContributorBadge, shouldShowEquicordContributorBadge, shouldShowPlusContributorBadge, shouldShowPlusMaintainerBadge } from "@utils/misc";
+import { shouldShowContributorBadge, shouldShowEquicordContributorBadge, shouldShowPlusContributorBadge, shouldShowPlusMaintainerBadge,shouldShowSuncordContributorBadge } from "@utils/misc";
 import { closeModal, ModalContent, ModalFooter, ModalHeader, ModalRoot, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
 import { User } from "@vencord/discord-types";
@@ -36,8 +36,8 @@ import { Forms, Toasts, UserStore } from "@webpack/common";
 const CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";
 const SUNCORD_CONTRIBUTOR_BADGE = "https://raw.githubusercontent.com/verticalsync/Suncord/main/src/assets/icon.png";
 const EQUICORD_CONTRIBUTOR_BADGE = "https://i.imgur.com/UpcDwX0.png";
-const PLUS_CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";  // Help, I need a custom thingy
-const PLUS_MAINTAINER_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";  // Will be the same icon as above
+const PLUS_CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64"; // Help, I need a custom thingy
+const PLUS_MAINTAINER_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64"; // Will be the same icon as above
 
 const ContributorBadge: ProfileBadge = {
     description: "Vencord Contributor",

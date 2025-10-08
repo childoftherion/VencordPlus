@@ -1,7 +1,13 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import definePlugin from "@utils/types";
 import { User } from "@vencord/discord-types";
-import { moment } from "@webpack/common";
 import { findByProps } from "@webpack";
+import { moment } from "@webpack/common";
 import { React } from "@webpack/common";
 
 interface PresenceStatus {
@@ -84,7 +90,7 @@ export default definePlugin({
     buildRecentlyOffline(user: User) {
         if (!user) return <></>;
 
-        const subtext = findByProps("interactiveSelected", "interactiveSystemDM", "subtext").subtext;
+        const { subtext } = findByProps("interactiveSelected", "interactiveSystemDM", "subtext");
 
         const presenceStatus = recentlyOnlineList.get(user.id);
         const formattedTime = presenceStatus && presenceStatus.lastOffline !== null
