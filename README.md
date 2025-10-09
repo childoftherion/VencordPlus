@@ -52,7 +52,7 @@ pnpm inject
 
 ### Special Thanks
 
-A heartfelt thank you to **RobinRMC** for creating VencordPlus and establishing the foundation for this community-driven plugin ecosystem. This fork continues their vision of making Discord customization accessible to everyone.
+A heartfelt thank you to **RobinRMC** for creating VencordPlus and establishing the foundation for this community-driven plugin ecosystem. This fork (hopefully) continues their vision of making Discord customization accessible to everyone.
 
 ## Disclaimer
 
