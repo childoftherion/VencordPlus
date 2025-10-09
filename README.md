@@ -11,51 +11,48 @@ A fork of the Discord client mod called Vencord that adds unapproved plugins.
 ## Features
 
 -   Easy to install
--   [100+ built in plugins](https://vencord.dev/plugins)
+-   [100+ built in plugins]
 -   Fairly lightweight despite the many inbuilt plugins
--   Excellent Browser Support: Run Vencord in your Browser via extension or UserScript
--   Works on any Discord branch: Stable, Canary or PTB all work
 -   Custom CSS and Themes: Inbuilt css editor with support to import any css files (including BetterDiscord themes)
 -   Privacy friendly: blocks Discord analytics & crash reporting out of the box and has no telemetry
--   Maintained very actively, broken plugins are usually fixed within 12 hours
 -   Settings sync: Keep your plugins and their settings synchronised between devices / apps (optional)
-
 
 ## Additional (unofficial) plugins [Vencord+]
 
-[Click here to see a list of the unapproved plugins Vencord+ makes available to you.](https://github.com/RobinRMC/VencordPlus/tree/main/src/plusplugins)
-
+[Click here to see a list of the unapproved plugins Vencord+ makes available to you.](https://github.com/childoftherion/VencordPlus/tree/main/src/plusplugins)
 
 ## Installing / Uninstalling
 
-[![Download and run the installer](https://img.shields.io/github/v/release/RobinRMC/VencordPlusInstaller?label=Download%20Vencord%2B%20Installer&style=for-the-badge)](https://github.com/RobinRMC/VencordPlusInstaller#vencord-installer)
+See [Installation Guide](docs/1_INSTALLING.md) for detailed instructions on installing from source.
 
-[![Download and install Vesktop+](https://img.shields.io/github/v/release/RobinRMC/VesktopPlus?label=Download%20Vesktop%2B&style=for-the-badge)](https://github.com/RobinRMC/VesktopPlus#installing-vesktop)
+**Quick Install:**
 
-## Join the support/community server of Vencord
-
-https://discord.gg/D9uwnFnqmd
+```shell
+git clone https://github.com/childoftherion/VencordPlus
+cd VencordPlus
+pnpm install --frozen-lockfile
+pnpm build
+pnpm inject
+```
 
 > [!CAUTION]
 > Do not request support for anything regarding Vencord+ in the Discord server of Vencord!
 
-## Sponsors of Vencord
+## Credits & Thanks
 
-|     **Thanks a lot to all Vencord [sponsors](https://github.com/sponsors/Vendicated)!!**     |
-| :------------------------------------------------------------------------------------------: |
-|   [![](https://meow.vendicated.dev/sponsors.png)](https://github.com/sponsors/Vendicated)    |
-| *generated using [github-sponsor-graph](https://github.com/Vendicated/github-sponsor-graph)* |
+**VencordPlus** is built upon the excellent work of multiple projects and contributors:
 
+### Original Projects
 
-## Star History
+-   **[Vencord](https://github.com/Vendicated/Vencord)** by [Vendicated](https://github.com/Vendicated) - The foundation of this project
+    -   Thanks to all Vencord [sponsors](https://github.com/sponsors/Vendicated) for supporting the original project
+-   **[VencordPlus (Original)](https://github.com/RobinRMC/VencordPlus)** by [RobinRMC](https://github.com/RobinRMC) - The original VencordPlus fork
+-   **[Suncord](https://github.com/verticalsync/Suncord)** by [verticalsync](https://github.com/verticalsync) - Additional plugin contributions
+-   **[Equicord](https://github.com/Equicord/Equicord)** - Plugin ecosystem integration
 
-<a href="https://star-history.com/#RobinRMC/VencordPlus&Timeline">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=RobinRMC/VencordPlus&type=Timeline&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=RobinRMC/VencordPlus&type=Timeline" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=RobinRMC/VencordPlus&type=Timeline" />
-  </picture>
-</a>
+### Special Thanks
+
+A heartfelt thank you to **RobinRMC** for creating VencordPlus and establishing the foundation for this community-driven plugin ecosystem. This fork continues their vision of making Discord customization accessible to everyone.
 
 ## Disclaimer
 

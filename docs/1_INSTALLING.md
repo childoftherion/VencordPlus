@@ -1,19 +1,15 @@
-> [!WARNING]  
-> These instructions are only for advanced users. If you're not a Developer, you should use our [graphical installer](https://github.com/RobinRMC/VencordPlusInstaller#usage) instead.  
-> No support will be provided for installing in this fashion. If you cannot figure it out, you should just stick to a regular install.  
-
 # Installation Guide
 
-Welcome to Megu's Installation Guide! In this file, you will learn about how to download, install, and uninstall Vencord!
+Welcome to Megu's Installation Guide! In this file, you will learn about how to download, install, and uninstall VencordPlus!
 
 ## Sections
 
-- [Installation Guide](#installation-guide)
-  - [Sections](#sections)
-  - [Dependencies](#dependencies)
-  - [Installing Vencord](#installing-vencord)
-  - [Updating Vencord](#updating-vencord)
-  - [Uninstalling Vencord](#uninstalling-vencord)
+-   [Installation Guide](#installation-guide)
+    -   [Sections](#sections)
+    -   [Dependencies](#dependencies)
+    -   [Installing Vencord](#installing-vencord)
+    -   [Updating Vencord](#updating-vencord)
+    -   [Uninstalling Vencord](#uninstalling-vencord)
 
 ## Dependencies
 
@@ -35,7 +31,7 @@ npm i -g pnpm
 Clone Vencord:
 
 ```shell
-git clone https://github.com/RobinRMC/VencordPlus
+git clone https://github.com/childoftherion/VencordPlus
 cd VencordPlus
 ```
 
@@ -95,5 +91,3 @@ Simply run:
 ```shell
 pnpm uninject
 ```
-
-If you need more help, ask in the support channel in our [Discord Server](https://discord.gg/D9uwnFnqmd).
