@@ -7,7 +7,7 @@
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { copyWithToast } from "@utils/misc";
 import definePlugin from "@utils/types";
-import { Menu, React, StickerStore } from "@webpack/common";
+import { Menu, React, StickersStore } from "@webpack/common";
 import { Promisable } from "type-fest";
 
 interface Sticker {
@@ -82,7 +82,7 @@ const expressionPickerPatch: NavContextMenuPatchCallback = (children, props: { t
     if (!id) return;
 
     if (!props.target.className?.includes("lottieCanvas")) {
-        const stickerCache = StickerStore.getStickerById(id);
+        const stickerCache = StickersStore.getStickerById(id);
         if (stickerCache) {
             const stickerInfo = {
                 format_type: stickerCache.format_type,

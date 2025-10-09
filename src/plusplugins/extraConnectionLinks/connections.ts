@@ -6,7 +6,7 @@
 
 // This file is for types of the connection items
 
-type ConnectionUrlLink = /\$\{(?:id|name)\}/;
+type ConnectionUrlLink = string;
 
 
 

@@ -5,7 +5,7 @@
  */
 
 import { Flex } from "@components/Flex";
-import { Switch } from "@components/settings/Switch";
+import { Switch } from "@components/Switch";
 import { ModalSize } from "@utils/modal";
 import { SelectOption } from "@vencord/discord-types";
 import { Card, Forms, Select, Slider, TextInput, useEffect, useState } from "@webpack/common";
@@ -138,7 +138,7 @@ export const MicrophoneSettingsModal = (props: MicrophoneSettingsModalProps) => 
             switchProps={{
                 checked: (channelsEnabled && channels === 2) ?? false,
                 disabled: isSaving,
-                onChange: status => void setChannelsEnabled(status) ?? setChannels(2)
+                onChange: status => { setChannelsEnabled(status); setChannels(2); }
             }}>
         </SettingsModalCard>;
 

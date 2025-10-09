@@ -44,3 +44,5 @@ export const settings = definePluginSettings({
         restartNeeded: false
     }
 });
+
+export default settings;

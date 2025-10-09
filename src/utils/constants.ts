@@ -606,6 +606,210 @@ export const Devs = /* #__PURE__*/ Object.freeze({
         name: "thororen",
         id: 848339671629299742n
     },
+    Cortex: {
+        name: "Cortex",
+        id: 0n
+    },
+    Synth: {
+        name: "Synth",
+        id: 0n
+    },
+    Woosh: {
+        name: "Woosh",
+        id: 0n
+    },
+    talhakf: {
+        name: "talhakf",
+        id: 0n
+    },
+    Panniku: {
+        name: "Panniku",
+        id: 0n
+    },
+    creations: {
+        name: "creations",
+        id: 0n
+    },
+    z1xus: {
+        name: "z1xus",
+        id: 0n
+    },
+    Chaos: {
+        name: "Chaos",
+        id: 0n
+    },
+    ThePirateStoner: {
+        name: "ThePirateStoner",
+        id: 0n
+    },
+    TheArmagan: {
+        name: "TheArmagan",
+        id: 0n
+    },
+    ItsAlex: {
+        name: "ItsAlex",
+        id: 0n
+    },
+    dat_insanity: {
+        name: "dat_insanity",
+        id: 0n
+    },
+    veygax: {
+        name: "veygax",
+        id: 0n
+    },
+    desu: {
+        name: "desu",
+        id: 0n
+    },
+    VeygaX: {
+        name: "VeygaX",
+        id: 0n
+    },
+    Davri: {
+        name: "Davri",
+        id: 0n
+    },
+    catcraft: {
+        name: "catcraft",
+        id: 0n
+    },
+    Knocklive: {
+        name: "Knocklive",
+        id: 0n
+    },
+    camila314: {
+        name: "camila314",
+        id: 0n
+    },
+    ANIKEIPS: {
+        name: "ANIKEIPS",
+        id: 0n
+    },
+    KawaiianPizza: {
+        name: "KawaiianPizza",
+        id: 0n
+    },
+    nvhhr: {
+        name: "nvhhr",
+        id: 0n
+    },
+    Suffocate: {
+        name: "Suffocate",
+        id: 0n
+    },
+    Crxa: {
+        name: "Crxa",
+        id: 0n
+    },
+    vmohammad: {
+        name: "vmohammad",
+        id: 0n
+    },
+    Wolfie: {
+        name: "Wolfie",
+        id: 0n
+    },
+    Tolgchu: {
+        name: "Tolgchu",
+        id: 0n
+    },
+    KrystalSkull: {
+        name: "KrystalSkull",
+        id: 0n
+    },
+    echo: {
+        name: "echo",
+        id: 0n
+    },
+    zyqunix: {
+        name: "zyqunix",
+        id: 0n
+    },
+    voidbbg: {
+        name: "voidbbg",
+        id: 0n
+    },
+    Hen: {
+        name: "Hen",
+        id: 0n
+    },
+    evergreen: {
+        name: "evergreen",
+        id: 0n
+    },
+    sin: {
+        name: "sin",
+        id: 0n
+    },
+    LonoxX: {
+        name: "LonoxX",
+        id: 0n
+    },
+    HumanCat222: {
+        name: "HumanCat222",
+        id: 0n
+    },
+    smuki: {
+        name: "smuki",
+        id: 0n
+    },
+    Drag: {
+        name: "Drag",
+        id: 0n
+    },
+    CatGirlDShadow: {
+        name: "CatGirlDShadow",
+        id: 0n
+    },
+    Scyye: {
+        name: "Scyye",
+        id: 0n
+    },
+    MrDiamond: {
+        name: "MrDiamond",
+        id: 0n
+    },
+    Fres: {
+        name: "Fres",
+        id: 0n
+    },
+    battlesqui_d: {
+        name: "battlesqui_d",
+        id: 0n
+    },
+    Reycko: {
+        name: "Reycko",
+        id: 0n
+    },
+    Johannes7k75: {
+        name: "Johannes7k75",
+        id: 0n
+    },
+    Prince527: {
+        name: "Prince527",
+        id: 0n
+    },
+    Balaclava: {
+        name: "Balaclava",
+        id: 0n
+    },
+    nexpid: {
+        name: "nexpid",
+        id: 0n
+    },
+    F53: {
+        name: "F53",
+        id: 0n
+    },
+    Buzzy: {
+        name: "Buzzy",
+        id: 0n
+    },
+    davidkra230: {
+        name: "davidkra230",
+        id: 0n
+    },
 } satisfies Record<string, Dev>);
 
 // iife so #__PURE__ works correctly
@@ -616,3 +820,14 @@ export const DevsById = /* #__PURE__*/ (() =>
             .map(([_, v]) => [v.id, v] as const)
     ))
 )() as Record<string, Dev>;
+
+// Additional developer constants for plugin ecosystems
+export const EquicordDevs = Devs;
+export const SuncordDevs = Devs;
+export const PlusDevs = Devs;
+
+// Developer by ID mappings for plugin ecosystems
+export const EquicordDevsById = DevsById;
+export const PlusDevsById = DevsById;
+export const PlusMtsById = DevsById;
+export const SuncordDevsById = DevsById;

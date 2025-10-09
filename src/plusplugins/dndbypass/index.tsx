@@ -12,7 +12,7 @@ import { User } from "@vencord/discord-types";
 import { findStoreLazy } from "@webpack";
 import { Menu, showToast } from "@webpack/common";
 
-import { settings } from "./settings";
+import settings from "./settings";
 
 export let userWhitelist: string[] = [];
 

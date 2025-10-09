@@ -10,7 +10,7 @@ import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { Guild } from "@vencord/discord-types";
-import { GuildStore, Menu, PermissionStore, React } from "@webpack/common";
+import { Forms, GuildStore, Menu, PermissionStore, React } from "@webpack/common";
 
 const NeedsToBePatchedFns = [ // if commented out, then it means it breaks your Discord client
     "can",
@@ -80,7 +80,6 @@ export default definePlugin({
             Usage of this plugin might get detected by Discord. Use this plugin at your own risk!
         </Forms.FormText>
     </>,
-    settings,
     start: () => {
         OriginalFns = Object.fromEntries(
             NeedsToBePatchedFns.map(fnName => [fnName, PermissionStore[fnName]])

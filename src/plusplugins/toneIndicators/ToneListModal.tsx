@@ -15,6 +15,10 @@ import { JSX } from "react";
 
 import { cl, ToneIndicator, toneIndicators } from "./index";
 
+function NxCard({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+    return <div className={classes("nx-card", className)} {...props}>{children}</div>;
+}
+
 function ToneItem({ indicators, description, ...props }) {
     return (
         <NxCard className={cl("list-card")} {...props}>

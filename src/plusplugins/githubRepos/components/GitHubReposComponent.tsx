@@ -8,8 +8,8 @@ import { classNameFactory } from "@api/Styles";
 import { openModal } from "@utils/modal";
 import { Button, React, Text, useEffect, UserProfileStore, useState } from "@webpack/common";
 
-import { settings } from "..";
 import { fetchReposByUserId, fetchReposByUsername, fetchUserInfo, GitHubUserInfo } from "../githubApi";
+import settings from "../settings";
 import { GitHubRepo } from "../types";
 import { RepoCard } from "./RepoCard";
 import { ReposModal } from "./ReposModal";

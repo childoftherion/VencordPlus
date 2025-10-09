@@ -6,34 +6,16 @@
 
 import "./styles.css";
 
-import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { EquicordDevs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
-import definePlugin, { OptionType } from "@utils/types";
+import definePlugin from "@utils/types";
 import { User } from "@vencord/discord-types";
 import { findByCodeLazy } from "@webpack";
 import { React, Text } from "@webpack/common";
 
 import { GitHubReposComponent } from "./components/GitHubReposComponent";
-
-export const settings = definePluginSettings({
-    showStars: {
-        type: OptionType.BOOLEAN,
-        description: "Show repository stars",
-        default: true
-    },
-    showLanguage: {
-        type: OptionType.BOOLEAN,
-        description: "Show repository language",
-        default: true
-    },
-    showInMiniProfile: {
-        type: OptionType.BOOLEAN,
-        description: "Show the full UI in the mini profile, instead of just a button",
-        default: true
-    },
-});
+import settings from "./settings";
 
 
 const getProfileThemeProps = findByCodeLazy(".getPreviewThemeColors", "primaryColor:");

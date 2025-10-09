@@ -10,7 +10,7 @@ import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { UserProfileStore, UserStore } from "@webpack/common";
 
-import { settings } from "./settings";
+import settings from "./settings";
 
 export default definePlugin({
     name: "LotsOfBanners",

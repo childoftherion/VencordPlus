@@ -55,6 +55,7 @@ export let ThemeStore: t.ThemeStore;
 export let WindowStore: t.WindowStore;
 export let DraftStore: t.DraftStore;
 export let StreamerModeStore: t.StreamerModeStore;
+export let PrivateChannelsStore: GenericStore;
 
 /**
  * @see jsdoc of {@link t.useStateFromStores}

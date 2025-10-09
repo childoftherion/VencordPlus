@@ -15,7 +15,7 @@ import { getMimeType, isLinkAnImage, settings, stripDiscordParams } from "./sett
 
 const logger = new Logger("ImagePreview", "#FFFFFF");
 const StickerStore = findStoreLazy("StickersStore") as {
-    getStickerById(id: string): any;Add commentMore actions
+    getStickerById(id: string): any;
 };
 
 let currentPreview: HTMLDivElement | null = null;

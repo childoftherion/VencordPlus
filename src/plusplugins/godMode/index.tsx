@@ -20,7 +20,7 @@ import "../_misc/styles.css";
 
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
-import { PermissionStore } from "@webpack/common";
+import { Forms, PermissionStore } from "@webpack/common";
 
 export default definePlugin({
     name: "GodMode [Risky]",
@@ -31,7 +31,6 @@ export default definePlugin({
             Usage of this plugin might get detected by Discord. Use this plugin at your own risk!
         </Forms.FormText>
     </>,
-    settings,
 
     start: () => {
         // if commented out then it means it breaks ur discord

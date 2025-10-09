@@ -26,6 +26,8 @@ export const settings = definePluginSettings({
 
 });
 
+export default settings;
+
 
 function Input({ initialValue, onChange, placeholder }: {
     placeholder: string;

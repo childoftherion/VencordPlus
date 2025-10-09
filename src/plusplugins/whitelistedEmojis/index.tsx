@@ -413,7 +413,7 @@ async function exportEmojisToJson() {
 }
 
 const uploadEmojis = async () => {
-    if (IS_WEB || IS_EQUIBOP || IS_VESKTOP) {
+    if (IS_WEB || IS_VESKTOP) {
         const input = document.createElement("input");
         input.type = "file";
         input.style.display = "none";

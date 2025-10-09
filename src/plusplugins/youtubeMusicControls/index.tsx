@@ -9,11 +9,24 @@ import { disableStyle, enableStyle } from "@api/Styles";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
+import { Forms } from "@webpack/common";
 import { Player as SpotifyPlayer } from "plugins/spotifyControls/PlayerComponent";
 
 import { Lyrics } from "../SpotifyLyrics/components/lyrics";
 import hoverOnlyStyle from "./hoverOnly.css?managed";
 import { Player } from "./PlayerComponent";
+
+function InstallInstructions() {
+    return (
+        <Forms.FormText>
+            Requires{" "}
+            <a href="https://github.com/th-ch/youtube-music" target="_blank" rel="noreferrer">
+                th-ch's YouTube Music
+            </a>
+            {" "}with the API Websocket plugin enabled.
+        </Forms.FormText>
+    );
+}
 
 function toggleHoverControls(value: boolean) {
     (value ? enableStyle : disableStyle)(hoverOnlyStyle);
@@ -31,7 +44,7 @@ function isUrlValid(value: string) {
 const settings = definePluginSettings({
     installYtmWithWebsocket: {
         type: OptionType.COMPONENT,
-        component: () => <InstallIstructions></InstallIstructions>
+        component: () => <InstallInstructions />
     },
     hoverControls: {
         description: "Show controls on hover",

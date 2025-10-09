@@ -47,10 +47,12 @@ type KeysOfType<Object, Type> = {
     [K in keyof Object]: Object[K] extends Type ? K : never;
 }[keyof Object];
 
-function Switches() {
-    const settings = useSettings(["useQuickCss", "enableReactDevtools", "frameless", "winNativeTitleBar", "transparent", "winCtrlQ", "disableMinSize"]);
+type SettingsKeys = "useQuickCss" | "enableReactDevtools" | "frameless" | "winNativeTitleBar" | "transparent" | "winCtrlQ" | "disableMinSize";
 
-    const Switches = [
+function Switches() {
+    const settings = useSettings();
+
+    const switches = [
         {
             key: "useQuickCss",
             title: "Enable Custom CSS",
@@ -86,18 +88,22 @@ function Switches() {
             note: "Requires a full restart"
         },
     ] satisfies Array<false | {
-        key: KeysOfType<typeof settings, boolean>;
+        key: SettingsKeys;
         title: string;
         note: string;
     }>;
 
-    return Switches.map(s => s && (
+    return switches.map(s => s && (
         <FormSwitch
             key={s.key}
             title={s.title}
             description={s.note}
-            value={settings[s.key]}
-            onChange={v => settings[s.key] = v}
+            value={settings?.[s.key] ?? false}
+            onChange={v => {
+                try {
+                    settings[s.key] = v;
+                } catch { }
+            }}
         />
     ));
 }
@@ -215,7 +221,7 @@ function VencordSettings() {
                     <QuickAction
                         Icon={PaintbrushIcon}
                         text="Edit QuickCSS"
-                        action={() => VencordNative.quickCss.openEditor()}
+                        action={() => VencordNative?.quickCss?.openEditor?.()}
                     />
                     {!IS_WEB && (
                         <>
@@ -227,14 +233,14 @@ function VencordSettings() {
                             <QuickAction
                                 Icon={FolderIcon}
                                 text="Open Settings Folder"
-                                action={() => VencordNative.settings.openFolder()}
+                                action={() => VencordNative?.settings?.openFolder?.()}
                             />
                         </>
                     )}
                     <QuickAction
                         Icon={GithubIcon}
                         text="View Source Code"
-                        action={() => VencordNative.native.openExternal("https://github.com/" + gitRemote)}
+                        action={() => VencordNative?.native?.openExternal?.("https://github.com/" + gitRemote)}
                     />
                 </QuickActionCard>
             </Forms.FormSection>

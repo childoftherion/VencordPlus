@@ -108,7 +108,13 @@ const DefaultSettings: Settings = {
     }
 };
 
-const settings = !IS_REPORTER ? VencordNative.settings.get() : {} as Settings;
+const settings = (() => {
+    try {
+        return !IS_REPORTER ? VencordNative?.settings?.get() || {} : {} as Settings;
+    } catch {
+        return {} as Settings;
+    }
+})();
 mergeDefaults(settings, DefaultSettings);
 
 const saveSettingsOnFrequentAction = debounce(async () => {
@@ -163,7 +169,9 @@ if (!IS_REPORTER) {
         SettingsStore.plain.cloud.settingsSyncVersion = Date.now();
         localStorage.Vencord_settingsDirty = true;
         saveSettingsOnFrequentAction();
-        VencordNative.settings.set(SettingsStore.plain, path);
+        try {
+            VencordNative?.settings?.set(SettingsStore.plain, path);
+        } catch { }
     });
 }
 
@@ -204,7 +212,11 @@ export function useSettings(paths?: UseSettings<Settings>[]) {
         }
     }, [paths]);
 
-    return SettingsStore.store;
+    try {
+        return SettingsStore.store;
+    } catch {
+        return PlainSettings;
+    }
 }
 
 export function migratePluginSettings(name: string, ...oldNames: string[]) {
