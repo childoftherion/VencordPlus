@@ -1,0 +1,285 @@
+/**
+ * @name Amoled-Cord
+ * @author PlusInsta
+ * @version 1.0.0
+ * @description A pitch-black theme for Discord, providing a "lights out" experience perfect for AMOLED displays.
+ * @source https://github.com/PlusInsta/amoled-cord
+ * @updateUrl https://raw.githubusercontent.com/PlusInsta/amoled-cord/main/Amoled-Cord.theme.css
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --amoled-bg: #000000;
+    --amoled-bg-secondary: #0a0a0a;
+    --amoled-bg-tertiary: #111111;
+    --amoled-accent: #5865f2;
+    --amoled-accent-hover: #4752c4;
+    --amoled-text: #ffffff;
+    --amoled-text-muted: #8a8a8a;
+    --amoled-border: #1a1a1a;
+    --amoled-success: #43b581;
+    --amoled-warning: #faa61a;
+    --amoled-danger: #f04747;
+}
+
+/* Base styling */
+.theme-dark {
+    --background-primary: var(--amoled-bg);
+    --background-secondary: var(--amoled-bg-secondary);
+    --background-tertiary: var(--amoled-bg-tertiary);
+    --background-accent: var(--amoled-accent);
+    --background-floating: var(--amoled-bg-secondary);
+    --background-modifier-selected: var(--amoled-accent);
+    --background-modifier-hover: rgba(255, 255, 255, 0.05);
+    --background-modifier-active: rgba(255, 255, 255, 0.1);
+
+    --text-normal: var(--amoled-text);
+    --text-muted: var(--amoled-text-muted);
+    --text-link: var(--amoled-accent);
+    --text-positive: var(--amoled-success);
+    --text-warning: var(--amoled-warning);
+    --text-danger: var(--amoled-danger);
+
+    --interactive-normal: var(--amoled-text-muted);
+    --interactive-hover: var(--amoled-text);
+    --interactive-active: var(--amoled-text);
+    --interactive-muted: var(--amoled-text-muted);
+
+    --border: var(--amoled-border);
+    --border-strong: var(--amoled-border);
+    --border-subtle: rgba(255, 255, 255, 0.05);
+}
+
+/* Channel list styling */
+.sidebar-2K8pFh {
+    background-color: var(--amoled-bg-secondary) !important;
+    border-right: 1px solid var(--amoled-border);
+}
+
+/* Server list styling */
+.guilds-2JjMmN {
+    background-color: var(--amoled-bg-tertiary) !important;
+    border-right: 1px solid var(--amoled-border);
+}
+
+/* Message area styling */
+.chat-2Zf9I0 {
+    background-color: var(--amoled-bg) !important;
+}
+
+/* Message styling */
+.message-2qnXI6 {
+    background-color: transparent !important;
+    border-radius: 6px;
+    padding: 8px 16px;
+    margin: 2px 0;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.message-2qnXI6:hover {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    border-color: var(--amoled-border) !important;
+}
+
+/* User area styling */
+.panels-3wFtMD {
+    background-color: var(--amoled-bg-secondary) !important;
+    border-top: 1px solid var(--amoled-border);
+}
+
+/* Button styling */
+.lookFilled-1Gx00P {
+    background-color: var(--amoled-accent) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    color: white !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+}
+
+.lookFilled-1Gx00P:hover {
+    background-color: var(--amoled-accent-hover) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(88, 101, 242, 0.3) !important;
+}
+
+/* Input styling */
+.input-2g-os5 {
+    background-color: var(--amoled-bg-tertiary) !important;
+    border: 1px solid var(--amoled-border) !important;
+    border-radius: 6px !important;
+    color: var(--amoled-text) !important;
+    transition: all 0.2s ease !important;
+}
+
+.input-2g-os5:focus {
+    border-color: var(--amoled-accent) !important;
+    box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.2) !important;
+    background-color: var(--amoled-bg-secondary) !important;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--amoled-bg-tertiary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--amoled-border);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--amoled-text-muted);
+}
+
+/* Modal styling */
+.modal-3O0a4e {
+    background-color: var(--amoled-bg-secondary) !important;
+    border: 1px solid var(--amoled-border) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Settings styling */
+.sidebarRegion-1VBisG {
+    background-color: var(--amoled-bg-secondary) !important;
+    border-right: 1px solid var(--amoled-border) !important;
+}
+
+/* Status indicators */
+.status-1t6PBM {
+    border: 2px solid var(--amoled-bg-secondary) !important;
+}
+
+/* Avatar styling */
+.avatar-1BDn8e {
+    border-radius: 50% !important;
+    border: 2px solid var(--amoled-border) !important;
+}
+
+/* Role colors */
+.role-2TIOKu {
+    border-radius: 4px !important;
+    padding: 2px 6px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+}
+
+/* Emoji styling */
+.emoji-1f6f0 {
+    filter: grayscale(0) !important;
+}
+
+/* Custom scrollbar for webkit browsers */
+.theme-dark ::-webkit-scrollbar {
+    width: 6px;
+}
+
+.theme-dark ::-webkit-scrollbar-track {
+    background: var(--amoled-bg-tertiary);
+}
+
+.theme-dark ::-webkit-scrollbar-thumb {
+    background: var(--amoled-border);
+    border-radius: 3px;
+}
+
+.theme-dark ::-webkit-scrollbar-thumb:hover {
+    background: var(--amoled-text-muted);
+}
+
+/* Animation improvements */
+* {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+}
+
+/* Focus improvements */
+*:focus {
+    outline: 2px solid var(--amoled-accent) !important;
+    outline-offset: 2px !important;
+}
+
+/* Selection styling */
+::selection {
+    background-color: var(--amoled-accent) !important;
+    color: white !important;
+}
+
+/* Custom properties for better theming */
+:root {
+    --amoled-radius: 6px;
+    --amoled-spacing: 8px;
+    --amoled-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --amoled-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Special AMOLED optimizations */
+.theme-dark {
+    /* Reduce contrast for better AMOLED display */
+    --text-muted: #666666;
+    --interactive-muted: #666666;
+    --border-subtle: rgba(255, 255, 255, 0.03);
+}
+
+/* Minimize bright elements */
+.theme-dark .status-1t6PBM[style*="background-color: rgb(67, 181, 129)"] {
+    background-color: #2d5a3d !important;
+}
+
+.theme-dark .status-1t6PBM[style*="background-color: rgb(250, 166, 26)"] {
+    background-color: #8b5a00 !important;
+}
+
+.theme-dark .status-1t6PBM[style*="background-color: rgb(240, 71, 71)"] {
+    background-color: #8b1a1a !important;
+}
+
+/* Reduce glow effects */
+.theme-dark * {
+    text-shadow: none !important;
+    box-shadow: none !important;
+}
+
+/* Exception for important elements */
+.theme-dark .lookFilled-1Gx00P {
+    box-shadow: 0 2px 8px rgba(88, 101, 242, 0.2) !important;
+}
+
+/* Minimize borders for cleaner look */
+.theme-dark .sidebar-2K8pFh,
+.theme-dark .guilds-2JjMmN,
+.theme-dark .panels-3wFtMD {
+    border-width: 1px !important;
+}
+
+/* Reduce padding for more content */
+.theme-dark .message-2qnXI6 {
+    padding: 6px 12px !important;
+}
+
+/* Minimize hover effects */
+.theme-dark .message-2qnXI6:hover {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Custom AMOLED-specific animations */
+@keyframes amoledFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.theme-dark * {
+    animation: amoledFadeIn 0.1s ease !important;
+}
