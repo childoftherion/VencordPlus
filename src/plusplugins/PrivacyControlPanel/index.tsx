@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { SettingsRouter } from "@webpack/common";
 
@@ -12,12 +13,7 @@ import { privacySettings as settings } from "./settings";
 export default definePlugin({
     name: "Privacy Control Panel",
     description: "A central control panel for VencordPlus privacy and security settings.",
-    authors: [
-        {
-            name: "VencordPlus Team",
-            id: 0n,
-        },
-    ],
+    authors: [Devs.childoftherion],
     settings,
     toolboxActions: {
         "Open Privacy Settings": () => {

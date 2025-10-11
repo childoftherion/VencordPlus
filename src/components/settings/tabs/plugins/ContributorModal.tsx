@@ -47,17 +47,17 @@ function ContributorModal({ user }: { user: User; }) {
     const website = profile?.connectedAccounts?.find(a => a.type === "domain")?.name;
 
     const plugins = useMemo(() => {
-        const allPlugins = Object.values(Plugins);
+        const allPlugins = Object.values(Vencord.Plugins.plugins);
         const pluginsByAuthor = DevsById[user.id] || SuncordDevsById[user.id] || EquicordDevsById[user.id] || PlusDevsById[user.id] || PlusMtsById[user.id]
             ? allPlugins.filter(p => p.authors.includes(DevsById[user.id] || SuncordDevsById[user.id] || EquicordDevsById[user.id] || PlusDevsById[user.id] || PlusMtsById[user.id]))
-            : allPlugins.filter(p => p.authors.some(a => a.name === user.username));
+            : allPlugins.filter(p => p.authors.some(a => a && a.name === user.username));
 
         return pluginsByAuthor
             .filter(p => !p.name.endsWith("API"))
             .sort((a, b) => Number(a.required ?? false) - Number(b.required ?? false));
     }, [user.id, user.username]);
 
-    const ContributedHyperLink = <Link href="https://github.com/RobinRMC/VencordPlus/graphs/contributors">contributed</Link>;
+    const ContributedHyperLink = <Link href="https://github.com/childoftherion/VencordPlus/graphs/contributors">contributed</Link>;
 
     return (
         <>
