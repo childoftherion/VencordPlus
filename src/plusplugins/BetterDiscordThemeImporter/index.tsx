@@ -84,6 +84,11 @@ export default definePlugin({
         // Convert BetterDiscord CSS to VencordPlus format
         let convertedCSS = css;
 
+        // Enhanced CSS processing with advanced features
+        convertedCSS = this.processCSSImports(convertedCSS);
+        convertedCSS = this.resolveCSSVariables(convertedCSS);
+        convertedCSS = this.optimizeCSS(convertedCSS);
+
         // Replace BetterDiscord specific selectors with VencordPlus equivalents
         const selectorMappings = {
             // Channel list
@@ -120,6 +125,42 @@ export default definePlugin({
         convertedCSS = this.addVencordPlusImprovements(convertedCSS);
 
         return convertedCSS;
+    },
+
+    processCSSImports(css: string): string {
+        // Handle @import statements (simplified - doesn't resolve URLs)
+        // In a full implementation, this would fetch and inline imports
+        const importRegex = /@import\s+url\(["']?([^"']+)["']?\)\s*;/g;
+        return css.replace(importRegex, "/* Import processed: $1 */");
+    },
+
+    resolveCSSVariables(css: string): string {
+        // Enhanced CSS variable processing
+        // Replace common BetterDiscord variables with VencordPlus equivalents
+        const variableMappings = {
+            "--background-primary": "var(--background-primary, #36393f)",
+            "--background-secondary": "var(--background-secondary, #2f3136)",
+            "--background-tertiary": "var(--background-tertiary, #202225)",
+            "--text-normal": "var(--text-normal, #ffffff)",
+            "--text-muted": "var(--text-muted, #b9bbbe)",
+            "--accent": "var(--accent, #5865f2)",
+        };
+
+        let processedCSS = css;
+        Object.entries(variableMappings).forEach(([bdVar, vpVar]) => {
+            processedCSS = processedCSS.replace(new RegExp(`var\\(${bdVar}\\)`, "g"), vpVar);
+        });
+
+        return processedCSS;
+    },
+
+    optimizeCSS(css: string): string {
+        // Basic CSS optimization
+        return css
+            .replace(/\s+/g, " ") // Collapse whitespace
+            .replace(/\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\//g, "") // Remove comments
+            .replace(/;}/g, "}") // Remove trailing semicolons
+            .trim();
     },
 
     addVencordPlusImprovements(css: string): string {
@@ -240,6 +281,30 @@ ${css}`;
         } catch (error) {
             logger.error(`Failed to remove BetterDiscord theme: ${themeName}`, error);
             return false;
+        }
+    },
+
+    // Public API for exporting themes to VencordPlus format
+    exportToVencordFormat(theme: BetterDiscordTheme): string {
+        try {
+            // Convert the theme using existing conversion logic
+            const convertedCSS = this.convertBetterDiscordCSS(theme.css);
+            return this.createThemeFile(theme, convertedCSS);
+        } catch (error) {
+            logger.error(`Failed to export theme ${theme.name}:`, error);
+            return "";
+        }
+    },
+
+    // Public API for preview functionality
+    async getThemePreview(theme: BetterDiscordTheme): Promise<string> {
+        try {
+            // Return a simplified preview (in future, this could generate a preview image)
+            const convertedCSS = this.convertBetterDiscordCSS(theme.css);
+            return `Theme: ${theme.name}\nAuthor: ${theme.author}\nConverted CSS Length: ${convertedCSS.length} characters`;
+        } catch (error) {
+            logger.error(`Failed to generate preview for theme ${theme.name}:`, error);
+            return "Preview unavailable";
         }
     }
 });

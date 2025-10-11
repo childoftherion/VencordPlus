@@ -71,7 +71,7 @@ export async function installExt(id: string) {
 
         const buf = await fetchBuffer(url, {
             headers: {
-                "User-Agent": `Electron ${process.versions.electron} ~ VencordPlus (https://github.com/RobinRMC/VencordPlus)`
+                "User-Agent": `Electron ${process.versions.electron} ~ VencordPlus (https://github.com/childoftherion/VencordPlus)`
             }
         });
 

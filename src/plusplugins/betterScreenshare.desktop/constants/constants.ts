@@ -27,5 +27,5 @@ export const PluginInfo = {
             name: "Loukious"
         }
     },
-    README: "https://github.com/RobinRMC/VencordPlus/tree/main/src/plusplugins/betterScreenshare.desktop"
+    README: "https://github.com/childoftherion/VencordPlus/tree/main/src/plusplugins/betterScreenshare.desktop"
 } as const satisfies types.PluginInfo;

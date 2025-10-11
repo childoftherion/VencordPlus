@@ -4,7 +4,7 @@
 // @version         %version%
 // @author          Vendicated (https://github.com/Vendicated)
 // @namespace       https://github.com/Vendicated/Vencord
-// @supportURL      https://github.com/RobinRMC/VencordPlus
+// @supportURL      https://github.com/childoftherion/VencordPlus
 // @icon            https://raw.githubusercontent.com/Vendicated/Vencord/refs/heads/main/browser/icon.png
 // @license         GPL-3.0
 // @match           *://*.discord.com/*
@@ -17,7 +17,6 @@
 // @compatible      edge Edge + Tampermonkey or Violentmonkey
 // @compatible      safari Safari + Tampermonkey or Violentmonkey
 // ==/UserScript==
-
 
 // this UserScript DOES NOT work on Firefox with Violentmonkey or Greasemonkey due to a bug that makes it impossible
 // to overwrite stuff on the window on sites that use CSP. Use Tampermonkey or use a chromium based browser

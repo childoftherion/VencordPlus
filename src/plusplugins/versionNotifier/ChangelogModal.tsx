@@ -20,7 +20,7 @@ import { Key } from "react";
 const fetchCommits = async () => {
     try {
         const response = await fetch(
-            "https://api.github.com/repos/RobinRMC/VencordPlus/commits?per_page=5&since=2023-12-15T11:22:13.968319"
+            "https://api.github.com/repos/childoftherion/VencordPlus/commits?per_page=5&since=2023-12-15T11:22:13.968319"
         );
         const data = await response.json();
         return data;

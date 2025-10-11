@@ -14,7 +14,7 @@ import { DevsById, EquicordDevsById, PlusDevsById, PlusMtsById, SuncordDevsById 
 import { fetchUserProfile } from "@utils/discord";
 import { classes, pluralise } from "@utils/misc";
 import { ModalContent, ModalRoot, openModal } from "@utils/modal";
-import { Forms, User, useStateFromStores, UserProfileStore, useEffect, useMemo } from "@webpack/common";
+import { Forms, useEffect, useMemo, User, UserProfileStore, useStateFromStores } from "@webpack/common";
 
 import { GithubButton, WebsiteButton } from "./LinkIconButton";
 import { PluginCard } from "./PluginCard";

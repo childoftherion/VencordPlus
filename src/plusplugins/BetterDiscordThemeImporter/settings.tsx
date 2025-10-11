@@ -123,6 +123,42 @@ function BetterDiscordThemeImporterSettings() {
         }
     };
 
+    const exportTheme = async (theme: BetterDiscordTheme) => {
+        try {
+            // Export to VencordPlus format
+            const exportedCSS = window.Vencord?.Plugins?.plugins?.["BetterDiscord Theme Importer"]?.exportToVencordFormat?.(theme);
+
+            if (exportedCSS) {
+                // Download the exported theme
+                const blob = new Blob([exportedCSS], { type: "text/css" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `${theme.name.replace(/[^a-zA-Z0-9]/g, "_")}-vplus.theme.css`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                setImportStatus(`Theme "${theme.name}" exported successfully`);
+            } else {
+                setImportStatus("Failed to export theme");
+            }
+        } catch (error) {
+            logger.error("Error exporting theme:", error);
+            setImportStatus("Error exporting theme: " + error.message);
+        }
+    };
+
+    const previewTheme = async (theme: BetterDiscordTheme) => {
+        try {
+            // Show a simple preview (in a real implementation, this would open a modal with Discord mockup)
+            alert(`Preview not implemented yet. Theme: ${theme.name}\n\nDescription: ${theme.description}\n\nThis feature will be added in the next update.`);
+        } catch (error) {
+            logger.error("Error previewing theme:", error);
+        }
+    };
+
     return (
         <SettingsTab title="BetterDiscord Theme Importer">
             <Forms.FormTitle tag="h2">Import BetterDiscord Themes</Forms.FormTitle>
@@ -192,14 +228,30 @@ function BetterDiscordThemeImporterSettings() {
                                         </div>
                                     )}
                                 </div>
-                                <Button
-                                    onClick={() => removeTheme(theme.name)}
-                                    size={Button.Sizes.SMALL}
-                                    color={Button.Colors.RED}
-                                    look={Button.Looks.OUTLINED}
-                                >
-                                    Remove
-                                </Button>
+                                <div style={{ display: "flex", gap: "8px" }}>
+                                    <Button
+                                        onClick={() => previewTheme(theme)}
+                                        size={Button.Sizes.SMALL}
+                                        look={Button.Looks.OUTLINED}
+                                    >
+                                        Preview
+                                    </Button>
+                                    <Button
+                                        onClick={() => exportTheme(theme)}
+                                        size={Button.Sizes.SMALL}
+                                        look={Button.Looks.OUTLINED}
+                                    >
+                                        Export
+                                    </Button>
+                                    <Button
+                                        onClick={() => removeTheme(theme.name)}
+                                        size={Button.Sizes.SMALL}
+                                        color={Button.Colors.RED}
+                                        look={Button.Looks.OUTLINED}
+                                    >
+                                        Remove
+                                    </Button>
+                                </div>
                             </div>
                         ))}
                     </div>
