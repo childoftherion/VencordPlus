@@ -5,6 +5,7 @@ node_modules
 vencord_installer
 
 .idea
+.modules
 .DS_Store
 
 yarn.lock
