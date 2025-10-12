@@ -23,6 +23,7 @@ function onRestartNeeded() {
 
 export default function PluginsSubmenu() {
     const sortedPlugins = useMemo(() => Object.values(Plugins)
+        .filter(plugin => plugin && plugin.name) // Filter out plugins with undefined name
         .sort((a, b) => a.name.localeCompare(b.name)), []);
     const [query, setQuery] = useState("");
 

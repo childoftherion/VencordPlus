@@ -76,6 +76,7 @@ export default function PluginModal({ plugin, onRestartNeeded, onClose, transiti
 
     useEffect(() => {
         (async () => {
+            if (!plugin.authors || !Array.isArray(plugin.authors)) return;
             for (const user of plugin.authors.slice(0, 6)) {
                 const author = user.id
                     ? await UserUtils.getUser(`${user.id}`)
@@ -124,6 +125,8 @@ export default function PluginModal({ plugin, onRestartNeeded, onClose, transiti
     }
 
     function renderMoreUsers(_label: string, count: number) {
+        if (!plugin.authors || !Array.isArray(plugin.authors)) return null;
+
         const sliceCount = plugin.authors.length - count;
         const sliceStart = plugin.authors.length - sliceCount;
         const sliceEnd = sliceStart + plugin.authors.length - count;

@@ -72,14 +72,15 @@ export default LazyComponent(() => {
 
         const plugins = useMemo(() =>
             Object.values(Vencord.Plugins.plugins)
+                .filter(plugin => plugin && plugin.name) // Filter out plugins with undefined name
                 .sort((a, b) => a.name.localeCompare(b.name)),
-        []
+            []
         );
         const data = plugins
             .filter(plugin => (
                 plugin.name.toLowerCase().includes(query) ||
-            plugin.description.toLowerCase().includes(query) ||
-            plugin.tags?.some(t => t.toLowerCase().includes(query))
+                plugin.description.toLowerCase().includes(query) ||
+                plugin.tags?.some(t => t.toLowerCase().includes(query))
             ))
             .map(plugin => ({ key: plugin.name, plugin }));
 
