@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as $AudioPlayer from "./AudioPlayer";
 import * as $Badges from "./Badges";
 import * as $ChatButtons from "./ChatButtons";
 import * as $Commands from "./Commands";
@@ -28,7 +27,6 @@ import * as $MessageDecorations from "./MessageDecorations";
 import * as $MessageEventsAPI from "./MessageEvents";
 import * as $MessagePopover from "./MessagePopover";
 import * as $MessageUpdater from "./MessageUpdater";
-import * as $NicknameIcons from "./NicknameIcons";
 import * as $Notices from "./Notices";
 import * as $Notifications from "./Notifications";
 import * as $ServerList from "./ServerList";
@@ -124,14 +122,3 @@ export const MessageUpdater = $MessageUpdater;
  * An API allowing you to get an user setting
  */
 export const UserSettings = $UserSettings;
-
-/**
- * An API allowing you to create and control audio players with advanced features
- * like volume, speed, and pitch control. Supports multiple audio formats.
- */
-export const AudioPlayer = $AudioPlayer;
-
-/**
- * An API allowing you to add icons next to usernames with priority-based rendering
- */
-export const NicknameIcons = $NicknameIcons;

@@ -78,9 +78,9 @@ export interface Settings {
 }
 
 const DefaultSettings: Settings = {
-    autoUpdate: false,
+    autoUpdate: true,
     autoUpdateNotification: true,
-    useQuickCss: false,
+    useQuickCss: true,
     themeLinks: [],
     eagerPatches: IS_REPORTER,
     enabledThemes: [],
@@ -108,13 +108,7 @@ const DefaultSettings: Settings = {
     }
 };
 
-const settings = (() => {
-    try {
-        return !IS_REPORTER ? VencordNative?.settings?.get() || {} : {} as Settings;
-    } catch {
-        return {} as Settings;
-    }
-})();
+const settings = !IS_REPORTER ? VencordNative.settings.get() : {} as Settings;
 mergeDefaults(settings, DefaultSettings);
 
 const saveSettingsOnFrequentAction = debounce(async () => {
@@ -169,9 +163,7 @@ if (!IS_REPORTER) {
         SettingsStore.plain.cloud.settingsSyncVersion = Date.now();
         localStorage.Vencord_settingsDirty = true;
         saveSettingsOnFrequentAction();
-        try {
-            VencordNative?.settings?.set(SettingsStore.plain, path);
-        } catch { }
+        VencordNative.settings.set(SettingsStore.plain, path);
     });
 }
 
@@ -212,11 +204,7 @@ export function useSettings(paths?: UseSettings<Settings>[]) {
         }
     }, [paths]);
 
-    try {
-        return SettingsStore.store;
-    } catch {
-        return PlainSettings;
-    }
+    return SettingsStore.store;
 }
 
 export function migratePluginSettings(name: string, ...oldNames: string[]) {
