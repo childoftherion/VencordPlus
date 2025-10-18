@@ -31,7 +31,7 @@ jobs:
                   cache: "pnpm"
 
             - name: Install dependencies
-              run: pnpm install --frozen-lockfile && pnpm install buttplug --workspace-root && pnpm install openai --workspace-root && pnpm install socket.io --workspace-root
+              run: pnpm install --frozen-lockfile
 
             - name: Build web
               run: pnpm buildWebStandalone
@@ -52,6 +52,7 @@ jobs:
                   echo "release_tag=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
             - name: Upload DevBuild as release
+              if: github.repository == 'childoftherion/VencordPlus'
               run: |
                   gh release upload devbuild --clobber dist/*
                   gh release edit devbuild --title "DevBuild $RELEASE_TAG"
