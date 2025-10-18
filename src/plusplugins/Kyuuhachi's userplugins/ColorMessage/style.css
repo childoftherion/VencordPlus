@@ -1,11 +1,11 @@
 :root {
-    --98-message-color-saturation: /*DYNAMIC*/;
+    --message-color-saturation-98:
+        /*DYNAMIC*/
+    ;
 }
 
 div[class*="messageContent_"] {
-    color: color-mix(
-        in lab,
-        var(--98-message-color, var(--text-default)) calc(var(--98-message-color-saturation) * 1%),
-        var(--text-default)
-    )
+    color: color-mix(in lab,
+            var(--message-color-98, var(--text-default)) calc(var(--message-color-saturation-98) * 1%),
+            var(--text-default))
 }

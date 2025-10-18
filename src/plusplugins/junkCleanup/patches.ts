@@ -338,7 +338,7 @@ const Patches: Record<string, ConfigurablePatchDefinition> = {
     voiceGradientBackground: {
         description: "Hide the gradient backgrounds in voice channels",
         patches: {
-            find: ".gradientBackground,children:\[\(0",
+            find: ".gradientBackground,children:[(0",
             all: true,
             replacement: {
                 match: /\i\.\i\.getEnableHardwareAcceleration\(\)/,

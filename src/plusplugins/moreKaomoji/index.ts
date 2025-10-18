@@ -23,10 +23,10 @@ export default definePlugin({
         },
         {
             name: "smug",
-            description: "ಠ\_ಠ",
+            description: "ಠ_ಠ",
             options: [OptionalMessageOption],
             execute: opts => ({
-                content: findOption(opts, "message", "") + " " + "ಠ\_ಠ",
+                content: findOption(opts, "message", "") + " " + "ಠ_ಠ",
             }),
         },
         {
@@ -39,10 +39,10 @@ export default definePlugin({
         },
         {
             name: "crying",
-            description: "ಥ\_ಥ",
+            description: "ಥ_ಥ",
             options: [OptionalMessageOption],
             execute: opts => ({
-                content: findOption(opts, "message", "") + " " + "ಥ\_ಥ",
+                content: findOption(opts, "message", "") + " " + "ಥ_ಥ",
             }),
         },
         {
@@ -79,18 +79,18 @@ export default definePlugin({
         },
         {
             name: "confused",
-            description: "(•ิ\_•ิ)?",
+            description: "(•ิ_•ิ)?",
             options: [OptionalMessageOption],
             execute: opts => ({
-                content: findOption(opts, "message", "") + " " + "(•ิ\_•ิ)?",
+                content: findOption(opts, "message", "") + " " + "(•ิ_•ิ)?",
             }),
         },
         {
             name: "sleeping",
-            description: "(ᴗ\_ᴗ)",
+            description: "(ᴗ_ᴗ)",
             options: [OptionalMessageOption],
             execute: opts => ({
-                content: findOption(opts, "message", "") + " " + "(ᴗ\_ᴗ)",
+                content: findOption(opts, "message", "") + " " + "(ᴗ_ᴗ)",
             }),
         },
         {
@@ -106,10 +106,10 @@ export default definePlugin({
         */
         {
             name: "giving",
-            description: "(ﾉ◕ヮ◕)ﾉ\*:･ﾟ✧",
+            description: "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
             options: [OptionalMessageOption],
             execute: opts => ({
-                content: findOption(opts, "message", "") + " " + "(ﾉ◕ヮ◕)ﾉ\*:･ﾟ✧",
+                content: findOption(opts, "message", "") + " " + "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
             }),
         },
         {
@@ -146,10 +146,10 @@ export default definePlugin({
         },
         {
             name: "lovehappy",
-            description: "(\*≧ω≦\*)",
+            description: "(*≧ω≦*)",
             options: [OptionalMessageOption],
             execute: opts => ({
-                content: findOption(opts, "message", "") + " " + "(\*≧ω≦\*)",
+                content: findOption(opts, "message", "") + " " + "(*≧ω≦*)",
             }),
         },
         {
@@ -237,18 +237,18 @@ export default definePlugin({
         },
         {
             name: "shrug",
-            description: "¯\\\_(ツ)\_/¯",
+            description: "¯_(ツ)_/¯",
             options: [OptionalMessageOption],
             execute: opts => ({
-                content: findOption(opts, "message", "") + " " + "¯\\\_(ツ)\_/¯",
+                content: findOption(opts, "message", "") + " " + "¯_(ツ)_/¯",
             }),
         },
         {
             name: "surprised1",
-            description: "(O\_O)",
+            description: "(O_O)",
             options: [OptionalMessageOption],
             execute: opts => ({
-                content: findOption(opts, "message", "") + " " + "(O\_O)",
+                content: findOption(opts, "message", "") + " " + "(O_O)",
             }),
         },
         {
@@ -269,18 +269,18 @@ export default definePlugin({
         },
         {
             name: "excited",
-            description: "☆\*:.｡.o(≧▽≦)o.｡.:\*☆",
+            description: "☆*:.｡.o(≧▽≦)o.｡.:*☆",
             options: [OptionalMessageOption],
             execute: opts => ({
-                content: findOption(opts, "message", "") + " " + "☆\*:.｡.o(≧▽≦)o.｡.:\*☆",
+                content: findOption(opts, "message", "") + " " + "☆*:.｡.o(≧▽≦)o.｡.:*☆",
             }),
         },
         {
             name: "wink",
-            description: "(^\_-)-☆",
+            description: "(^_-)-☆",
             options: [OptionalMessageOption],
             execute: opts => ({
-                content: findOption(opts, "message", "") + " " + "(^\_-)-☆",
+                content: findOption(opts, "message", "") + " " + "(^_-)-☆",
             }),
         },
         {
@@ -317,10 +317,10 @@ export default definePlugin({
         },
         {
             name: "love2",
-            description: "（\*＾3＾）/～♡",
+            description: "（*＾3＾）/～♡",
             options: [OptionalMessageOption],
             execute: opts => ({
-                content: findOption(opts, "message", "") + " " + "（\*＾3＾）/～♡",
+                content: findOption(opts, "message", "") + " " + "（*＾3＾）/～♡",
             }),
         },
         {

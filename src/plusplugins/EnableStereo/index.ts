@@ -33,7 +33,7 @@ export default definePlugin({
         {
             find: "Audio codecs",
             replacement: {
-                match: /channels\:1\,/,
+                match: /channels:1,/,
                 replace: "channels:1,prams:{stereo:\"1\"},",
                 predicate: () => settings.store.stereochannel === 1
             }
@@ -41,7 +41,7 @@ export default definePlugin({
         {
             find: "Audio codecs",
             replacement: {
-                match: /channels\:1\,/,
+                match: /channels:1,/,
                 replace: "channels:2,prams:{stereo:\"2\"},",
                 predicate: () => settings.store.stereochannel === 2
             }
@@ -49,7 +49,7 @@ export default definePlugin({
         {
             find: "Audio codecs",
             replacement: {
-                match: /channels\:1\,/,
+                match: /channels:1,/,
                 replace: "channels:7.1,prams:{stereo:\"7.1\"},",
                 predicate: () => settings.store.stereochannel === 7.1
             }

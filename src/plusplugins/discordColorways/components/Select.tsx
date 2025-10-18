@@ -19,7 +19,7 @@ export default function ({ items, selected, onChange }: { items: { name: string,
             };
         }, []);
         return <div className="dc-select-popout" dir="ltr" role="listbox">
-            {items.map((itm, i) => <div className="dc-select-option" role="option" tabIndex={i} aria-selected={itm.value === selected.value} onClick={() => onChange(itm.value)}>
+            {items.map((itm, i) => <div key={i} className="dc-select-option" role="option" tabIndex={i} aria-selected={itm.value === selected.value} onClick={() => onChange(itm.value)}>
                 {itm.name}
                 {itm.value === selected.value ? <svg style={{ color: "var(--brand-500)" }} aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10" fill="white" />

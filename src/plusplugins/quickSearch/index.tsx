@@ -102,6 +102,7 @@ const contextMenuPath: NavContextMenuPatchCallback = (children, props) => {
                     ELEM_INFO.map(element => {
                         if (element.present)
                             return <Menu.MenuCheckboxItem
+                                key={element.name}
                                 id={element.name}
                                 label={element.label}
                                 checked={queryObject[element.name]}

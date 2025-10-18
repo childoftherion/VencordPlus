@@ -110,7 +110,7 @@ export function UpdaterModal({ modalProps }: { modalProps: ModalProps; }) {
                 {isOutdated && (
                     <Card style={{ padding: "0 0.5em" }}>
                         {updates!.map(({ hash, longHash, author, message }) => (
-                            <div style={{
+                            <div key={hash} style={{
                                 marginTop: "0.5em",
                                 marginBottom: "0.5em"
                             }}>

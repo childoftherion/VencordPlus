@@ -67,7 +67,7 @@ function History() {
             </button>
         </ComboTextBox>
         <div className="dc-selector" style={{ gridTemplateColumns: "unset", flexGrow: "1" }}>
-            {colorwayUsageMetrics.filter(({ id }) => id?.toLowerCase().includes(searchValue.toLowerCase())).map(color => <div className="dc-colorway">
+            {colorwayUsageMetrics.filter(({ id }) => id?.toLowerCase().includes(searchValue.toLowerCase())).map(color => <div key={color.id} className="dc-colorway">
                 <div className="dc-label-wrapper">
                     <span className="dc-label">{color.id}</span>
                     <span className="dc-label dc-subnote dc-note">in {color.source} • {color.uses} uses</span>
@@ -98,24 +98,26 @@ function Settings() {
                 display: "flex",
                 gap: "24px"
             }}>
-                {themes.map(({ name, id, preview }) => <Tooltip
-                    text={name}
-                    position="top"
-                >
-                    {({ onClick, onMouseEnter, onMouseLeave }) => <div className="dc-color-swatch-selectable">
-                        <div
-                            className="dc-color-swatch"
-                            onMouseEnter={onMouseEnter}
-                            onMouseLeave={onMouseLeave}
-                            onClick={e => {
-                                onClick(e);
-                                setContext("colorwaysPluginTheme", id);
-                            }}
-                            style={{ backgroundColor: preview }}
-                        />
-                        {contexts.colorwaysPluginTheme === id ? <SelectionCircle /> : null}
-                    </div>}
-                </Tooltip>)}
+                {themes.map(({ name, id, preview }) => <div key={id}>
+                    <Tooltip
+                        text={name}
+                        position="top"
+                    >
+                        {({ onClick, onMouseEnter, onMouseLeave }) => <div className="dc-color-swatch-selectable">
+                            <div
+                                className="dc-color-swatch"
+                                onMouseEnter={onMouseEnter}
+                                onMouseLeave={onMouseLeave}
+                                onClick={e => {
+                                    onClick(e);
+                                    setContext("colorwaysPluginTheme", id);
+                                }}
+                                style={{ backgroundColor: preview }}
+                            />
+                            {contexts.colorwaysPluginTheme === id ? <SelectionCircle /> : null}
+                        </div>}
+                    </Tooltip>
+                </div>)}
             </div>
         </Setting>
         <span className="dc-field-header">Auto Colors</span>
@@ -124,48 +126,50 @@ function Settings() {
                 display: "flex",
                 gap: "24px"
             }}>
-                {Object.values(getAutoPresets("5865f2")).map(({ name, id, colors }) => <Tooltip
-                    text={name}
-                    position="top"
-                >
-                    {({ onClick, onMouseEnter, onMouseLeave }) => <div className="dc-color-swatch-selectable">
-                        <div
-                            className="dc-color-swatch"
-                            onMouseEnter={onMouseEnter}
-                            onMouseLeave={onMouseLeave}
-                            onClick={e => {
-                                onClick(e);
-                                setContext("activeAutoPreset", id);
+                {Object.values(getAutoPresets("5865f2")).map(({ name, id, colors }) => <div key={id}>
+                    <Tooltip
+                        text={name}
+                        position="top"
+                    >
+                        {({ onClick, onMouseEnter, onMouseLeave }) => <div className="dc-color-swatch-selectable">
+                            <div
+                                className="dc-color-swatch"
+                                onMouseEnter={onMouseEnter}
+                                onMouseLeave={onMouseLeave}
+                                onClick={e => {
+                                    onClick(e);
+                                    setContext("activeAutoPreset", id);
 
-                                if (contexts.activeColorwayObject.id === "Auto" && contexts.activeColorwayObject.sourceType === "auto") {
-                                    const { colors } = getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[id];
-                                    const newObj: ColorwayObject = {
-                                        id: "Auto",
-                                        sourceType: "auto",
-                                        source: null,
-                                        colors: colors
-                                    };
-                                    if (!contexts.isConnected) {
-                                        setContext("activeColorwayObject", newObj);
-                                    } else {
-                                        if (!contexts.hasManagerRole) {
+                                    if (contexts.activeColorwayObject.id === "Auto" && contexts.activeColorwayObject.sourceType === "auto") {
+                                        const { colors } = getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[id];
+                                        const newObj: ColorwayObject = {
+                                            id: "Auto",
+                                            sourceType: "auto",
+                                            source: null,
+                                            colors: colors
+                                        };
+                                        if (!contexts.isConnected) {
+                                            setContext("activeColorwayObject", newObj);
                                         } else {
-                                            Dispatcher.dispatch("COLORWAYS_SEND_COLORWAY", {
-                                                active: newObj
-                                            });
+                                            if (!contexts.hasManagerRole) {
+                                            } else {
+                                                Dispatcher.dispatch("COLORWAYS_SEND_COLORWAY", {
+                                                    active: newObj
+                                                });
+                                            }
                                         }
                                     }
-                                }
-                            }}
-                        >
-                            <div className="dc-color-swatch-part" style={{ backgroundColor: colors.accent }} />
-                            <div className="dc-color-swatch-part" style={{ backgroundColor: colors.primary }} />
-                            <div className="dc-color-swatch-part" style={{ backgroundColor: colors.secondary }} />
-                            <div className="dc-color-swatch-part" style={{ backgroundColor: colors.tertiary }} />
-                        </div>
-                        {contexts.activeAutoPreset === id ? <SelectionCircle /> : null}
-                    </div>}
-                </Tooltip>)}
+                                }}
+                            >
+                                <div className="dc-color-swatch-part" style={{ backgroundColor: colors.accent }} />
+                                <div className="dc-color-swatch-part" style={{ backgroundColor: colors.primary }} />
+                                <div className="dc-color-swatch-part" style={{ backgroundColor: colors.secondary }} />
+                                <div className="dc-color-swatch-part" style={{ backgroundColor: colors.tertiary }} />
+                            </div>
+                            {contexts.activeAutoPreset === id ? <SelectionCircle /> : null}
+                        </div>}
+                    </Tooltip>
+                </div>)}
             </div>
             <span className="dc-note">The auto colorway allows you to turn your system's accent color into a fully fledged colorway through various Auto Presets.</span>
         </Setting>

@@ -22,6 +22,7 @@ export default function ({ props }) {
             {String(props.message.content).match(/colorway:[0-9a-f]{0,100}/g)?.map((colorID: string) => {
                 colorID = hexToString(colorID.split("colorway:")[1]);
                 return <Colorway
+                    key={colorID}
                     id="colorway-IDCard"
                     role="button"
                     aria-checked={active.sourceType === "temporary" && colorID.includes("n:") && colorID.split("n:")[1].split("|")[0] === active.id}

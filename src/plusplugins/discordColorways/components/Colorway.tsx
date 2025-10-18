@@ -42,6 +42,7 @@ export default function (props: {
         >
             {props.prefix ? <props.prefix /> : (props.colors ? <div className="dc-color-swatch">
                 {props.colors.map(colorStr => <div
+                    key={colorStr}
                     className="dc-color-swatch-part"
                     style={{
                         backgroundColor: `#${colorToHex(colorStr)}`,
@@ -52,7 +53,7 @@ export default function (props: {
                 <span className="dc-label">{props.text}</span>
                 {props.descriptions ? <span className="dc-label dc-subnote dc-note">{props.descriptions.join(" • ")}</span> : null}
             </div>
-            {props.suffix ? <props.suffix /> : (props.actions || []).map(action => <Button color={action.type} onClick={action.onClick}><action.Icon width={20} height={20} /></Button>)}
+            {props.suffix ? <props.suffix /> : (props.actions || []).map(action => <Button key={action.type} color={action.type} onClick={action.onClick}><action.Icon width={20} height={20} /></Button>)}
         </div>}
     </RightClickContextMenu>;
 }

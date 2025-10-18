@@ -343,8 +343,9 @@ export const ScreenshareSettingsModal = (props: ScreenshareSettingsModalProps) =
                                     microphoneStore={screenshareAudioStore}
                                     {...props_} />;
                         });
-                }}
-                children={"Open"} />
+                }}>
+                Open
+            </Button>
         </SettingsModalCardItem>;
 
     const settingsCardAudio =

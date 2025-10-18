@@ -5,12 +5,13 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
+import { FormSwitch } from "@components/FormSwitch";
 import { Devs } from "@utils/constants";
 import { makeLazy } from "@utils/lazy";
 import { closeModal, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalProps, ModalRoot, openModal } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByProps, wreq } from "@webpack";
-import { Button, Flex, Forms, Switch, Text, Timestamp, useState } from "@webpack/common";
+import { Button, Flex, Forms, Text, Timestamp, useState } from "@webpack/common";
 
 import TarFile from "./tar";
 import * as Webpack from "./webpack";
@@ -47,7 +48,7 @@ export const getBuildNumber = makeLazy(() => {
         const metrics = findByProps("_getMetricWithDefaults")._flush.toString();
         const [, builtAt, buildNumber] = metrics.match(/\{built_at:"(\d+)",build_number:"(\d+)"\}/);
         return { buildNumber, builtAt: new Date(Number(builtAt)) };
-    } catch(e) {
+    } catch (e) {
         console.error("failed to get build number:", e);
         return { buildNumber: "unknown", builtAt: new Date() };
     }
@@ -56,14 +57,14 @@ export const getBuildNumber = makeLazy(() => {
 async function saveTar(patched: boolean) {
     const tar = new TarFile();
     const { buildNumber, builtAt } = getBuildNumber();
-    const mtime = (builtAt.getTime() / 1000)|0;
+    const mtime = (builtAt.getTime() / 1000) | 0;
 
     const root = patched ? `vencord-${buildNumber}` : `discord-${buildNumber}`;
 
-    for(const [id, module] of Object.entries(wreq.m)) {
+    for (const [id, module] of Object.entries(wreq.m)) {
         const patchedSrc = Function.toString.call(module);
         const originalSrc = module.toString();
-        if(patched && patchedSrc != originalSrc)
+        if (patched && patchedSrc !== originalSrc)
             tar.addTextFile(
                 `${root}/${id}.v.js`,
                 `webpack[${JSON.stringify(id)}] = ${patchedSrc}\n`,
@@ -84,7 +85,7 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
     const [isLoading, setLoading] = useState(false);
     const paths = Webpack.getChunkPaths(wreq);
     const status = Object.entries(Webpack.getLoadedChunks(wreq))
-        .filter(([k]) => wreq.o(paths, k))
+        .filter(([k]) => wreq.o(paths[k]))
         .map(([, v]) => v);
     const loading = status.length;
     const loaded = status.filter(v => v === 0 || v === undefined).length;
@@ -94,7 +95,7 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
     return (
         <ModalRoot {...modalProps}>
             <ModalHeader>
-                <Flex.Child>
+                <Flex>
                     <Forms.FormTitle tag="h2">
                         Webpack Tarball
                     </Forms.FormTitle>
@@ -104,7 +105,7 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
                             {buildNumber}
                         </Timestamp>
                     </Text>
-                </Flex.Child>
+                </Flex>
                 <ModalCloseButton onClick={close} />
             </ModalHeader>
 
@@ -135,13 +136,12 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
                     </Flex>
                 </div>
 
-                <Switch
+                <FormSwitch
                     value={patched}
                     onChange={v => settings.store.patched = v}
+                    title={settings.def.patched.description}
                     hideBorder
-                >
-                    {settings.def.patched.description}
-                </Switch>
+                />
             </ModalContent>
 
             <ModalFooter>

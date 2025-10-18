@@ -11,10 +11,8 @@ import { classes } from "@utils/misc";
 import { ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
 import { findByCodeLazy } from "@webpack";
-import { Button, Text, useState } from "@webpack/common";
-import { ChannelStore } from "@webpack/common";
-import { PropsWithChildren } from "react";
-import { SVGProps } from "react";
+import { Button, ChannelStore, Text, useState } from "@webpack/common";
+import { PropsWithChildren, SVGProps } from "react";
 
 const logger = new Logger("TextReact");
 
@@ -50,7 +48,7 @@ export function Husk(props: IconProps) {
             className={classes(props.className, "vc-husk")}
             viewBox="0 0 24 24"
         >
-            <path xmlns="http://www.w3.org/2000/svg" d="M12.821 22.328c0 .703 0 1.785-1.311 1.785-.798 0-1.121-.436-1.311-1.158-.703.836-1.558 1.273-2.603 1.273-2.565 0-4.521-2.186-4.521-5.263 0-3.001 2.014-5.3 4.521-5.3 1.007 0 1.995.399 2.603 1.254.076-.665.646-1.14 1.311-1.14 1.311 0 1.311 1.083 1.311 1.786v6.763zm-4.844-.607c1.425 0 2.109-1.444 2.109-2.755s-.665-2.792-2.109-2.792c-1.501 0-2.166 1.482-2.166 2.792.001 1.31.684 2.755 2.166 2.755zm6.403-10.829c0-.912.57-1.52 1.368-1.52.798 0 1.368.608 1.368 1.52v3.723c.722-.627 1.652-.95 2.603-.95 2.944 0 4.407 2.754 4.407 5.415 0 2.584-1.747 5.148-4.503 5.148-.93 0-1.994-.418-2.507-1.254-.171.722-.608 1.139-1.368 1.139-.798 0-1.368-.607-1.368-1.52V10.892zm4.883 10.829c1.425 0 2.128-1.482 2.128-2.755 0-1.292-.703-2.792-2.128-2.792-1.463 0-2.146 1.368-2.146 2.697-.001 1.33.645 2.85 2.146 2.85zm12.824-5.016c-.684 0-1.292-.532-2.165-.532-1.559 0-2.299 1.387-2.299 2.792 0 1.349.817 2.755 2.299 2.755.684 0 1.709-.57 2.032-.57.647 0 1.178.551 1.178 1.197 0 1.405-2.355 1.881-3.344 1.881-2.944 0-4.901-2.413-4.901-5.263 0-2.773 2.015-5.3 4.901-5.3 1.083 0 3.344.399 3.344 1.729 0 .57-.399 1.311-1.045 1.311z" fill="#FFF"/>
+            <path xmlns="http://www.w3.org/2000/svg" d="M12.821 22.328c0 .703 0 1.785-1.311 1.785-.798 0-1.121-.436-1.311-1.158-.703.836-1.558 1.273-2.603 1.273-2.565 0-4.521-2.186-4.521-5.263 0-3.001 2.014-5.3 4.521-5.3 1.007 0 1.995.399 2.603 1.254.076-.665.646-1.14 1.311-1.14 1.311 0 1.311 1.083 1.311 1.786v6.763zm-4.844-.607c1.425 0 2.109-1.444 2.109-2.755s-.665-2.792-2.109-2.792c-1.501 0-2.166 1.482-2.166 2.792.001 1.31.684 2.755 2.166 2.755zm6.403-10.829c0-.912.57-1.52 1.368-1.52.798 0 1.368.608 1.368 1.52v3.723c.722-.627 1.652-.95 2.603-.95 2.944 0 4.407 2.754 4.407 5.415 0 2.584-1.747 5.148-4.503 5.148-.93 0-1.994-.418-2.507-1.254-.171.722-.608 1.139-1.368 1.139-.798 0-1.368-.607-1.368-1.52V10.892zm4.883 10.829c1.425 0 2.128-1.482 2.128-2.755 0-1.292-.703-2.792-2.128-2.792-1.463 0-2.146 1.368-2.146 2.697-.001 1.33.645 2.85 2.146 2.85zm12.824-5.016c-.684 0-1.292-.532-2.165-.532-1.559 0-2.299 1.387-2.299 2.792 0 1.349.817 2.755 2.299 2.755.684 0 1.709-.57 2.032-.57.647 0 1.178.551 1.178 1.197 0 1.405-2.355 1.881-3.344 1.881-2.944 0-4.901-2.413-4.901-5.263 0-2.773 2.015-5.3 4.901-5.3 1.083 0 3.344.399 3.344 1.729 0 .57-.399 1.311-1.045 1.311z" fill="#FFF" />
 
         </Icon>
     );
@@ -126,15 +124,15 @@ function convertToRegionalIndicators(text: string) {
     return result;
 }
 
-    async function addReactionsWithDelay(channelId, messageId, reactions) {
-        for (const reaction of reactions) {
-            await sleep(1000); // Wait for 1 second before adding each reaction
-            findByCodeLazy("#{intl::EMOJI_PICKER_DOUBLE_REACTION_SUPER_ERROR_TITLE}")(channelId, messageId, { name: reaction });
-        }
+async function addReactionsWithDelay(channelId, messageId, reactions) {
+    for (const reaction of reactions) {
+        await sleep(1000); // Wait for 1 second before adding each reaction
+        findByCodeLazy("#{intl::EMOJI_PICKER_DOUBLE_REACTION_SUPER_ERROR_TITLE}")(channelId, messageId, { name: reaction });
     }
+}
 
 
-function OpenWindow(props: ModalProps & { message: any; onClose: () => void }) {
+function OpenWindow(props: ModalProps & { message: any; onClose: () => void; }) {
     const { message, onClose, ...modalProps } = props;
 
     const [inputText, setInputText] = useState("");
@@ -158,8 +156,8 @@ function OpenWindow(props: ModalProps & { message: any; onClose: () => void }) {
             <ModalHeader separator={false}>
                 <Text color="header-primary" variant="heading-lg/semibold" tag="h1" style={{ flexGrow: 1 }}>
                     Input text to react with
-                    </Text>
-                    {/* <br></br>
+                </Text>
+                {/* <br></br>
                     <Text color="red" variant="heading-lg/semibold" tag="p" style={{ flexGrow: 1 }}>
                     (If your text has any numbers or special characters, those will not be included in the reaction message and will cause you to be rate limited. (Don't spam them too much.))
                 </Text> */}

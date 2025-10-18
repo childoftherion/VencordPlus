@@ -57,7 +57,8 @@ export default function ({
                     >
                         {confirmMsg}
                     </button> : null}
-                    {additionalButtons.map(({ type, action, text }) => <button
+                    {additionalButtons.map(({ type, action, text }, index) => <button
+                        key={index}
                         className={`dc-button dc-button-md dc-button-${type}`}
                         onClick={() => action({ closeModal: modalProps.onClose })}
                     >

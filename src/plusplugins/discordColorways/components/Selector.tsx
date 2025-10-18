@@ -33,11 +33,19 @@ function get_updateCustomSource(customColorwayData: {
     name: string;
     colorways?: Colorway[];
     presets?: Preset[];
-}[], setCustomColorwayData: React.Dispatch<React.SetStateAction<{
+}[], setCustomColorwayData: (value: {
     name: string;
     colorways?: Colorway[];
     presets?: Preset[];
-}[]>>) {
+}[] | ((prev: {
+    name: string;
+    colorways?: Colorway[];
+    presets?: Preset[];
+}[]) => {
+    name: string;
+    colorways?: Colorway[];
+    presets?: Preset[];
+}[])) => void) {
     return function updateCustomSource(props: { source: string; } & ({ type: SourceActions.AddColorway | SourceActions.RemoveColorway, colorway: Colorway; } | { type: SourceActions.AddPreset | SourceActions.RemovePreset, preset: Preset; })) {
         if (props.type === SourceActions.AddColorway) {
             const srcList = customColorwayData.map(s => {
@@ -193,7 +201,8 @@ function Colorways() {
                             marginLeft: "8px"
                         }} />
                     </button>
-                </>}>
+                </>}
+            >
                 {({ onClick }) => <button
                     onClick={onClick}
                     className="dc-button dc-button-primary"
@@ -230,14 +239,15 @@ function Colorways() {
                 xPos="right"
                 menu={<>
                     {filters.map(({ name, id }) => {
-                        return <button onClick={() => setVisibleSources(id)} className="dc-contextmenu-item">
+                        return <button key={id} onClick={() => setVisibleSources(id)} className="dc-contextmenu-item">
                             {name}
                             <Radio checked={visibleSources === id} style={{
                                 marginLeft: "8px"
                             }} />
                         </button>;
                     })}
-                </>}>
+                </>}
+            >
                 {({ onClick }) => <button
                     onClick={onClick}
                     className="dc-button dc-button-primary"
@@ -423,184 +433,186 @@ function Colorways() {
                     }
                 })
                 .filter(({ name }) => name.toLowerCase().includes(searchValue.toLowerCase()))
-                .map((color: Colorway) => <ColorwayItem
-                    id={"colorway-" + color.name}
-                    aria-invalid={invalidColorwayClicked === "colorway-" + color.name}
-                    aria-checked={activeColorwayObject.id === color.name && activeColorwayObject.source === color.source}
-                    onClick={async () => {
-                        if (activeColorwayObject.id === color.name && activeColorwayObject.source === color.source) {
-                            setActiveColorwayObject(nullColorwayObj);
-                        } else {
-                            const newObj: ColorwayObject = {
-                                id: color.name,
-                                sourceType: color.sourceType,
-                                source: color.source,
-                                colors: {} as ColorwayObject["colors"]
-                            };
-                            color.accent ? (newObj.colors.accent = "#" + colorToHex(color.accent)) : void 0;
-                            color.primary ? (newObj.colors.primary = "#" + colorToHex(color.primary)) : void 0;
-                            color.secondary ? (newObj.colors.secondary = "#" + colorToHex(color.secondary)) : void 0;
-                            color.tertiary ? (newObj.colors.tertiary = "#" + colorToHex(color.tertiary)) : void 0;
-                            color.linearGradient ? (newObj.linearGradient = color.linearGradient) : void 0;
-
-                            if (!wsConnected) {
-                                setActiveColorwayObject(newObj);
-
-                                if (usageMetrics.filter(metric => compareColorwayObjects(metric, newObj)).length) {
-                                    setUsageMetrics(m => m.map(metric => {
-                                        if (compareColorwayObjects(metric, newObj)) {
-                                            return { ...metric, uses: metric.uses + 1 };
-                                        }
-                                        return metric;
-                                    }));
-                                } else {
-                                    setUsageMetrics(m => [...m, { ...newObj, uses: 1 }]);
-                                }
+                .map((color: Colorway) => <div key={color.name + color.source}>
+                    <ColorwayItem
+                        id={"colorway-" + color.name}
+                        aria-invalid={invalidColorwayClicked === "colorway-" + color.name}
+                        aria-checked={activeColorwayObject.id === color.name && activeColorwayObject.source === color.source}
+                        onClick={async () => {
+                            if (activeColorwayObject.id === color.name && activeColorwayObject.source === color.source) {
+                                setActiveColorwayObject(nullColorwayObj);
                             } else {
-                                if (!isManager) {
-                                    setInvalidColorwayClicked(`colorway-${color.name}`);
+                                const newObj: ColorwayObject = {
+                                    id: color.name,
+                                    sourceType: color.sourceType,
+                                    source: color.source,
+                                    colors: {} as ColorwayObject["colors"]
+                                };
+                                color.accent ? (newObj.colors.accent = "#" + colorToHex(color.accent)) : void 0;
+                                color.primary ? (newObj.colors.primary = "#" + colorToHex(color.primary)) : void 0;
+                                color.secondary ? (newObj.colors.secondary = "#" + colorToHex(color.secondary)) : void 0;
+                                color.tertiary ? (newObj.colors.tertiary = "#" + colorToHex(color.tertiary)) : void 0;
+                                color.linearGradient ? (newObj.linearGradient = color.linearGradient) : void 0;
+
+                                if (!wsConnected) {
+                                    setActiveColorwayObject(newObj);
+
+                                    if (usageMetrics.filter(metric => compareColorwayObjects(metric, newObj)).length) {
+                                        setUsageMetrics(m => m.map(metric => {
+                                            if (compareColorwayObjects(metric, newObj)) {
+                                                return { ...metric, uses: metric.uses + 1 };
+                                            }
+                                            return metric;
+                                        }));
+                                    } else {
+                                        setUsageMetrics(m => [...m, { ...newObj, uses: 1 }]);
+                                    }
                                 } else {
-                                    Dispatcher.dispatch("COLORWAYS_SEND_COLORWAY", {
-                                        active: newObj
-                                    });
+                                    if (!isManager) {
+                                        setInvalidColorwayClicked(`colorway-${color.name}`);
+                                    } else {
+                                        Dispatcher.dispatch("COLORWAYS_SEND_COLORWAY", {
+                                            active: newObj
+                                        });
+                                    }
                                 }
                             }
-                        }
-                    }}
-                    menu={<>
-                        <div className="dc-contextmenu-colors">
-                            {(color.colors || [
-                                "accent",
-                                "primary",
-                                "secondary",
-                                "tertiary",
-                            ]).map(c => <div className="dc-contextmenu-color" style={{ backgroundColor: "#" + colorToHex(color[c]) }} onClick={() => {
-                                Clipboard.copy("#" + colorToHex(color[c]));
+                        }}
+                        menu={<>
+                            <div className="dc-contextmenu-colors">
+                                {(color.colors || [
+                                    "accent",
+                                    "primary",
+                                    "secondary",
+                                    "tertiary",
+                                ]).map(c => <div key={c} className="dc-contextmenu-color" style={{ backgroundColor: "#" + colorToHex(color[c]) }} onClick={() => {
+                                    Clipboard.copy("#" + colorToHex(color[c]));
+                                    Toasts.show({
+                                        message: "Copied Color Successfully",
+                                        type: "1",
+                                        id: "copy-color-notify",
+                                    });
+                                }} />)}
+                            </div>
+                            <button onClick={() => {
+                                const colorwayIDArray = `${color.accent},${color.primary},${color.secondary},${color.tertiary}|n:${color.name}${color.preset ? `|p:${color.preset}` : ""}`;
+                                const colorwayID = stringToHex(colorwayIDArray);
+                                Clipboard.copy(colorwayID);
                                 Toasts.show({
-                                    message: "Copied Color Successfully",
-                                    type: 1,
-                                    id: "copy-color-notify",
+                                    message: "Copied Colorway ID Successfully",
+                                    type: "1",
+                                    id: "copy-colorway-id-notify",
                                 });
-                            }} />)}
-                        </div>
-                        <button onClick={() => {
-                            const colorwayIDArray = `${color.accent},${color.primary},${color.secondary},${color.tertiary}|n:${color.name}${color.preset ? `|p:${color.preset}` : ""}`;
-                            const colorwayID = stringToHex(colorwayIDArray);
-                            Clipboard.copy(colorwayID);
-                            Toasts.show({
-                                message: "Copied Colorway ID Successfully",
-                                type: 1,
-                                id: "copy-colorway-id-notify",
-                            });
-                        }} className="dc-contextmenu-item">
-                            Copy Colorway ID
-                            <IDIcon width={16} height={16} style={{
-                                marginLeft: "8px"
-                            }} />
-                        </button>
-                        <button onClick={() => {
-                            const newObj: ColorwayObject = {
-                                id: color.name,
-                                sourceType: color.sourceType,
-                                source: color.source,
-                                colors: {}
-                            } as ColorwayObject;
-                            color.accent ? (newObj.colors.accent = "#" + colorToHex(color.accent)) : void 0;
-                            color.primary ? (newObj.colors.primary = "#" + colorToHex(color.primary)) : void 0;
-                            color.secondary ? (newObj.colors.secondary = "#" + colorToHex(color.secondary)) : void 0;
-                            color.tertiary ? (newObj.colors.tertiary = "#" + colorToHex(color.tertiary)) : void 0;
-                            saveFile(new File([generateCss(
-                                newObj.colors,
-                                true,
-                                true,
-                                undefined,
-                                newObj.id as string
-                            )], `${color.name.replaceAll(" ", "-").toLowerCase()}.theme.css`, { type: "text/plain" }));
-                        }} className="dc-contextmenu-item">
-                            Download CSS as Theme
-                            <DownloadIcon width={16} height={16} style={{
-                                marginLeft: "8px"
-                            }} />
-                        </button>
-                        {color.sourceType === "offline" ? <>
-                            <button onClick={async () => {
-                                openModal(props => <SaveColorwayAsModal
-                                    store={color.source}
-                                    colorwayObject={{
-                                        id: color.name,
-                                        source: color.source,
-                                        sourceType: color.sourceType,
-                                        colors: {
-                                            accent: colorToHex(color.accent) || "5865f2",
-                                            primary: colorToHex(color.primary) || "313338",
-                                            secondary: colorToHex(color.secondary) || "2b2d31",
-                                            tertiary: colorToHex(color.tertiary) || "1e1f22"
-                                        }
-                                    }}
-                                    modalProps={props}
-                                />);
                             }} className="dc-contextmenu-item">
-                                Edit Colorway
-                                <PencilIcon width={16} height={16} style={{
+                                Copy Colorway ID
+                                <IDIcon width={16} height={16} style={{
                                     marginLeft: "8px"
                                 }} />
                             </button>
                             <button onClick={() => {
-                                openModal(props => <Modal
-                                    modalProps={props}
-                                    title="Delete Colorway"
-                                    onFinish={async ({ closeModal }) => {
-                                        if (activeColorwayObject.id === color.name) {
-                                            setActiveColorwayObject(nullColorwayObj);
-                                        }
-                                        updateCustomSource({ type: SourceActions.RemoveColorway, colorway: color, source: color.source as string });
-                                        closeModal();
-                                    }}
-                                    confirmMsg="Delete"
-                                    type="danger"
-                                >
-                                    Are you sure you want to delete this colorway? This cannot be undone!
-                                </Modal>);
-                            }} className="dc-contextmenu-item dc-contextmenu-item-danger">
-                                Delete Colorway...
-                                <DeleteIcon width={16} height={16} style={{
-                                    marginLeft: "8px"
-                                }} />
-                            </button>
-                        </> : null}
-                        {color.sourceType === "online" ? <>
-                            <button onClick={async () => {
-                                openModal(props => <SaveColorwayAsModal
-                                    colorwayObject={{
-                                        id: color.name,
-                                        source: color.source,
-                                        sourceType: color.sourceType,
-                                        colors: {
-                                            accent: colorToHex(color.accent) || "5865f2",
-                                            primary: colorToHex(color.primary) || "313338",
-                                            secondary: colorToHex(color.secondary) || "2b2d31",
-                                            tertiary: colorToHex(color.tertiary) || "1e1f22"
-                                        }
-                                    }}
-                                    modalProps={props}
-                                />);
+                                const newObj: ColorwayObject = {
+                                    id: color.name,
+                                    sourceType: color.sourceType,
+                                    source: color.source,
+                                    colors: {}
+                                } as ColorwayObject;
+                                color.accent ? (newObj.colors.accent = "#" + colorToHex(color.accent)) : void 0;
+                                color.primary ? (newObj.colors.primary = "#" + colorToHex(color.primary)) : void 0;
+                                color.secondary ? (newObj.colors.secondary = "#" + colorToHex(color.secondary)) : void 0;
+                                color.tertiary ? (newObj.colors.tertiary = "#" + colorToHex(color.tertiary)) : void 0;
+                                saveFile(new File([generateCss(
+                                    newObj.colors,
+                                    true,
+                                    true,
+                                    undefined,
+                                    newObj.id as string
+                                )], `${color.name.replaceAll(" ", "-").toLowerCase()}.theme.css`, { type: "text/plain" }));
                             }} className="dc-contextmenu-item">
-                                Edit Colorway Locally
-                                <PencilIcon width={16} height={16} style={{
+                                Download CSS as Theme
+                                <DownloadIcon width={16} height={16} style={{
                                     marginLeft: "8px"
                                 }} />
                             </button>
-                        </> : null}
-                    </>}
-                    colors={Object.values({
-                        accent: color.accent,
-                        primary: color.primary,
-                        secondary: color.secondary,
-                        tertiary: color.tertiary
-                    })}
-                    text={color.name}
-                    descriptions={[`by ${color.author}`, `from ${color.source}`]}
-                />)
+                            {color.sourceType === "offline" ? <>
+                                <button onClick={async () => {
+                                    openModal(props => <SaveColorwayAsModal
+                                        store={color.source}
+                                        colorwayObject={{
+                                            id: color.name,
+                                            source: color.source,
+                                            sourceType: color.sourceType,
+                                            colors: {
+                                                accent: colorToHex(color.accent) || "5865f2",
+                                                primary: colorToHex(color.primary) || "313338",
+                                                secondary: colorToHex(color.secondary) || "2b2d31",
+                                                tertiary: colorToHex(color.tertiary) || "1e1f22"
+                                            }
+                                        }}
+                                        modalProps={props}
+                                    />);
+                                }} className="dc-contextmenu-item">
+                                    Edit Colorway
+                                    <PencilIcon width={16} height={16} style={{
+                                        marginLeft: "8px"
+                                    }} />
+                                </button>
+                                <button onClick={() => {
+                                    openModal(props => <Modal
+                                        modalProps={props}
+                                        title="Delete Colorway"
+                                        onFinish={async ({ closeModal }) => {
+                                            if (activeColorwayObject.id === color.name) {
+                                                setActiveColorwayObject(nullColorwayObj);
+                                            }
+                                            updateCustomSource({ type: SourceActions.RemoveColorway, colorway: color, source: color.source as string });
+                                            closeModal();
+                                        }}
+                                        confirmMsg="Delete"
+                                        type="danger"
+                                    >
+                                        Are you sure you want to delete this colorway? This cannot be undone!
+                                    </Modal>);
+                                }} className="dc-contextmenu-item dc-contextmenu-item-danger">
+                                    Delete Colorway...
+                                    <DeleteIcon width={16} height={16} style={{
+                                        marginLeft: "8px"
+                                    }} />
+                                </button>
+                            </> : null}
+                            {color.sourceType === "online" ? <>
+                                <button onClick={async () => {
+                                    openModal(props => <SaveColorwayAsModal
+                                        colorwayObject={{
+                                            id: color.name,
+                                            source: color.source,
+                                            sourceType: color.sourceType,
+                                            colors: {
+                                                accent: colorToHex(color.accent) || "5865f2",
+                                                primary: colorToHex(color.primary) || "313338",
+                                                secondary: colorToHex(color.secondary) || "2b2d31",
+                                                tertiary: colorToHex(color.tertiary) || "1e1f22"
+                                            }
+                                        }}
+                                        modalProps={props}
+                                    />);
+                                }} className="dc-contextmenu-item">
+                                    Edit Colorway Locally
+                                    <PencilIcon width={16} height={16} style={{
+                                        marginLeft: "8px"
+                                    }} />
+                                </button>
+                            </> : null}
+                        </>}
+                        colors={Object.values({
+                            accent: color.accent,
+                            primary: color.primary,
+                            secondary: color.secondary,
+                            tertiary: color.tertiary
+                        })}
+                        text={color.name}
+                        descriptions={[`by ${color.author}`, `from ${color.source}`]}
+                    />
+                </div>)
             }
             {(!filters.flatMap(f => f.sources.map(s => s.colorways)).flat().length) ? <ColorwayItem text="It's quite emty in here." descriptions={["Try searching for something else, or add another source"]} id="colorway-nocolorways" /> : null}
         </div>
@@ -698,7 +710,8 @@ function Presets() {
                             marginLeft: "8px"
                         }} />
                     </button>
-                </>}>
+                </>}
+            >
                 {({ onClick }) => <button
                     onClick={onClick}
                     className="dc-button dc-button-primary"
@@ -723,14 +736,15 @@ function Presets() {
                 xPos="right"
                 menu={<>
                     {filters.filter(f => f.sources.filter(s => (s.presets || []).length).length).map(({ name, id }) => {
-                        return <button onClick={() => setVisibleSources(id)} className="dc-contextmenu-item">
+                        return <button key={id} onClick={() => setVisibleSources(id)} className="dc-contextmenu-item">
                             {name}
                             <Radio checked={visibleSources === id} style={{
                                 marginLeft: "8px"
                             }} />
                         </button>;
                     })}
-                </>}>
+                </>}
+            >
                 {({ onClick }) => <button
                     onClick={onClick}
                     className="dc-button dc-button-primary"
@@ -772,85 +786,87 @@ function Presets() {
                     }
                 })
                 .filter(({ name }) => name.toLowerCase().includes(searchValue.toLowerCase()))
-                .map((preset: Preset) => <ColorwayItem
-                    id={"preset-" + preset.name}
-                    menu={<>
-                        {preset.sourceType === "offline" ? <>
-                            <button onClick={async () => {
-                                openModal(props => <SavePresetAsModal
-                                    store={preset.source as string}
-                                    presetObject={{
-                                        id: preset.name,
-                                        source: preset.source,
-                                        sourceType: preset.sourceType,
-                                        css: preset.css,
-                                        conditions: preset.conditions || []
-                                    }}
-                                    modalProps={props}
-                                />);
-                            }} className="dc-contextmenu-item">
-                                Edit Preset
-                                <PencilIcon width={16} height={16} style={{
-                                    marginLeft: "8px"
-                                }} />
-                            </button>
-                            <button onClick={() => {
-                                openModal(props => <Modal
-                                    modalProps={props}
-                                    title="Delete Preset"
-                                    onFinish={async ({ closeModal }) => {
-                                        if (activePresetObject.id === preset.name) {
-                                            setActivePresetObject({ id: colorwaysDiscordPreset.name, source: colorwaysDiscordPreset.source, sourceType: colorwaysDiscordPreset.sourceType, css: colorwaysDiscordPreset.css, conditions: colorwaysDiscordPreset.conditions || [] });
-                                        }
-                                        updateCustomSource({ type: SourceActions.RemovePreset, preset, source: preset.source as string });
-                                        closeModal();
-                                    }}
-                                    confirmMsg="Delete"
-                                    type="danger"
-                                >
-                                    Are you sure you want to delete this colorway? This cannot be undone!
-                                </Modal>);
-                            }} className="dc-contextmenu-item dc-contextmenu-item-danger">
-                                Delete Preset...
-                                <DeleteIcon width={16} height={16} style={{
-                                    marginLeft: "8px"
-                                }} />
-                            </button>
-                        </> : null}
-                        {preset.sourceType === "online" ? <>
-                            <button onClick={async () => {
-                                openModal(props => <SavePresetAsModal
-                                    presetObject={{
-                                        id: preset.name,
-                                        source: preset.source,
-                                        sourceType: preset.sourceType,
-                                        css: preset.css,
-                                        conditions: preset.conditions || []
-                                    }}
-                                    modalProps={props}
-                                />);
-                            }} className="dc-contextmenu-item">
-                                Edit Preset Locally
-                                <PencilIcon width={16} height={16} style={{
-                                    marginLeft: "8px"
-                                }} />
-                            </button>
-                        </> : null}
-                    </>}
-                    aria-checked={activePresetObject.id === preset.name && activePresetObject.source === preset.source}
-                    descriptions={[`by ${preset.author}`, `from ${preset.source}`]}
-                    text={preset.name}
-                    onClick={async () => {
-                        const newObj: PresetObject = {
-                            id: preset.name,
-                            sourceType: preset.sourceType,
-                            source: preset.source,
-                            conditions: preset.conditions || [],
-                            css: preset.css
-                        };
-                        setActivePresetObject(newObj);
-                    }}
-                />)}
+                .map((preset: Preset) => <div key={preset.name + preset.source}>
+                    <ColorwayItem
+                        id={"preset-" + preset.name}
+                        menu={<>
+                            {preset.sourceType === "offline" ? <>
+                                <button onClick={async () => {
+                                    openModal(props => <SavePresetAsModal
+                                        store={preset.source as string}
+                                        presetObject={{
+                                            id: preset.name,
+                                            source: preset.source,
+                                            sourceType: preset.sourceType,
+                                            css: preset.css,
+                                            conditions: preset.conditions || []
+                                        }}
+                                        modalProps={props}
+                                    />);
+                                }} className="dc-contextmenu-item">
+                                    Edit Preset
+                                    <PencilIcon width={16} height={16} style={{
+                                        marginLeft: "8px"
+                                    }} />
+                                </button>
+                                <button onClick={() => {
+                                    openModal(props => <Modal
+                                        modalProps={props}
+                                        title="Delete Preset"
+                                        onFinish={async ({ closeModal }) => {
+                                            if (activePresetObject.id === preset.name) {
+                                                setActivePresetObject({ id: colorwaysDiscordPreset.name, source: colorwaysDiscordPreset.source, sourceType: colorwaysDiscordPreset.sourceType, css: colorwaysDiscordPreset.css, conditions: colorwaysDiscordPreset.conditions || [] });
+                                            }
+                                            updateCustomSource({ type: SourceActions.RemovePreset, preset, source: preset.source as string });
+                                            closeModal();
+                                        }}
+                                        confirmMsg="Delete"
+                                        type="danger"
+                                    >
+                                        Are you sure you want to delete this colorway? This cannot be undone!
+                                    </Modal>);
+                                }} className="dc-contextmenu-item dc-contextmenu-item-danger">
+                                    Delete Preset...
+                                    <DeleteIcon width={16} height={16} style={{
+                                        marginLeft: "8px"
+                                    }} />
+                                </button>
+                            </> : null}
+                            {preset.sourceType === "online" ? <>
+                                <button onClick={async () => {
+                                    openModal(props => <SavePresetAsModal
+                                        presetObject={{
+                                            id: preset.name,
+                                            source: preset.source,
+                                            sourceType: preset.sourceType,
+                                            css: preset.css,
+                                            conditions: preset.conditions || []
+                                        }}
+                                        modalProps={props}
+                                    />);
+                                }} className="dc-contextmenu-item">
+                                    Edit Preset Locally
+                                    <PencilIcon width={16} height={16} style={{
+                                        marginLeft: "8px"
+                                    }} />
+                                </button>
+                            </> : null}
+                        </>}
+                        aria-checked={activePresetObject.id === preset.name && activePresetObject.source === preset.source}
+                        descriptions={[`by ${preset.author}`, `from ${preset.source}`]}
+                        text={preset.name}
+                        onClick={async () => {
+                            const newObj: PresetObject = {
+                                id: preset.name,
+                                sourceType: preset.sourceType,
+                                source: preset.source,
+                                conditions: preset.conditions || [],
+                                css: preset.css
+                            };
+                            setActivePresetObject(newObj);
+                        }}
+                    />
+                </div>)}
             {(!filters.flatMap(f => f.sources.map(s => s.presets)).flat().length) ? <div
                 className="dc-colorway"
                 role="button"
@@ -913,7 +929,8 @@ function Themes() {
                             marginLeft: "8px"
                         }} />
                     </button>
-                </>}>
+                </>}
+            >
                 {({ onClick }) => <button
                     onClick={onClick}
                     className="dc-button dc-button-primary"
@@ -946,47 +963,49 @@ function Themes() {
                             return a.header.name.localeCompare(b.header.name);
                     }
                 })
-                .map(({ css, header: theme }: { css: string, header: UserThemeHeader; }) => <ColorwayItem
-                    id={"theme-" + theme.name}
-                    prefix={() => <PalleteIcon width={24} height={24} />}
-                    menu={<>
-                        <button onClick={() => {
-                            openModal(props => <Modal
-                                modalProps={props}
-                                title="Delete Theme"
-                                onFinish={async ({ closeModal }) => {
-                                    setEnabledColorwayThemes(dcd => {
-                                        if (dcd[theme.name]) delete dcd[theme.name];
-                                        return dcd;
-                                    });
-                                    setColorwayThemes(ct => {
-                                        return ct.filter(them => them[0] !== theme.fileName);
-                                    });
-                                    closeModal();
-                                }}
-                                confirmMsg="Delete"
-                                type="danger"
-                            >
-                                Are you sure you want to delete this theme? This cannot be undone!
-                            </Modal>);
-                        }} className="dc-contextmenu-item dc-contextmenu-item-danger">
-                            Delete Theme...
-                            <DeleteIcon width={16} height={16} style={{
-                                marginLeft: "8px"
-                            }} />
-                        </button>
-                    </>}
-                    suffix={() => <Switch
-                        value={enabledColorwayThemes[theme.name] || false}
-                        onChange={e => {
-                            setEnabledColorwayThemes(dcd => {
-                                dcd[theme.name] = e;
-                                return dcd;
-                            });
-                        }} />}
-                    descriptions={[`by ${theme.author}`, theme.description]}
-                    text={theme.name}
-                />)}
+                .map(({ css, header: theme }: { css: string, header: UserThemeHeader; }) => <div key={theme.name}>
+                    <ColorwayItem
+                        id={"theme-" + theme.name}
+                        prefix={() => <PalleteIcon width={24} height={24} />}
+                        menu={<>
+                            <button onClick={() => {
+                                openModal(props => <Modal
+                                    modalProps={props}
+                                    title="Delete Theme"
+                                    onFinish={async ({ closeModal }) => {
+                                        setEnabledColorwayThemes(dcd => {
+                                            if (dcd[theme.name]) delete dcd[theme.name];
+                                            return dcd;
+                                        });
+                                        setColorwayThemes(ct => {
+                                            return ct.filter(them => them[0] !== theme.fileName);
+                                        });
+                                        closeModal();
+                                    }}
+                                    confirmMsg="Delete"
+                                    type="danger"
+                                >
+                                    Are you sure you want to delete this theme? This cannot be undone!
+                                </Modal>);
+                            }} className="dc-contextmenu-item dc-contextmenu-item-danger">
+                                Delete Theme...
+                                <DeleteIcon width={16} height={16} style={{
+                                    marginLeft: "8px"
+                                }} />
+                            </button>
+                        </>}
+                        suffix={() => <Switch
+                            value={enabledColorwayThemes[theme.name] || false}
+                            onChange={e => {
+                                setEnabledColorwayThemes(dcd => {
+                                    dcd[theme.name] = e;
+                                    return dcd;
+                                });
+                            }} />}
+                        descriptions={[`by ${theme.author}`, theme.description]}
+                        text={theme.name}
+                    />
+                </div>)}
             {(!colorwayThemes.length) ? <ColorwayItem
                 id="theme-nothemes"
                 text="It's quite emty in here."

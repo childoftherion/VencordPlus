@@ -86,8 +86,7 @@
     flex-direction: column;
     padding-top: 6px;
     gap: 5px;
-    align-items: center;
-    justify-items: center;
+    place-items: center;
     margin-right: 15px;
 }
 

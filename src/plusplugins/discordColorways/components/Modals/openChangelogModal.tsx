@@ -58,11 +58,11 @@ function ChangelogModal({
 
     return <Modal divider={false} title={<div style={{ display: "flex", flexDirection: "column" }}>{title}<span className="dc-modal-header-subtitle">Version {discordColorwaysData.version}</span></div>} type="normal" modalProps={modalProps} onFinish={({ closeModal }) => closeModal()} footer={<Footer />}>
         {video ? <Video src={video} poster={poster} /> : <img src={image} width={500} className="bd-changelog-poster" />}
-        {description.split("\n").map(d => <p className="dc-changelog-desc">{d}</p>)}
-        {changes.map(change => <>
-            <h2 className={`dc-changelog-title dc-changelog-title-${change.type}`}><span>{change.title} </span></h2>
+        {description.split("\n").map((d, index) => <p key={index} className="dc-changelog-desc">{d}</p>)}
+        {changes.map((change, index) => <>
+            <h2 key={`title-${index}`} className={`dc-changelog-title dc-changelog-title-${change.type}`}><span>{change.title} </span></h2>
             <ul className="dc-changes-list">
-                {change.items.map(item => <li className="dc-change">{item}</li>)}
+                {change.items.map((item, itemIndex) => <li key={itemIndex} className="dc-change">{item}</li>)}
             </ul>
         </>)}
     </Modal>;

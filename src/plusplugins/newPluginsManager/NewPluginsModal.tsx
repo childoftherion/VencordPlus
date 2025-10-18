@@ -159,7 +159,7 @@ function ContinueButton(props: { callback: (update: () => void) => void; changes
             The following plugins require a restart:
             <div className={Margins.bottom8} />
             <ul className="vc-newPluginsManager-restart-list">
-                {props.changes.map(p => <li>{p}</li>)}
+                {props.changes.map((p, index) => <li key={index}>{p}</li>)}
             </ul>
         </>}
         shouldShow={props.changes.hasChanges}
@@ -184,7 +184,7 @@ function makeDependencyList(deps: string[]) {
     return (
         <React.Fragment>
             <Forms.FormText>This plugin is required by:</Forms.FormText>
-            {deps.map((dep: string) => <Forms.FormText className={cl("dep-text")}>{dep}</Forms.FormText>)}
+            {deps.map((dep: string, index: number) => <Forms.FormText key={index} className={cl("dep-text")}>{dep}</Forms.FormText>)}
         </React.Fragment>
     );
 }

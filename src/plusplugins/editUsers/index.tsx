@@ -84,7 +84,7 @@ function editUserPane(user: ClientUser, props: ModalProps) {
                     DataStore.set("editUsers", changes);
                 };
                 return (
-                    <div className="edit-user-field">
+                    <div key={field.label} className="edit-user-field">
                         <Text variant="eyebrow" tag="h3">{field.label}</Text>
                         <TextInput defaultValue={field.value} onChange={onChange} />
                     </div>

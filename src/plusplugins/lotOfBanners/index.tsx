@@ -47,7 +47,7 @@ export default definePlugin({
             predicate: () => settings.store.voiceBanner,
             replacement: [
                 {
-                    match: /(function\((.{1,2})\,.{1,2}\){)/,
+                    match: /(function\((.{1,2}),.{1,2}\){)/,
                     replace: "$1$2.style=$self.voiceBackgroundHook($2);"
                 }
             ]

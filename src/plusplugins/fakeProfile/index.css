@@ -20,7 +20,6 @@
     left: 0;
     border-radius: var(--radius-sm);
     opacity: 0.8;
-    -webkit-mask-image: linear-gradient(to right, transparent 20%, #fff);
     mask-image: linear-gradient(to right, transparent 20%, #fff);
     object-fit: cover;
     width: 100%;

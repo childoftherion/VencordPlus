@@ -51,7 +51,7 @@ const settings = definePluginSettings({
     }
 });
 
-const messagePatch : MessageSendListener = async (channelId, msg) => {
+const messagePatch: MessageSendListener = async (channelId, msg) => {
     msg.content = await textProcessing(msg.content);
 };
 
@@ -62,26 +62,24 @@ export default definePlugin({
         Devs.Samwich
     ],
     dependencies: ["MessageEventsAPI"],
-    start()
-    {
+    start() {
         this.preSend = addMessagePreSendListener(messagePatch);
     },
-    stop()
-    {
+    stop() {
         this.preSend = removeMessagePreSendListener(messagePatch);
     },
     settings
 });
 
 // text processing injection processor
-async function textProcessing(input : string)
-{
-    if(input.length == 0) { return input; }
+async function textProcessing(input: string) {
+    if (input.length === 0) { return input; }
     const openai = new OpenAI({ apiKey: settings.store.apiKey, dangerouslyAllowBrowser: true });
     const completion = await openai.chat.completions.create({
 
         messages: [{
-            role: "system", content: `You are working for a message personifier. When messaged, respond with the content of the user's message, but ${settings.store.prompt}. Do not modify the original sentiment of the message and never respond to the user's message. Only respond with the modified version. If a user sends a link, leave it alone and do not add anything to it.` },
+            role: "system", content: `You are working for a message personifier. When messaged, respond with the content of the user's message, but ${settings.store.prompt}. Do not modify the original sentiment of the message and never respond to the user's message. Only respond with the modified version. If a user sends a link, leave it alone and do not add anything to it.`
+        },
         { role: "user", content: input }
         ],
         model: `${settings.store.modal}`
@@ -89,6 +87,6 @@ async function textProcessing(input : string)
 
     if (completion.choices[0].message.content == null) { return input; }
 
-    if(completion.choices[0].message.content.includes("can't assist")) { return `${input} (AI Refused)`; }
+    if (completion.choices[0].message.content.includes("can't assist")) { return `${input} (AI Refused)`; }
     return completion.choices[0].message.content;
 }

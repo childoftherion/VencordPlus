@@ -1,14 +1,22 @@
 .c98-history-modal-head {
     display: grid;
     grid-template:
-         "t x" auto
-         "r r" 1fr
-         / 1fr auto;
+        "t x" auto
+        "r r" 1fr
+        / 1fr auto;
 }
 
-.c98-history-modal-head:nth-child(1) { grid-area: "t"; }
-.c98-history-modal-head:nth-child(2) { grid-area: "x"; }
-.c98-history-modal-head:nth-child(3) { grid-area: "r"; }
+.c98-history-modal-head:nth-child(1) {
+    grid-area: t;
+}
+
+.c98-history-modal-head:nth-child(2) {
+    grid-area: x;
+}
+
+.c98-history-modal-head:nth-child(3) {
+    grid-area: r;
+}
 
 .c98-history-contents {
     padding-top: 1em;
@@ -28,8 +36,7 @@
 
 .c98-history-revisions {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
     gap: 0.5em;
 }
 

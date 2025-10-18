@@ -102,6 +102,7 @@ export default function ({
         <span style={{ marginTop: "8px" }} className="dc-field-header">Conditions</span>
         <div className="dc-selector" style={{ gridTemplateColumns: "100%" }}>
             {conditions.map(({ if: colorValue, is, than, onCondition, onConditionElse }, i) => <div
+                key={i}
                 className="dc-colorway"
                 onClick={() => {
                     openModal(props => <PresetConditionModal modalProps={props} onCondition={onCondition} onConditionElse={onConditionElse} is={is} colorValue={colorValue} than={Number(than)} onConditionFinish={newCondition => {
@@ -149,6 +150,7 @@ export default function ({
             </span> : <></>}</span>}
             <div className="dc-selector">
                 {offlineColorwayStores.map(store => <div
+                    key={store.name}
                     className="dc-colorway"
                     aria-checked={storename === store.name}
                     onClick={() => {

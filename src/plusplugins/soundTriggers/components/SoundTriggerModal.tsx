@@ -75,7 +75,7 @@ export function SoundTriggerModal(props: SoundTriggerModalProps) {
                     {trigger.patterns.length > 0
                         ? (<Card className={classFactory("modal-body-text-card")}>
                             {trigger.patterns.map((t, i) => (
-                                <Flex flexDirection="row" className={classFactory("modal-body-text-entry")}>
+                                <Flex key={i} flexDirection="row" className={classFactory("modal-body-text-entry")}>
                                     <Text style={{ overflowWrap: "anywhere" }}>{t}</Text>
                                     <Button
                                         color={Button.Colors.RED}

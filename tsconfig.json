@@ -30,11 +30,10 @@
             "@webpack/common": ["./webpack/common"],
             "@webpack": ["./webpack/webpack"],
             "@webpack/patcher": ["./webpack/patchWebpack"],
-            "@webpack/wreq.d": ["./webpack/wreq.d"],
+            "@webpack/wreq.d": ["./webpack/wreq.d"]
         },
 
         "plugins": [
-            // Transform paths in output .d.ts files (Include this line if you output declarations files)
             {
                 "transform": "typescript-transform-paths",
                 "afterDeclarations": true
@@ -42,5 +41,5 @@
         ],
         "outDir": "who-fucking-cares-dude"
     },
-    "include": ["src/**/*", "browser/**/*", "scripts/**/*", "eslint.config.mjs"],
+    "include": ["src/**/*", "browser/**/*", "scripts/**/*", "eslint.config.mjs"]
 }

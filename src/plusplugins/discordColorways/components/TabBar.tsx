@@ -19,7 +19,7 @@ export default function ({
         {container({
             children: <div className="dc-menu-tabs">
                 {items.map(item => {
-                    return <div className={`dc-menu-tab ${active === item.name ? "active" : ""}`} onClick={() => onChange(item.name)}>{item.name}</div>;
+                    return <div key={item.name} className={`dc-menu-tab ${active === item.name ? "active" : ""}`} onClick={() => onChange(item.name)}>{item.name}</div>;
                 })}
             </div>
         })}

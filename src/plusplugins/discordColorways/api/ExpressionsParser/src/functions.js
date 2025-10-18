@@ -70,11 +70,11 @@ export function inOperator(a, b) {
 }
 
 export function sinh(a) {
-    return ((Math.exp(a) - Math.exp(-a)) / 2);
+    return (Math.exp(a) - Math.exp(-a)) / 2;
 }
 
 export function cosh(a) {
-    return ((Math.exp(a) + Math.exp(-a)) / 2);
+    return (Math.exp(a) + Math.exp(-a)) / 2;
 }
 
 export function tanh(a) {
@@ -85,15 +85,15 @@ export function tanh(a) {
 
 export function asinh(a) {
     if (a === -Infinity) return a;
-    return Math.log(a + Math.sqrt((a * a) + 1));
+    return Math.log(a + Math.sqrt(a * a + 1));
 }
 
 export function acosh(a) {
-    return Math.log(a + Math.sqrt((a * a) - 1));
+    return Math.log(a + Math.sqrt(a * a - 1));
 }
 
 export function atanh(a) {
-    return (Math.log((1 + a) / (1 - a)) / 2);
+    return Math.log((1 + a) / (1 - a)) / 2;
 }
 
 export function log10(a) {
@@ -116,25 +116,32 @@ export function random(a) {
     return Math.random() * (a || 1);
 }
 
-export function factorial(a) { // a!
+export function factorial(a) {
+    // a!
     return gamma(a + 1);
 }
 
 function isInteger(value) {
-    return isFinite(value) && (value === Math.round(value));
+    return isFinite(value) && value === Math.round(value);
 }
 
 var GAMMA_G = 4.7421875;
 var GAMMA_P = [
-    0.99999999999999709182,
-    57.156235665862923517, -59.597960355475491248,
-    14.136097974741747174, -0.49191381609762019978,
-    0.33994649984811888699e-4,
-    0.46523628927048575665e-4, -0.98374475304879564677e-4,
-    0.15808870322491248884e-3, -0.21026444172410488319e-3,
-    0.21743961811521264320e-3, -0.16431810653676389022e-3,
-    0.84418223983852743293e-4, -0.26190838401581408670e-4,
-    0.36899182659531622704e-5
+    "0.99999999999999709182",
+    "57.156235665862923517",
+    "-59.597960355475491248",
+    "14.136097974741747174",
+    "-0.49191381609762019978",
+    "0.33994649984811888699e-4",
+    "0.46523628927048575665e-4",
+    "-0.98374475304879564677e-4",
+    "0.15808870322491248884e-3",
+    "-0.21026444172410488319e-3",
+    "0.21743961811521264320e-3",
+    "-0.16431810653676389022e-3",
+    "0.84418223983852743293e-4",
+    "-0.26190838401581408670e-4",
+    "0.36899182659531622704e-5",
 ];
 
 // Gamma function from math.js
@@ -172,15 +179,23 @@ export function gamma(n) {
         return Infinity; // will overflow
     }
 
-    if (n > 85.0) { // Extended Stirling Approx
+    if (n > 85.0) {
+        // Extended Stirling Approx
         var twoN = n * n;
         var threeN = twoN * n;
         var fourN = threeN * n;
         var fiveN = fourN * n;
-        return Math.sqrt(2 * Math.PI / n) * Math.pow((n / Math.E), n) *
-            (1 + (1 / (12 * n)) + (1 / (288 * twoN)) - (139 / (51840 * threeN)) -
-                (571 / (2488320 * fourN)) + (163879 / (209018880 * fiveN)) +
-                (5246819 / (75246796800 * fiveN * n)));
+        return (
+            Math.sqrt((2 * Math.PI) / n) *
+            Math.pow(n / Math.E, n) *
+            (1 +
+                1 / (12 * n) +
+                1 / (288 * twoN) -
+                139 / (51840 * threeN) -
+                571 / (2488320 * fourN) +
+                163879 / (209018880 * fiveN) +
+                5246819 / (75246796800 * fiveN * n))
+        );
     }
 
     --n;
@@ -208,7 +223,7 @@ export function hypot() {
         var div;
         if (larg < arg) {
             div = larg / arg;
-            sum = (sum * div * div) + 1;
+            sum = sum * div * div + 1;
             larg = arg;
         } else if (arg > 0) {
             div = arg / larg;
@@ -225,30 +240,30 @@ export function condition(cond, yep, nope) {
 }
 
 /**
-* Decimal adjustment of a number.
-* From @escopecz.
-*
-* @param {Number} value The number.
-* @param {Integer} exp  The exponent (the 10 logarithm of the adjustment base).
-* @return {Number} The adjusted value.
-*/
+ * Decimal adjustment of a number.
+ * From @escopecz.
+ *
+ * @param {Number} value The number.
+ * @param {Integer} exp  The exponent (the 10 logarithm of the adjustment base).
+ * @return {Number} The adjusted value.
+ */
 export function roundTo(value, exp) {
     // If the exp is undefined or zero...
     if (typeof exp === "undefined" || +exp === 0) {
         return Math.round(value);
     }
     value = +value;
-    exp = -(+exp);
+    exp = -+exp;
     // If the value is not a number or the exp is not an integer...
     if (isNaN(value) || !(typeof exp === "number" && exp % 1 === 0)) {
         return NaN;
     }
     // Shift
     value = value.toString().split("e");
-    value = Math.round(+(value[0] + "e" + (value[1] ? (+value[1] - exp) : -exp)));
+    value = Math.round(+(value[0] + "e" + (value[1] ? +value[1] - exp : -exp)));
     // Shift back
     value = value.toString().split("e");
-    return +(value[0] + "e" + (value[1] ? (+value[1] + exp) : exp));
+    return +(value[0] + "e" + (value[1] ? +value[1] + exp : exp));
 }
 
 export function setVar(name, value, variables) {
@@ -262,17 +277,17 @@ export function arrayIndex(array, index) {
 
 export function max(array) {
     if (arguments.length === 1 && Array.isArray(array)) {
-        return Math.max.apply(Math, array);
+        return Math.max(...array);
     } else {
-        return Math.max.apply(Math, arguments);
+        return Math.max(...arguments);
     }
 }
 
 export function min(array) {
     if (arguments.length === 1 && Array.isArray(array)) {
-        return Math.min.apply(Math, array);
+        return Math.min(...array);
     } else {
-        return Math.min.apply(Math, arguments);
+        return Math.min(...arguments);
     }
 }
 
@@ -329,7 +344,7 @@ export function arrayJoin(sep, a) {
 }
 
 export function sign(x) {
-    return ((x > 0) - (x < 0)) || +x;
+    return (x > 0) - (x < 0) || +x;
 }
 
 var ONE_THIRD = 1 / 3;

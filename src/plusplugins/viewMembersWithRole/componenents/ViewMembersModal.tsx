@@ -6,8 +6,7 @@
 
 import { InfoIcon } from "@components/Icons";
 import { ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
-import type { Role } from "@vencord/discord-types";
-import { UnicodeEmoji } from "@vencord/discord-types";
+import type { Role, UnicodeEmoji } from "@vencord/discord-types";
 import { findByCodeLazy, findExportedComponentLazy } from "@webpack";
 import { Constants, GuildChannelStore, GuildMemberStore, GuildRoleStore, Parser, RestAPI, ScrollerThin, Text, Tooltip, useEffect, UserStore, useState } from "@webpack/common";
 

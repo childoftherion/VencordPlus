@@ -26,6 +26,7 @@ export default function Feed(props?: any) {
     return <div className={cl("feed")}>
         {feedProvider().map((m: FeedEntry) =>
             <ActivityFeedCard
+                key={m.message.id}
                 label={m.label}
             >
                 <div className={cl("card-spacer")}>

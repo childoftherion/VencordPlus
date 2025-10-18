@@ -114,7 +114,7 @@ export default definePlugin({
             );
 
         children.toolbar = [
-            <ErrorBoundary noop={true}>
+            <ErrorBoundary key="notes-button" noop={true}>
                 <OpenNotesDataButton />
             </ErrorBoundary>,
             children.toolbar,

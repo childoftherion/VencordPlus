@@ -35,7 +35,7 @@
 .vc-github-repo-card {
     padding: 8px;
     border-radius: var(--radius-xs);
-    border: 1px solid var(--profile-body-divider-color, var(---border-subtle));
+    border: 1px solid var(--profile-body-divider-color, var(--border-subtle));
 }
 
 .vc-github-repo-header {
