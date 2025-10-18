@@ -53,6 +53,10 @@ jobs:
 
             - name: Upload DevBuild as release
               run: |
+                  # Create release if it doesn't exist
+                  if ! gh release view devbuild >/dev/null 2>&1; then
+                      gh release create devbuild --title "DevBuild" --notes "Development builds"
+                  fi
                   gh release upload devbuild --clobber dist/*
                   gh release edit devbuild --title "DevBuild $RELEASE_TAG"
               env:
