@@ -28,15 +28,42 @@ import { filters, mapMangledModuleLazy, waitFor } from "@webpack";
 
 import { waitForComponent } from "./internal";
 
+// Create a compatibility wrapper for FormText
+const FormTextCompat = function FormTextCompat({ children, type, ...props }: any) {
+    const { React } = Vencord.Webpack.Common;
+    // Map old type prop to new size prop
+    const sizeMap: Record<string, string> = {
+        "description": "sm",
+        "label": "xs",
+        "body": "md",
+        "heading": "lg"
+    };
+    const size = sizeMap[type] || "sm";
+    return React.createElement(Paragraph, { size, ...props }, children);
+};
+
+// Add Types property for backward compatibility
+FormTextCompat.Types = {
+    DESCRIPTION: "description",
+    LABEL: "label",
+    BODY: "body",
+    HEADING: "heading"
+};
+
 export const Forms = {
     // TODO: Stop using this and use Heading/Paragraph directly
     FormTitle: Heading,
-    FormText: Paragraph,
-    /** @deprecated don't use this */
-    FormSection: "section" as never, // Backwards compat since Vesktop uses this
-    /** @deprecated use `@components/Divider` */
-    FormDivider: Divider as never, // Backwards compat since Vesktop uses this
-};
+    FormText: FormTextCompat,
+    /** @deprecated don't use this - use @components/Divider */
+    FormDivider: Divider,
+    /** @deprecated don't use this - use <section> directly */
+    FormSection: LazyComponent(() => {
+        return function FormSection({ children, className, ...props }: any) {
+            const { React } = Vencord.Webpack.Common;
+            return React.createElement("section", { className, ...props }, children);
+        };
+    }),
+} as const;
 
 // TODO: Stop using this and use Paragraph/Span directly
 export const Text = TextCompat;
