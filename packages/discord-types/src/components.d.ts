@@ -7,7 +7,7 @@ export type HeadingTag = `h${1 | 2 | 3 | 4 | 5 | 6}`;
 export type Margins = Record<"marginTop16" | "marginTop8" | "marginBottom8" | "marginTop20" | "marginBottom20", string>;
 
 // copy(find(m => Array.isArray(m) && m.includes("heading-sm/normal")).map(JSON.stringify).join("|"))
-export type TextVariant = "heading-sm/normal" | "heading-sm/medium" | "heading-sm/semibold" | "heading-sm/bold" | "heading-sm/extrabold" | "heading-md/normal" | "heading-md/medium" | "heading-md/semibold" | "heading-md/bold" | "heading-md/extrabold" | "heading-lg/normal" | "heading-lg/medium" | "heading-lg/semibold" | "heading-lg/bold" | "heading-lg/extrabold" | "heading-xl/normal" | "heading-xl/medium" | "heading-xl/semibold" | "heading-xl/bold" | "heading-xl/extrabold" | "heading-xxl/normal" | "heading-xxl/medium" | "heading-xxl/semibold" | "heading-xxl/bold" | "heading-xxl/extrabold" | "text-xxs/normal" | "text-xxs/medium" | "text-xxs/semibold" | "text-xxs/bold" | "text-xs/normal" | "text-xs/medium" | "text-xs/semibold" | "text-xs/bold" | "text-sm/normal" | "text-sm/medium" | "text-sm/semibold" | "text-sm/bold" | "text-md/normal" | "text-md/medium" | "text-md/semibold" | "text-md/bold" | "text-lg/normal" | "text-lg/medium" | "text-lg/semibold" | "text-lg/bold";
+export type TextVariant = "heading-sm/normal" | "heading-sm/medium" | "heading-sm/semibold" | "heading-sm/bold" | "heading-sm/extrabold" | "heading-md/normal" | "heading-md/medium" | "heading-md/semibold" | "heading-md/bold" | "heading-md/extrabold" | "heading-lg/normal" | "heading-lg/medium" | "heading-lg/semibold" | "heading-lg/bold" | "heading-lg/extrabold" | "heading-xl/normal" | "heading-xl/medium" | "heading-xl/semibold" | "heading-xl/bold" | "heading-xl/extrabold" | "heading-xxl/normal" | "heading-xxl/medium" | "heading-xxl/semibold" | "heading-xxl/bold" | "heading-xxl/extrabold" | "text-xxs/normal" | "text-xxs/medium" | "text-xxs/semibold" | "text-xxs/bold" | "text-xs/normal" | "text-xs/medium" | "text-xs/semibold" | "text-xs/bold" | "text-sm/normal" | "text-sm/medium" | "text-sm/semibold" | "text-sm/bold" | "text-md/normal" | "text-md/medium" | "text-md/semibold" | "text-md/bold" | "text-lg/normal" | "text-lg/medium" | "text-lg/semibold" | "text-lg/bold" | "eyebrow";
 
 export type TextProps = PropsWithChildren<HtmlHTMLAttributes<HTMLDivElement> & {
     variant?: TextVariant;
@@ -25,12 +25,15 @@ export interface ButtonProps extends PropsWithChildren<Omit<HTMLProps<HTMLButton
     size?: string;
 
     className?: string;
+    innerClassName?: string;
+    submitting?: boolean;
+    buttonRef?: RefObject<HTMLButtonElement | null>;
 }
 
 export type Button = ComponentType<ButtonProps> & {
-    Colors: Record<"BRAND" | "RED" | "GREEN" | "PRIMARY" | "LINK" | "WHITE" | "TRANSPARENT" | "CUSTOM", string>;
-    Looks: Record<"FILLED" | "LINK", string>;
-    Sizes: Record<"NONE" | "SMALL" | "MEDIUM" | "LARGE" | "XLARGE" | "MIN", string>;
+    Colors: Record<"BRAND" | "BRAND_NEW" | "RED" | "GREEN" | "PRIMARY" | "LINK" | "WHITE" | "TRANSPARENT" | "CUSTOM" | "YELLOW", string>;
+    Looks: Record<"FILLED" | "LINK" | "BLANK" | "OUTLINED", string>;
+    Sizes: Record<"NONE" | "SMALL" | "MEDIUM" | "LARGE" | "XLARGE" | "MIN" | "ICON", string>;
 };
 
 // #endregion

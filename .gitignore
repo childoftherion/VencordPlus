@@ -4,7 +4,7 @@ node_modules
 *.exe
 vencord_installer
 
-.idea
+#.idea
 .modules
 .DS_Store
 

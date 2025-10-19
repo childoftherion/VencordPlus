@@ -8,7 +8,6 @@
  * this file is needed to avoid an import of plugins in ./runReporter.ts
  */
 import { Patch } from "@utils/types";
-import { TypeWebpackSearchHistory } from "@webpack";
 
 interface EvaledPatch extends Patch {
     id: PropertyKey;
@@ -24,7 +23,7 @@ export interface ReporterData {
         undoingPatchGroup: EvaledPatch[];
         erroredPatch: ErroredPatch[];
     };
-    failedWebpack: Record<TypeWebpackSearchHistory, string[][]>;
+    failedWebpack: Record<string, string[][]>;
 }
 export const reporterData: ReporterData = {
     failedPatches: {

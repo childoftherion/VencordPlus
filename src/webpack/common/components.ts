@@ -28,18 +28,25 @@ import { waitForComponent } from "./internal";
 const FormTitle = waitForComponent<t.FormTitle>("FormTitle", filters.componentByCode('["defaultMargin".concat', '="h5"'));
 const FormDivider = waitForComponent<t.FormDivider>("FormDivider", filters.componentByCode(".divider,", ",style:", '"div"', /\.divider,\i\),style:/));
 
+// Create a proper FormSection component
+const FormSection = LazyComponent(() => {
+    return function FormSection({ children, className, ...props }: any) {
+        const { React } = Vencord.Webpack.Common;
+        return React.createElement("section", { className, ...props }, children);
+    };
+});
+
 export const Forms = {
     FormTitle,
     FormText,
-    /** @deprecated don't use this */
-    FormSection: "section" as never, // Backwards compat since Vesktop uses this
+    FormSection,
     FormDivider
 };
 
 export const Card = waitForComponent<t.Card>("Card", filters.componentByCode(".editable),", ".outline:"));
 export const Button = waitForComponent<t.Button>("Button", filters.componentByCode("#{intl::A11Y_LOADING_STARTED}))),!1"));
 /** @deprecated Use FormSwitch from Vencord */
-export const Switch = FormSwitchCompat as never;
+export const Switch = FormSwitchCompat;
 export const Checkbox = waitForComponent<t.Checkbox>("Checkbox", filters.componentByCode(".checkboxWrapperDisabled:"));
 
 const Tooltips = mapMangledModuleLazy(".tooltipTop,bottom:", {

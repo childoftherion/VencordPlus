@@ -57,12 +57,15 @@ export const ButtonCompat: DiscordButton = function ButtonCompat({ look, color =
 /** @deprecated */
 ButtonCompat.Looks = {
     FILLED: "",
-    LINK: "LINK"
+    LINK: "LINK",
+    BLANK: "BLANK",
+    OUTLINED: "OUTLINED"
 } as const;
 
 /** @deprecated */
 ButtonCompat.Colors = {
     BRAND: "BRAND",
+    BRAND_NEW: "BRAND_NEW",
     PRIMARY: "PRIMARY",
     RED: "RED",
     TRANSPARENT: "TRANSPARENT",
@@ -70,28 +73,33 @@ ButtonCompat.Colors = {
     GREEN: "GREEN",
     LINK: "LINK",
     WHITE: "WHITE",
+    YELLOW: "YELLOW",
 } as const;
 
 const ButtonColorMapping: Record<keyof typeof ButtonCompat["Colors"], ButtonProps["variant"]> = {
     BRAND: "primary",
+    BRAND_NEW: "primary",
     PRIMARY: "secondary",
     RED: "dangerPrimary",
     TRANSPARENT: "secondary",
     CUSTOM: "none",
     GREEN: "positive",
     LINK: "link",
-    WHITE: "overlayPrimary"
+    WHITE: "overlayPrimary",
+    YELLOW: "positive"
 };
 
 const TextButtonPropsColorMapping: Record<keyof typeof ButtonCompat["Colors"], TextButtonProps["variant"]> = {
     BRAND: "primary",
+    BRAND_NEW: "primary",
     PRIMARY: "primary",
     RED: "danger",
     TRANSPARENT: "secondary",
     CUSTOM: "secondary",
     GREEN: "primary",
     LINK: "link",
-    WHITE: "secondary"
+    WHITE: "secondary",
+    YELLOW: "primary"
 };
 
 /** @deprecated */
@@ -101,7 +109,8 @@ ButtonCompat.Sizes = {
     LARGE: "medium",
     XLARGE: "medium",
     NONE: "min",
-    MIN: "min"
+    MIN: "min",
+    ICON: "min"
 } as const;
 
 // #endregion

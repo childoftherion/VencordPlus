@@ -19,6 +19,8 @@ import { Recieve } from "./types";
 import { FullOutgoingMessage, OutgoingMessage } from "./types/send";
 import { extractModule, extractOrThrow, findModuleId, getModulePatchedBy, mkRegexFind, parseNode, toggleEnabled, } from "./util";
 
+const IS_COMPANION_TEST = false;
+
 export function stopWs() {
     socket?.close(1000, "Plugin Stopped");
     socket = void 0;

@@ -156,13 +156,13 @@ export default definePlugin({
         {
             name: "vencord-debug",
             description: "Send Vencord+ debug info",
-            predicate: ctx => UserStore.getCurrentUser()?.id || isSupportAllowedChannel(ctx.channel),
+            predicate: ctx => Boolean(UserStore.getCurrentUser()?.id) || isSupportAllowedChannel(ctx.channel),
             execute: async () => ({ content: await generateDebugInfoMessage() })
         },
         {
             name: "vencord-plugins",
             description: "Send Vencord+ plugin list",
-            predicate: ctx => UserStore.getCurrentUser()?.id || isSupportAllowedChannel(ctx.channel),
+            predicate: ctx => Boolean(UserStore.getCurrentUser()?.id) || isSupportAllowedChannel(ctx.channel),
             execute: () => ({ content: generatePluginList() })
         }
     ],

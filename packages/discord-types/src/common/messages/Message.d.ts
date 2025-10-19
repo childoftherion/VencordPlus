@@ -128,6 +128,20 @@ export class Message extends DiscordRecord {
 
     /** Vencord added */
     deleted?: boolean;
+    poll?: {
+        question: {
+            text: string;
+        };
+        answers: Array<{
+            answer_id: string;
+            poll_media: {
+                text: string;
+            };
+        }>;
+        expiry: string;
+        allow_multiselect: boolean;
+        layout_type: number;
+    };
 }
 
 /** A smaller Message object found in FluxDispatcher and elsewhere. */

@@ -23,3 +23,9 @@ export * from "./react";
 export * from "./stores";
 export * from "./userSettings";
 export * from "./utils";
+
+// Re-export commonly used types
+export type { User } from "@vencord/discord-types";
+
+// Re-export commonly used functions
+export { showToast } from "./utils";

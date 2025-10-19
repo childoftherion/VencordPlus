@@ -174,7 +174,7 @@ export default definePlugin({
     ],
 
     ViewPermissionsButton: ErrorBoundary.wrap(({ guild, guildMember }: { guild: Guild; guildMember: GuildMember; }) => {
-        const buttonRef = useRef(null);
+        const buttonRef = useRef<HTMLButtonElement>(null);
 
         return (
             <Popout
