@@ -8,6 +8,9 @@ import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 
+import { PluginButtons } from "./pluginButtons";
+import { PluginCards } from "./pluginCards";
+
 const settings = definePluginSettings({
     disableCreateDMButton: {
         type: OptionType.BOOLEAN,
@@ -30,14 +33,19 @@ const settings = definePluginSettings({
         type: OptionType.BOOLEAN,
         description: "Removes the activity section above member list",
         default: false,
+    },
+    enablePluginManagement: {
+        type: OptionType.BOOLEAN,
+        description: "Enables enhanced plugin management features in chat",
+        default: true,
     }
 });
 
 export default definePlugin({
     name: "VencordPlusHelper",
-    description: "Used to provide support, fix discord caused crashes, and other misc features.",
-    authors: [Devs.Ven],
-    required: false,
+    description: "Enhanced plugin management system and utility features for VencordPlus.",
+    authors: [Devs.thororen],
+    required: true,
     settings,
     patches: [
         // Fixes Unknown Resolution/FPS Crashing
@@ -65,9 +73,8 @@ export default definePlugin({
         },
         // Remove DM Context Menu
         {
-            find: "#{intl::d+e27u::raw}",
+            find: "#{intl::DM_OPTIONS}",
             predicate: () => settings.store.disableDMContextMenu,
-
             replacement: {
                 match: /\{dotsInsteadOfCloseButton:(\i),rearrangeContextMenu:(\i).*?autoTrackExposure:!0\}\)/,
                 replace: "$1=false,$2=false"
@@ -110,5 +117,14 @@ export default definePlugin({
             },
         }
     ],
-});
+    renderMessageAccessory(props) {
+        if (!settings.store.enablePluginManagement) return null;
 
+        return (
+            <>
+                <PluginButtons message={props.message} />
+                <PluginCards message={props.message} />
+            </>
+        );
+    }
+});
