@@ -270,12 +270,14 @@ export default definePlugin({
                 buttons.push(
                     <Button
                         key="vc-dbg"
+                        color={Button.Colors.PRIMARY}
                         onClick={async () => sendMessage(props.channel.id, { content: await generateDebugInfoMessage() })}
                     >
                         Run /vencord-debug
                     </Button>,
                     <Button
                         key="vc-plg-list"
+                        color={Button.Colors.PRIMARY}
                         onClick={async () => sendMessage(props.channel.id, { content: generatePluginList() })}
                     >
                         Run /vencord-plugins

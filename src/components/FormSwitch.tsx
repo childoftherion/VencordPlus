@@ -40,7 +40,10 @@ export function FormSwitch({ onChange, title, value, description, disabled, clas
     );
 }
 
-/** Compatibility with Discord's old FormSwitch */
-export function FormSwitchCompat(props: PropsWithChildren<any>) {
-    return <FormSwitch {...props} title={props.children ?? ""} description={props.note} />;
+// #region Old compatibility
+
+export function FormSwitchCompat({ note, children, ...restProps }: PropsWithChildren<any>) {
+    return <FormSwitch title={children ?? ""} description={note} {...restProps} />;
 }
+
+// #endregion
