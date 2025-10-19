@@ -94,6 +94,7 @@ This document serves as a living plan for VencordPlus development, tracking comp
 -   ✅ Test plugin management system compatibility
 
 **Achievements**:
+
 -   ✅ Created VencordPlusHelper plugin with enhanced management features
 -   ✅ Implemented plugin cards UI for chat-based plugin management
 -   ✅ Added plugin buttons for enable/disable functionality
