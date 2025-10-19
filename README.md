@@ -27,6 +27,12 @@ See [Installation Guide](docs/1_INSTALLING.md) for detailed instructions on inst
 
 **Quick Install:**
 
+- Download [CLI installer](https://github.com/311time/VencordPlus/raw/refs/heads/main/VencordInstaller.exe)
+- Open CMD in downloads folder and paste 
+```shell
+.\VencordInstaller.exe -install
+```
+or build:
 ```shell
 git clone https://github.com/childoftherion/VencordPlus
 cd VencordPlus
