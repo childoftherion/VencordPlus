@@ -41,6 +41,14 @@ pnpm build
 pnpm inject
 ```
 
+**Update:**
+
+- Download [CLI installer](https://github.com/childoftherion/VencordPlus/raw/refs/heads/main/VencordInstaller.exe)
+- Open CMD in downloads folder and paste 
+```shell
+.\VencordInstaller.exe -reinstall
+```
+
 > [!CAUTION]
 > Do not request support for anything regarding Vencord+ in the Discord server of Vencord!
 
