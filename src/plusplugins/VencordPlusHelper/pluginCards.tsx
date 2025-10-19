@@ -10,7 +10,7 @@ import { NoEntrySignIcon } from "@components/Icons";
 import { AddonCard } from "@components/settings";
 import { PluginCard } from "@components/settings/tabs/plugins/PluginCard";
 import { Message } from "@vencord/discord-types";
-import { showToast, Tooltip, TooltipContainer } from "@webpack/common";
+import { showToast, TooltipContainer } from "@webpack/common";
 import { JSX } from "react";
 
 import plugins from "~plugins";

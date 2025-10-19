@@ -1,17 +1,18 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2025 Vendicated, camila314, and contributors
+ * Copyright (c) 2023 Vendicated, camila314, and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 import { DataStore } from "@api/index";
 import { definePluginSettings } from "@api/Settings";
 import { Flex } from "@components/Flex";
+import { HeadingTertiary } from "@components/Heading";
 import { DeleteIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
 import { useForceUpdater } from "@utils/react";
 import definePlugin, { OptionType } from "@utils/types";
-import { Button, Forms, TextInput, useState } from "@webpack/common";
+import { Button, TextInput, useState } from "@webpack/common";
 
 const WORDS_KEY = "ContentWarning_words";
 
@@ -91,8 +92,8 @@ function FlaggedInput({ index, forceUpdate }) {
 
         <Button
             onClick={removeSelf}
-            look={Button.Looks.BLANK}
-            size={Button.Sizes.ICON}
+            look={Button.Looks.LINK}
+            size={Button.Sizes.SMALL}
             style={{
                 padding: 0,
                 color: "var(--primary-400)",
@@ -118,7 +119,7 @@ function FlaggedWords() {
     });
 
     return (<>
-        <Forms.FormTitle tag="h4">Flagged Words</Forms.FormTitle>
+        <HeadingTertiary>Flagged Words</HeadingTertiary>
         {inputs}
     </>);
 }
@@ -132,15 +133,15 @@ const settings = definePluginSettings({
 
 export default definePlugin({
     name: "ContentWarning",
-    authors: [Devs.camila314],
-    description: "Allows you to specify trigger words that will be blurred by default. Clicking on the blurred content will reveal it",
+    authors: [Devs.thororen],
+    description: "Allows you to specify certain trigger words that will be blurred by default. Hovering on the blurred content will reveal it.",
     settings,
     patches: [
         {
             find: ".VOICE_HANGOUT_INVITE?",
             replacement: {
-                match: /(?<=compact:\i}=(\i).+?)(\(0,.+\}\)\]\}\))/,
-                replace: "$self.modify($1,$2)"
+                match: /(compact:\i}=(\i).+?)(\(0,.+\}\)\]\}\))/,
+                replace: "$1 $self.modify($2,$3)"
             }
         }
     ],

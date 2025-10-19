@@ -1,18 +1,16 @@
 /*
  * Vencord, a Discord client mod
- * Copyright (c) 2025 Vendicated and contributors
+ * Copyright (c) 2024 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { MessageStore } from "@webpack/common";
 
 export default definePlugin({
     name: "BetterPlusReacts",
-    authors: [{
-        name: "Joona",
-        id: 297410829589020673n
-    }],
+    authors: [Devs.Joona],
     description: "The amount of plus before :emoji: is the message to add it to",
     patches: [
         {
