@@ -1,10 +1,11 @@
 dist
 node_modules
+.idea
+.idea/*
 
 *.exe
 vencord_installer
 
-.idea
 .modules
 .DS_Store
 
