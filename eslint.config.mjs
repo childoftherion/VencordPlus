@@ -22,6 +22,7 @@ export default tseslint.config(
             "src/plusplugins/iconViewer/utils.tsx",
             "src/plusplugins/inviteDefaults/index.tsx",
             "src/plusplugins/polishWording/index.tsx",
+            "src/plusplugins/loginWithQR/lib/jsQR.js",
         ],
     },
     {
