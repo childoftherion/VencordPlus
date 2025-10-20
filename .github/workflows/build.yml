@@ -12,6 +12,9 @@ on:
             - pnpm-lock.yaml
     workflow_dispatch:
 
+permissions:
+    contents: write
+
 env:
     FORCE_COLOR: true
 
@@ -53,12 +56,34 @@ jobs:
 
             - name: Upload DevBuild as release
               run: |
+                  set -e
+
+                  # Check if files exist
+                  if [ ! -d "dist" ] || [ -z "$(ls -A dist 2>/dev/null)" ]; then
+                      echo "Error: dist directory is empty or doesn't exist"
+                      exit 1
+                  fi
+
                   # Create release if it doesn't exist
                   if ! gh release view devbuild >/dev/null 2>&1; then
-                      gh release create devbuild --title "DevBuild" --notes "Development builds"
+                      echo "Creating new release: devbuild"
+                      gh release create devbuild --title "DevBuild $release_tag" --notes "Development build from commit $release_tag" --draft
+                  else
+                      echo "Release devbuild already exists, updating..."
                   fi
-                  gh release upload devbuild --clobber dist/*
-                  gh release edit devbuild --title "DevBuild $RELEASE_TAG"
+
+                  # Upload all files from dist directory
+                  echo "Uploading files from dist directory..."
+                  for file in dist/*; do
+                      if [ -f "$file" ]; then
+                          echo "Uploading: $file"
+                          gh release upload devbuild "$file" --clobber
+                      fi
+                  done
+
+                  # Update release title and publish
+                  gh release edit devbuild --title "DevBuild $release_tag" --notes "Development build from commit $release_tag" --draft=false
+                  echo "Release published successfully!"
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  RELEASE_TAG: ${{ env.release_tag }}
+                  release_tag: ${{ env.release_tag }}
