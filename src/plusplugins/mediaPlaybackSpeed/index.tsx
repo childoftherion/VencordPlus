@@ -9,9 +9,10 @@ import "./styles.css";
 import { definePluginSettings } from "@api/Settings";
 import { classNameFactory } from "@api/Styles";
 import ErrorBoundary from "@components/ErrorBoundary";
+import { Heading } from "@components/Heading";
 import { Devs } from "@utils/constants";
 import definePlugin, { makeRange, OptionType } from "@utils/types";
-import { ContextMenuApi, FluxDispatcher, Heading, Menu, React, Tooltip, useEffect } from "@webpack/common";
+import { ContextMenuApi, FluxDispatcher, Menu, React, Tooltip, useEffect } from "@webpack/common";
 import { RefObject } from "react";
 
 import SpeedIcon from "./components/SpeedIcon";
@@ -27,7 +28,7 @@ const settings = definePluginSettings({
         type: OptionType.COMPONENT,
         description: "",
         component() {
-            return <Heading variant="heading-lg/bold" selectable={false}>
+            return <Heading tag="h3">
                 Default playback speeds
             </Heading>;
         }
@@ -61,7 +62,7 @@ export default definePlugin({
 
     settings,
 
-    PlaybackSpeedComponent({ mediaRef }: { mediaRef: MediaRef }) {
+    PlaybackSpeedComponent({ mediaRef }: { mediaRef: MediaRef; }) {
         const changeSpeed = (speed: number) => {
             const media = mediaRef?.current;
             if (media) {

@@ -163,6 +163,7 @@ export const globPlugins = (kind) => ({
                 "plugins/_core",
                 "plugins",
                 "userplugins",
+                "plusplugins",
             ];
             let code = "";
             let pluginsCode = "\n";

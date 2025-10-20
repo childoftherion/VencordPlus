@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { ColorPicker as VencordColorPicker } from "@webpack/common";
-import { useRef } from "react";
+import { ColorPicker as VencordColorPicker, useRef } from "@webpack/common";
 
 import { Popout } from "..";
 
