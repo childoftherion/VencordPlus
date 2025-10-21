@@ -41,6 +41,7 @@
         "@vap/core": "0.0.12",
         "@vap/shiki": "0.10.5",
         "buttplug": "^3.0.0",
+        "discord.js": "^14.23.2",
         "fflate": "^0.8.2",
         "gifenc": "github:mattdesl/gifenc#64842fca317b112a8590f8fef2bf3825da8f6fe3",
         "idb": "8.0.3",
@@ -49,6 +50,7 @@
         "nanoid": "^5.1.5",
         "openai": "^4.0.0",
         "socket.io": "^4.8.1",
+        "socket.io-client": "^4.8.1",
         "virtual-merge": "^1.0.1"
     },
     "devDependencies": {
