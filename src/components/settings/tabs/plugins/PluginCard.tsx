@@ -13,6 +13,8 @@ import { Plugin } from "@utils/types";
 import { React, showToast, Toasts } from "@webpack/common";
 import { Settings } from "Vencord";
 
+import { PluginMeta } from "~plugins";
+
 import { cl, logger } from ".";
 import { openPluginModal } from "./PluginModal";
 
@@ -81,9 +83,22 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
         settings.enabled = !wasEnabled;
     }
 
+    // Determine plugin origin for badge
+    const meta = PluginMeta[plugin.name];
+    let origin: "Equicord" | "Vencord" | "Plus" | "Userplugin" = "Vencord";
+    const folder = meta?.folderName ?? "";
+    if (folder.startsWith("userplugins/")) origin = "Userplugin";
+    else if (folder.startsWith("src/plusplugins/") || meta?.plusPlugin) origin = "Plus";
+    else if (folder.startsWith("src/equicordplugins/") || /equicord/i.test(folder)) origin = "Equicord";
+
+    const originColor = origin === "Equicord" ? "#B06EF0" : origin === "Plus" ? "#F59E0B" : origin === "Userplugin" ? "#3BA55D" : "#5865F2";
+
     return (
         <AddonCard
-            name={plugin.name}
+            name={<>
+                <span>{plugin.name}</span>
+                <span className="vc-origin-badge" style={{ backgroundColor: originColor }} aria-label={`Plugin origin: ${origin}`}>{origin}</span>
+            </>}
             description={plugin.description}
             isNew={isNew}
             enabled={isEnabled()}

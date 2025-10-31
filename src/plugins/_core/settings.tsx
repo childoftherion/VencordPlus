@@ -18,6 +18,7 @@
 
 import { Settings } from "@api/Settings";
 import { BackupAndRestoreTab, CloudTab, PatchHelperTab, PluginsTab, ThemesTab, UpdaterTab, VencordTab } from "@components/settings/tabs";
+import { ConditionalEquicordPluginsTab } from "@components/settings/tabs/plugins/EquicordPluginsTab";
 import { Devs } from "@utils/constants";
 import { getIntlMessage } from "@utils/discord";
 import definePlugin, { OptionType } from "@utils/types";
@@ -99,7 +100,16 @@ export default definePlugin({
             {
                 section: "VencordPlugins",
                 label: "Plugins",
-                element: PluginsTab,
+                element: (() => {
+                    // Simple runtime flag to enable Equicord-style UI. Default: on.
+                    const useEq = (() => {
+                        try {
+                            const v = localStorage.getItem("Plus_EquicordPluginsUI");
+                            return v == null ? true : v === "1";
+                        } catch { return true; }
+                    })();
+                    return useEq ? ConditionalEquicordPluginsTab : PluginsTab;
+                })(),
                 className: "vc-plugins"
             },
             {
@@ -245,7 +255,7 @@ export default definePlugin({
         return "\n" + this.getInfoRows().join("\n");
     },
 
-    makeInfoElements(Component: React.ComponentType<React.PropsWithChildren>, props: React.PropsWithChildren) {
+    makeInfoElements(Component: any, props: any) {
         return this.getInfoRows().map((text, i) =>
             <Component key={i} {...props}>{text}</Component>
         );
